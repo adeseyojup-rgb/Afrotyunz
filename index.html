@@ -1,0 +1,2344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Afrotyunz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #0e0e0e;
+            --bg2: #161616;
+            --bg3: #1f1f1f;
+            --gold: #f5a623;
+            --red: #e63946;
+            --green: #2ec4b6;
+            --text: #f0ece4;
+            --muted: #888;
+            --border: #2a2a2a;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* NAV */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            background: rgba(14, 14, 14, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            height: 58px;
+        }
+
+        .nav-logo {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 28px;
+            letter-spacing: 3px;
+            color: var(--gold);
+            cursor: pointer;
+            text-shadow: 0 0 20px rgba(245, 166, 35, 0.4);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 6px;
+        }
+
+        .nav-links button {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--muted);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .nav-links button:hover,
+        .nav-links button.active {
+            color: var(--text);
+            background: var(--bg3);
+        }
+
+        .nav-right {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-login {
+            padding: 7px 18px;
+            border: 1.5px solid var(--border);
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--text);
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .btn-login:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .btn-start {
+            padding: 7px 18px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 13px;
+            color: #0e0e0e;
+            background: var(--gold);
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .btn-start:hover {
+            background: #ffc347;
+        }
+
+        /* HERO */
+        .hero {
+            position: relative;
+            min-height: 480px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            padding: 60px 40px;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 70% 50%, rgba(245, 166, 35, 0.12) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(230, 57, 70, 0.10) 0%, transparent 50%);
+        }
+
+        .hero-pattern {
+            position: absolute;
+            inset: 0;
+            opacity: 0.03;
+            background-image: repeating-linear-gradient(0deg, transparent, transparent 40px, #fff 40px, #fff 41px), repeating-linear-gradient(90deg, transparent, transparent 40px, #fff 40px, #fff 41px);
+        }
+
+        .hero-content {
+            position: relative;
+            max-width: 560px;
+            animation: fadeUp 0.6s ease 0.1s forwards;
+            opacity: 0;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 20px;
+            background: rgba(245, 166, 35, 0.15);
+            border: 1px solid rgba(245, 166, 35, 0.3);
+            color: var(--gold);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+
+        .hero h1 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: clamp(52px, 8vw, 88px);
+            line-height: 0.95;
+            letter-spacing: 4px;
+            margin-bottom: 18px;
+        }
+
+        .hero h1 span {
+            color: var(--gold);
+        }
+
+        .hero p {
+            font-size: 16px;
+            color: #aaa;
+            line-height: 1.7;
+            margin-bottom: 28px;
+            max-width: 420px;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-hero-primary {
+            padding: 13px 28px;
+            background: var(--gold);
+            color: #0e0e0e;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-hero-primary:hover {
+            background: #ffc347;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(245, 166, 35, 0.3);
+        }
+
+        .btn-hero-secondary {
+            padding: 13px 28px;
+            background: transparent;
+            color: var(--text);
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-hero-secondary:hover {
+            border-color: var(--text);
+            transform: translateY(-2px);
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 32px;
+            margin-top: 36px;
+            padding-top: 28px;
+            border-top: 1px solid var(--border);
+        }
+
+        .stat-num {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 28px;
+            color: var(--gold);
+            letter-spacing: 2px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .hero-comics {
+            position: absolute;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 14px;
+            align-items: flex-end;
+        }
+
+        .hero-comic-card {
+            width: 120px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid var(--border);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .hero-comic-card:hover {
+            transform: translateY(-8px) !important;
+        }
+
+        .hero-comic-card:nth-child(2) {
+            transform: translateY(-20px);
+        }
+
+        .hero-comic-cover {
+            width: 100%;
+            aspect-ratio: 3/4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 44px;
+        }
+
+        .hero-comic-info {
+            background: var(--bg3);
+            padding: 8px 10px;
+        }
+
+        .hero-comic-title {
+            font-weight: 800;
+            font-size: 11px;
+            margin-bottom: 2px;
+        }
+
+        .hero-comic-meta {
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        /* GENRE BAR */
+        .genre-bar {
+            display: flex;
+            gap: 8px;
+            padding: 16px 28px;
+            overflow-x: auto;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg2);
+            scrollbar-width: none;
+        }
+
+        .genre-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .genre-pill {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            cursor: pointer;
+            border: 1.5px solid var(--border);
+            color: var(--muted);
+            background: transparent;
+            transition: all 0.2s;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .genre-pill:hover {
+            color: var(--text);
+            border-color: #444;
+        }
+
+        .genre-pill.active {
+            background: var(--gold);
+            color: #0e0e0e;
+            border-color: var(--gold);
+        }
+
+        /* SECTIONS */
+        .section {
+            padding: 36px 28px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 22px;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 22px;
+            background: var(--gold);
+            border-radius: 2px;
+        }
+
+        .see-all {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--gold);
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        /* COMIC CARDS */
+        .comics-row {
+            display: flex;
+            gap: 14px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            scrollbar-width: none;
+            flex-wrap: wrap;
+        }
+
+        .comic-card {
+            min-width: 160px;
+            width: 160px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            animation: fadeUp 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .comic-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .comic-card:nth-child(1) {
+            animation-delay: 0.05s
+        }
+
+        .comic-card:nth-child(2) {
+            animation-delay: 0.1s
+        }
+
+        .comic-card:nth-child(3) {
+            animation-delay: 0.15s
+        }
+
+        .comic-card:nth-child(4) {
+            animation-delay: 0.2s
+        }
+
+        .comic-card:nth-child(5) {
+            animation-delay: 0.25s
+        }
+
+        .comic-card:nth-child(6) {
+            animation-delay: 0.3s
+        }
+
+        .comic-cover {
+            width: 100%;
+            aspect-ratio: 3/4;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            position: relative;
+            overflow: hidden;
+            border: 1.5px solid var(--border);
+        }
+
+        .comic-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .badge-new {
+            background: var(--red);
+            color: white
+        }
+
+        .badge-hot {
+            background: var(--gold);
+            color: #0e0e0e
+        }
+
+        .badge-up {
+            background: var(--green);
+            color: #0e0e0e
+        }
+
+        .comic-likes {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .comic-info {
+            padding: 8px 2px;
+        }
+
+        .comic-title {
+            font-weight: 800;
+            font-size: 13px;
+            margin-bottom: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .comic-genre {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        /* FEATURED */
+        .featured-banner {
+            margin: 0 28px 36px;
+            border-radius: 14px;
+            overflow: hidden;
+            position: relative;
+            min-height: 180px;
+            display: flex;
+            align-items: center;
+            padding: 32px 36px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+        }
+
+        .featured-bg {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #1a0a00 0%, #2d1500 50%, #0e0e0e 100%);
+        }
+
+        .featured-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 80% 50%, rgba(245, 166, 35, 0.2) 0%, transparent 60%);
+        }
+
+        .featured-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .featured-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+
+        .featured-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 36px;
+            letter-spacing: 3px;
+            margin-bottom: 8px;
+        }
+
+        .featured-desc {
+            font-size: 13px;
+            color: #aaa;
+            max-width: 400px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .btn-featured {
+            padding: 9px 22px;
+            background: var(--gold);
+            color: #0e0e0e;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .featured-emoji {
+            position: absolute;
+            right: 60px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 90px;
+            opacity: 0.6;
+        }
+
+        /* TWO COL */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+        }
+
+        .col-divider {
+            border-left: 1px solid var(--border);
+        }
+
+        .ranking-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .rank-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 14px;
+            background: var(--bg2);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .rank-item:hover {
+            border-color: #444;
+            transform: translateX(4px);
+        }
+
+        .rank-num {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 22px;
+            width: 28px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .rank-num.gold {
+            color: var(--gold)
+        }
+
+        .rank-num.silver {
+            color: #aaa
+        }
+
+        .rank-num.bronze {
+            color: #cd7f32
+        }
+
+        .rank-num.normal {
+            color: var(--muted)
+        }
+
+        .rank-cover {
+            width: 44px;
+            height: 58px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+            border: 1px solid var(--border);
+        }
+
+        .rank-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .rank-title {
+            font-weight: 800;
+            font-size: 14px;
+            margin-bottom: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .rank-meta {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .rank-likes {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--red);
+            flex-shrink: 0;
+        }
+
+        /* BROWSE */
+        .browse-header {
+            padding: 36px 28px 20px;
+        }
+
+        .browse-header h2 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 36px;
+            letter-spacing: 3px;
+            color: var(--gold);
+            margin-bottom: 6px;
+        }
+
+        .browse-header p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .browse-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px;
+            padding: 0 28px 40px;
+        }
+
+        /* READER */
+        .reader-page {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 28px 20px;
+        }
+
+        .reader-back {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .btn-back {
+            padding: 8px 18px;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            color: var(--text);
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-back:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .reader-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 28px;
+            letter-spacing: 2px;
+        }
+
+        .reader-meta {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 20px;
+        }
+
+        .episode-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .ep-tab {
+            padding: 7px 16px;
+            border-radius: 20px;
+            border: 1.5px solid var(--border);
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--muted);
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ep-tab:hover {
+            color: var(--text);
+        }
+
+        .ep-tab.active {
+            background: var(--gold);
+            color: #0e0e0e;
+            border-color: var(--gold);
+        }
+
+        .panel-strip {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .comic-panel {
+            width: 100%;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border-left: 3px solid #222;
+            border-right: 3px solid #222;
+        }
+
+        .comic-panel:first-child {
+            border-top: 3px solid #222;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .comic-panel:last-child {
+            border-bottom: 3px solid #222;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .panel-emoji {
+            font-size: 80px;
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+        }
+
+        .panel-dialogue {
+            position: absolute;
+            background: white;
+            color: #111;
+            border: 2px solid #111;
+            border-radius: 16px;
+            padding: 8px 14px;
+            font-weight: 700;
+            font-size: 13px;
+            max-width: 55%;
+            line-height: 1.4;
+            box-shadow: 2px 2px 0 #111;
+            top: 16px;
+        }
+
+        .panel-dialogue.left {
+            left: 14px;
+        }
+
+        .panel-dialogue.right {
+            right: 14px;
+        }
+
+        .reader-reactions {
+            display: flex;
+            gap: 10px;
+            padding: 20px 0;
+            border-top: 1px solid var(--border);
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .reaction-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 14px;
+            background: var(--bg2);
+            color: var(--text);
+            transition: all 0.2s;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .reaction-btn:hover,
+        .reaction-btn.liked {
+            border-color: var(--red);
+            color: var(--red);
+            background: rgba(230, 57, 70, 0.08);
+        }
+
+        .comments-section {
+            margin-top: 28px;
+        }
+
+        .comments-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 22px;
+            letter-spacing: 2px;
+            margin-bottom: 14px;
+        }
+
+        .comment-input-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .comment-input {
+            flex: 1;
+            padding: 10px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg2);
+            color: var(--text);
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .comment-input:focus {
+            border-color: var(--gold);
+        }
+
+        .btn-comment {
+            padding: 10px 20px;
+            background: var(--gold);
+            color: #0e0e0e;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .comment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .comment {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 16px;
+        }
+
+        .comment-author {
+            font-weight: 800;
+            font-size: 13px;
+            color: var(--gold);
+            margin-bottom: 4px;
+        }
+
+        .comment-text {
+            font-size: 14px;
+            color: #ccc;
+            line-height: 1.5;
+        }
+
+        /* CREATE */
+        .create-page {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 36px 28px;
+        }
+
+        .create-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 36px;
+            letter-spacing: 3px;
+            color: var(--gold);
+            margin-bottom: 6px;
+        }
+
+        .create-sub {
+            color: var(--muted);
+            font-size: 14px;
+            margin-bottom: 28px;
+        }
+
+        .create-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .create-sidebar {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            position: sticky;
+            top: 80px;
+        }
+
+        .form-label {
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            display: block;
+            color: var(--muted);
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg3);
+            color: var(--text);
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+            margin-bottom: 14px;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            border-color: var(--gold);
+        }
+
+        .form-select option {
+            background: var(--bg3);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* WEBTOON CANVAS */
+        .canvas-area {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .canvas-toolbar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .tool-btn {
+            padding: 7px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            background: var(--bg3);
+            color: var(--text);
+            transition: all 0.15s;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .tool-btn:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .webtoon-canvas {
+            display: flex;
+            flex-direction: column;
+            background: #111;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid var(--border);
+            min-height: 300px;
+        }
+
+        .webtoon-strip {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .webtoon-image-block {
+            position: relative;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .webtoon-image-block img {
+            width: 100%;
+            display: block;
+        }
+
+        .webtoon-placeholder {
+            width: 100%;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: #1a1a1a;
+            border-bottom: 2px dashed #333;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .webtoon-placeholder:hover {
+            background: #222;
+        }
+
+        .webtoon-placeholder .ph-icon {
+            font-size: 36px;
+            opacity: 0.5;
+        }
+
+        .webtoon-placeholder .ph-text {
+            font-size: 13px;
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        .webtoon-placeholder .ph-sub {
+            font-size: 11px;
+            color: #555;
+        }
+
+        .block-controls {
+            display: flex;
+            gap: 6px;
+            padding: 8px 10px;
+            background: #0d0d0d;
+            align-items: center;
+            border-bottom: 1px solid #222;
+        }
+
+        .block-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            flex: 1;
+        }
+
+        .block-btn {
+            padding: 4px 10px;
+            border: 1px solid #333;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            background: transparent;
+            color: #aaa;
+            font-family: 'Nunito', sans-serif;
+            transition: all 0.15s;
+        }
+
+        .block-btn:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .block-btn.del:hover {
+            border-color: var(--red);
+            color: var(--red);
+        }
+
+        .dialogue-block {
+            width: 100%;
+            padding: 10px 14px;
+            background: #161616;
+            border-bottom: 1px solid #222;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .dialogue-block input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1.5px solid #333;
+            border-radius: 6px;
+            background: #0d0d0d;
+            color: var(--text);
+            font-family: 'Nunito', sans-serif;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .dialogue-block input:focus {
+            border-color: var(--gold);
+        }
+
+        .add-block-row {
+            display: flex;
+            gap: 8px;
+            padding: 14px;
+            background: #0d0d0d;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .add-block-btn {
+            padding: 8px 18px;
+            border: 1.5px dashed #444;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            background: transparent;
+            color: #888;
+            font-family: 'Nunito', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .add-block-btn:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: rgba(245, 166, 35, 0.06);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .panel-dialogue-row {
+            padding: 10px 12px;
+            border-top: 1px solid var(--border);
+            background: var(--bg2);
+        }
+
+        .panel-dialogue-row input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1.5px solid var(--border);
+            border-radius: 6px;
+            background: var(--bg3);
+            color: var(--text);
+            font-family: 'Nunito', sans-serif;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .panel-dialogue-row input:focus {
+            border-color: var(--gold);
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--red);
+            font-size: 16px;
+            font-weight: bold;
+            padding: 2px 6px;
+        }
+
+        .publish-bar {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-publish {
+            padding: 12px 28px;
+            background: var(--gold);
+            color: #0e0e0e;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-publish:hover {
+            background: #ffc347;
+            transform: translateY(-2px);
+        }
+
+        .btn-publish:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success-toast {
+            background: rgba(46, 196, 182, 0.15);
+            border: 1.5px solid var(--green);
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--green);
+            display: none;
+        }
+
+        /* LOGIN */
+        .login-page {
+            max-width: 420px;
+            margin: 80px auto;
+            padding: 0 20px;
+        }
+
+        .login-box {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 36px;
+        }
+
+        .login-logo {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 32px;
+            letter-spacing: 3px;
+            color: var(--gold);
+            text-align: center;
+            margin-bottom: 6px;
+        }
+
+        .login-sub {
+            text-align: center;
+            color: var(--muted);
+            font-size: 14px;
+            margin-bottom: 28px;
+        }
+
+        .btn-full {
+            width: 100%;
+            padding: 12px;
+            background: var(--gold);
+            color: #0e0e0e;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 4px;
+        }
+
+        .btn-full:hover {
+            background: #ffc347;
+        }
+
+        .login-switch {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .login-switch span {
+            color: var(--gold);
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        /* SEARCH BAR */
+        .search-bar-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: var(--bg2);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .search-input {
+            flex: 1;
+            max-width: 480px;
+            padding: 9px 16px 9px 38px;
+            border: 1.5px solid var(--border);
+            border-radius: 24px;
+            background: var(--bg3);
+            color: var(--text);
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23888' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.099zm-5.242 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: 12px center;
+        }
+
+        .search-input:focus {
+            border-color: var(--gold);
+        }
+
+        .search-clear {
+            padding: 7px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--muted);
+            background: transparent;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            display: none;
+        }
+
+        .search-clear.visible {
+            display: block;
+        }
+
+        .search-results-label {
+            font-size: 13px;
+            color: var(--muted);
+            padding: 10px 28px 0;
+            font-weight: 700;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        /* LIBRARY PAGE */
+        .library-header {
+            padding: 36px 28px 20px;
+        }
+
+        .library-header h2 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 36px;
+            letter-spacing: 3px;
+            color: var(--gold);
+            margin-bottom: 6px;
+        }
+
+        .library-header p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .library-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px;
+            padding: 0 28px 40px;
+        }
+
+        .library-empty {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .library-empty .empty-icon {
+            font-size: 52px;
+            margin-bottom: 16px;
+        }
+
+        .library-empty p {
+            color: var(--muted);
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+
+        .save-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+            background: var(--bg2);
+            color: var(--text);
+            transition: all 0.2s;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .save-btn:hover,
+        .save-btn.saved {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: rgba(245, 166, 35, 0.08);
+        }
+
+        /* DOWNLOAD BTN */
+        .download-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+            background: var(--bg2);
+            color: var(--text);
+            transition: all 0.2s;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .download-btn:hover {
+            border-color: var(--green);
+            color: var(--green);
+            background: rgba(46, 196, 182, 0.08);
+        }
+
+        /* TOAST NOTIFICATION */
+        .toast {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--bg3);
+            border: 1.5px solid var(--gold);
+            border-radius: 30px;
+            padding: 10px 22px;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--gold);
+            z-index: 9999;
+            transition: transform 0.3s ease;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--bg2);
+            border-top: 1px solid var(--border);
+            padding: 36px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .footer-logo {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 24px;
+            letter-spacing: 3px;
+            color: var(--gold);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-links a {
+            font-size: 13px;
+            color: var(--muted);
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--text);
+        }
+
+        .footer-copy {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        @media(max-width:860px) {
+            .two-col {
+                grid-template-columns: 1fr
+            }
+
+            .hero-comics {
+                display: none
+            }
+
+            .featured-emoji {
+                display: none
+            }
+
+            .create-layout {
+                grid-template-columns: 1fr
+            }
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="nav-logo" onclick="goTo('home')">AFROTYUNZ</div>
+        <div class="nav-links">
+            <button id="nav-home" class="active" onclick="goTo('home')">Home</button>
+            <button id="nav-browse" onclick="goTo('browse')">Browse</button>
+            <button id="nav-library" onclick="goTo('library')">📚 Library</button>
+            <button id="nav-create" onclick="goTo('create')">Create</button>
+        </div>
+        <div class="nav-right">
+            <button class="btn-login" onclick="goTo('login')">Log In</button>
+            <button class="btn-start" onclick="goTo('browse')">Start Reading</button>
+        </div>
+    </nav>
+
+    <!-- HOME -->
+    <div id="page-home" class="page active">
+        <section class="hero">
+            <div class="hero-bg"></div>
+            <div class="hero-pattern"></div>
+            <div class="hero-content">
+                <div class="hero-badge">✦ African Stories, Global Stage</div>
+                <h1>READ <span>AFRICAN</span><br>COMICS.</h1>
+                <p>Discover thousands of African stories — action, romance, fantasy, and more. All free. All vertical
+                    scroll.</p>
+                <div class="hero-btns">
+                    <button class="btn-hero-primary" onclick="goTo('browse')">Start Reading — It's Free</button>
+                    <button class="btn-hero-secondary" onclick="goTo('create')">Create a Comic</button>
+                </div>
+                <div class="hero-stats">
+                    <div>
+                        <div class="stat-num">12K+</div>
+                        <div class="stat-label">Comics</div>
+                    </div>
+                    <div>
+                        <div class="stat-num">480K</div>
+                        <div class="stat-label">Readers</div>
+                    </div>
+                    <div>
+                        <div class="stat-num">190+</div>
+                        <div class="stat-label">Creators</div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-comics">
+                <div class="hero-comic-card" onclick="openReader('iron-hollow')">
+                    <div class="hero-comic-cover" style="background:linear-gradient(135deg,#ff9a9e,#fad0c4)">⚔️</div>
+                    <div class="hero-comic-info">
+                        <div class="hero-comic-title">Iron Hollow</div>
+                        <div class="hero-comic-meta">❤️ 12.4K</div>
+                    </div>
+                </div>
+                <div class="hero-comic-card" onclick="openReader('starfall')">
+                    <div class="hero-comic-cover" style="background:linear-gradient(135deg,#a1c4fd,#c2e9fb)">🌸</div>
+                    <div class="hero-comic-info">
+                        <div class="hero-comic-title">Starfall</div>
+                        <div class="hero-comic-meta">❤️ 43.8K</div>
+                    </div>
+                </div>
+                <div class="hero-comic-card" onclick="openReader('hex-shadow')">
+                    <div class="hero-comic-cover" style="background:linear-gradient(135deg,#d4fc79,#96e6a1)">🧙</div>
+                    <div class="hero-comic-info">
+                        <div class="hero-comic-title">Hex & Shadow</div>
+                        <div class="hero-comic-meta">❤️ 31K</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="genre-bar" id="home-genre-bar">
+            <button class="genre-pill active" onclick="filterGenre(this,'home')">All</button>
+            <button class="genre-pill" onclick="filterGenre(this,'home')">Action</button>
+            <button class="genre-pill" onclick="filterGenre(this,'home')">Romance</button>
+            <button class="genre-pill" onclick="filterGenre(this,'home')">Fantasy</button>
+            <button class="genre-pill" onclick="filterGenre(this,'home')">Sci-Fi</button>
+            <button class="genre-pill" onclick="filterGenre(this,'home')">Comedy</button>
+            <button class="genre-pill" onclick="filterGenre(this,'home')">Horror</button>
+            <button class="genre-pill" onclick="filterGenre(this,'home')">Slice of Life</button>
+            <button class="genre-pill" onclick="filterGenre(this,'home')">Drama</button>
+        </div>
+
+        <div class="featured-banner" onclick="openReader('lagos-chronicles')">
+            <div class="featured-bg"></div>
+            <div class="featured-content">
+                <div class="featured-label">✦ Editor's Pick</div>
+                <div class="featured-title">THE LAGOS CHRONICLES</div>
+                <div class="featured-desc">A gripping story of power, betrayal, and identity set in the streets of
+                    Lagos. New episode every Monday.</div>
+                <button class="btn-featured">Read Now — Free</button>
+            </div>
+            <div class="featured-emoji">🏙️</div>
+        </div>
+
+        <div class="two-col">
+            <div>
+                <div class="section">
+                    <div class="section-header">
+                        <div class="section-title">🔥 Trending Now</div>
+                        <button class="see-all" onclick="goTo('browse')">See All →</button>
+                    </div>
+                    <div class="comics-row" id="trending-row"></div>
+                </div>
+                <div class="section" style="padding-top:0">
+                    <div class="section-header">
+                        <div class="section-title">✨ New Releases</div>
+                        <button class="see-all" onclick="goTo('browse')">See All →</button>
+                    </div>
+                    <div class="comics-row" id="new-row"></div>
+                </div>
+            </div>
+            <div class="col-divider">
+                <div class="section">
+                    <div class="section-header">
+                        <div class="section-title">🏆 Top Ranked</div>
+                    </div>
+                    <div class="ranking-list" id="ranking-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="footer-logo">AFROTYUNZ</div>
+            <div class="footer-links"><a href="#">About</a><a href="#">Create</a><a href="#">Community</a><a
+                    href="#">Help</a></div>
+            <div class="footer-copy">© 2026 Afrotyunz. All rights reserved.</div>
+        </footer>
+    </div>
+
+    <!-- BROWSE -->
+    <div id="page-browse" class="page">
+        <div class="browse-header">
+            <h2>Browse Comics</h2>
+            <p>Explore all comics on Afrotyunz</p>
+        </div>
+        <div class="search-bar-wrap">
+            <input class="search-input" id="search-input" placeholder="Search comics by title or genre…"
+                oninput="handleSearch(this.value)" />
+            <button class="search-clear" id="search-clear" onclick="clearSearch()">✕ Clear</button>
+        </div>
+        <div id="search-results-label" class="search-results-label" style="display:none"></div>
+        <div class="genre-bar" id="browse-genre-bar">
+            <button class="genre-pill active" onclick="filterGenre(this,'browse')">All</button>
+            <button class="genre-pill" onclick="filterGenre(this,'browse')">Action</button>
+            <button class="genre-pill" onclick="filterGenre(this,'browse')">Romance</button>
+            <button class="genre-pill" onclick="filterGenre(this,'browse')">Fantasy</button>
+            <button class="genre-pill" onclick="filterGenre(this,'browse')">Sci-Fi</button>
+            <button class="genre-pill" onclick="filterGenre(this,'browse')">Comedy</button>
+            <button class="genre-pill" onclick="filterGenre(this,'browse')">Horror</button>
+            <button class="genre-pill" onclick="filterGenre(this,'browse')">Slice of Life</button>
+            <button class="genre-pill" onclick="filterGenre(this,'browse')">Drama</button>
+        </div>
+        <div class="browse-grid" id="browse-grid"></div>
+    </div>
+
+    <!-- READER -->
+    <div id="page-reader" class="page">
+        <div class="reader-page">
+            <div class="reader-back">
+                <button class="btn-back" onclick="goBack()">← Back</button>
+                <div id="reader-title" class="reader-title"></div>
+            </div>
+            <div id="reader-meta" class="reader-meta"></div>
+            <div class="episode-tabs" id="episode-tabs"></div>
+            <div class="panel-strip" id="panel-strip"></div>
+            <div class="reader-reactions">
+                <button class="reaction-btn" id="like-btn" onclick="toggleLike()">❤️ <span
+                        id="like-count">0</span></button>
+                <button class="reaction-btn" onclick="this.style.color='var(--gold)'">🔥 Fire</button>
+                <button class="reaction-btn" onclick="this.style.color='#4fc3f7'">😂 Lol</button>
+                <button class="reaction-btn" onclick="this.style.color='#ab47bc'">😭 Cry</button>
+                <button class="save-btn" id="save-btn" onclick="toggleSave()">🔖 <span
+                        id="save-label">Save</span></button>
+                <button class="download-btn" onclick="downloadComic()">⬇️ Download</button>
+            </div>
+            <div class="comments-section">
+                <div class="comments-title">💬 Comments</div>
+                <div class="comment-input-row">
+                    <input class="comment-input" id="comment-input" placeholder="Write a comment…"
+                        onkeydown="if(event.key==='Enter')postComment()" />
+                    <button class="btn-comment" onclick="postComment()">Post</button>
+                </div>
+                <div class="comment-list" id="comment-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CREATE -->
+    <div id="page-create" class="page">
+        <div class="create-page">
+            <div class="create-title">Create Your Comic</div>
+            <div class="create-sub">Build your story panel by panel and publish it to Afrotyunz.</div>
+            <div class="create-layout">
+                <aside class="create-sidebar">
+                    <label class="form-label">Comic Title</label>
+                    <input class="form-input" id="c-title" placeholder="e.g. Shadow Blade" oninput="checkPublish()" />
+                    <label class="form-label">Genre</label>
+                    <select class="form-select" id="c-genre">
+                        <option>Action</option>
+                        <option>Romance</option>
+                        <option>Fantasy</option>
+                        <option>Sci-Fi</option>
+                        <option>Comedy</option>
+                        <option>Horror</option>
+                        <option>Slice of Life</option>
+                        <option>Drama</option>
+                    </select>
+                    <label class="form-label">Synopsis</label>
+                    <textarea class="form-textarea" id="c-synopsis" placeholder="What is your comic about?"></textarea>
+                    <label class="form-label">Episode Title</label>
+                    <input class="form-input" id="c-ep-title" placeholder="e.g. The Beginning" />
+                </aside>
+                <div class="canvas-area">
+                    <div class="canvas-toolbar">
+                        <span style="font-family:'Bebas Neue',cursive;font-size:16px;letter-spacing:1px">WEBTOON
+                            CANVAS</span>
+                        <span id="panel-count" style="font-size:12px;color:var(--muted);margin-left:auto"></span>
+                    </div>
+                    <div class="webtoon-canvas">
+                        <div class="webtoon-strip" id="webtoon-strip"></div>
+                        <div class="add-block-row">
+                            <button class="add-block-btn" onclick="addImageBlock()">🖼️ Add Image</button>
+                            <button class="add-block-btn" onclick="addDialogueBlock()">💬 Add Dialogue</button>
+                        </div>
+                    </div>
+                    <div class="publish-bar">
+                        <button class="btn-publish" id="publish-btn" onclick="publishComic()" disabled>🚀 Publish
+                            Comic</button>
+                        <span id="publish-hint" style="font-size:12px;color:var(--muted)">Add a title to publish</span>
+                        <div id="publish-success" class="success-toast">✅ Published! Check Browse to see it.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LIBRARY -->
+    <div id="page-library" class="page">
+        <div class="library-header">
+            <h2>My Library</h2>
+            <p>Comics you've saved for offline reading</p>
+        </div>
+        <div id="library-grid" class="library-grid"></div>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="page-login" class="page">
+        <div class="login-page">
+            <div class="login-box">
+                <div class="login-logo">AFROTYUNZ</div>
+                <div class="login-sub">Join the home of African comics</div>
+                <label class="form-label">Email</label>
+                <input class="form-input" type="email" placeholder="you@example.com" />
+                <label class="form-label">Password</label>
+                <input class="form-input" type="password" placeholder="••••••••" />
+                <button class="btn-full" onclick="goTo('home')">Log In</button>
+                <div class="login-switch">Don't have an account? <span onclick="goTo('home')">Sign up free →</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const PALETTES = [
+            "linear-gradient(135deg,#ff9a9e,#fad0c4)",
+            "linear-gradient(135deg,#a1c4fd,#c2e9fb)",
+            "linear-gradient(135deg,#d4fc79,#96e6a1)",
+            "linear-gradient(135deg,#f6d365,#fda085)",
+            "linear-gradient(135deg,#e0c3fc,#8ec5fc)",
+            "linear-gradient(135deg,#fddb92,#d1fdff)",
+            "linear-gradient(135deg,#89f7fe,#66a6ff)",
+            "linear-gradient(135deg,#fbc2eb,#a6c1ee)",
+        ];
+        const EMOJIS = ["😤", "⚔️", "🔥", "💥", "💖", "😳", "🚀", "🌌", "☕", "🧙", "✨", "😱", "😂", "😈", "👊", "🌸", "🤖", "🌀", "🏆", "😊", "💪", "🌍", "🦁", "💃", "🔮"];
+
+        // ── LOCALSTORAGE ─────────────────────────────────────────────
+        const DEFAULT_COMICS_KEY = 'afrotyunz_comics';
+        const LIBRARY_KEY = 'afrotyunz_library';
+
+        function saveComicsToStorage() {
+            try {
+                // Only save user-created comics (not the defaults) to keep storage small
+                const userComics = comics.filter(c => c.id.startsWith('user-'));
+                localStorage.setItem(DEFAULT_COMICS_KEY, JSON.stringify(userComics));
+            } catch (e) { console.warn('Storage full'); }
+        }
+
+        function loadComicsFromStorage() {
+            try {
+                const saved = localStorage.getItem(DEFAULT_COMICS_KEY);
+                if (saved) {
+                    const userComics = JSON.parse(saved);
+                    userComics.forEach(c => {
+                        if (!comics.find(x => x.id === c.id)) comics.unshift(c);
+                    });
+                }
+            } catch (e) { }
+        }
+
+        function getLibrary() {
+            try { return JSON.parse(localStorage.getItem(LIBRARY_KEY) || '[]'); } catch (e) { return []; }
+        }
+
+        function saveLibrary(lib) {
+            try { localStorage.setItem(LIBRARY_KEY, JSON.stringify(lib)); } catch (e) { }
+        }
+
+        // ── TOAST ─────────────────────────────────────────────────────
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2400);
+        }
+
+        // ── SEARCH ────────────────────────────────────────────────────
+        let searchQuery = '';
+
+        function handleSearch(val) {
+            searchQuery = val.trim().toLowerCase();
+            const clearBtn = document.getElementById('search-clear');
+            const label = document.getElementById('search-results-label');
+            clearBtn.classList.toggle('visible', searchQuery.length > 0);
+            if (searchQuery) {
+                const results = comics.filter(c =>
+                    c.title.toLowerCase().includes(searchQuery) ||
+                    c.genre.toLowerCase().includes(searchQuery) ||
+                    c.author.toLowerCase().includes(searchQuery)
+                );
+                label.style.display = 'block';
+                label.textContent = results.length + ' result' + (results.length !== 1 ? 's' : '') + ' for "' + val.trim() + '"';
+                const grid = document.getElementById('browse-grid');
+                if (results.length === 0) {
+                    grid.innerHTML = '<div class="no-results">😕 No comics found for "' + val.trim() + '"</div>';
+                } else {
+                    grid.innerHTML = results.map(cardHTML).join('');
+                }
+                // Reset genre pills
+                document.getElementById('browse-genre-bar').querySelectorAll('.genre-pill').forEach(p => p.classList.remove('active'));
+            } else {
+                clearSearch();
+            }
+        }
+
+        function clearSearch() {
+            searchQuery = '';
+            document.getElementById('search-input').value = '';
+            document.getElementById('search-clear').classList.remove('visible');
+            document.getElementById('search-results-label').style.display = 'none';
+            renderBrowse('All');
+            document.getElementById('browse-genre-bar').querySelector('.genre-pill').classList.add('active');
+        }
+
+        let comics = [
+            {
+                id: "iron-hollow", title: "Iron Hollow", genre: "Action", emoji: "⚔️", bg: PALETTES[0], likes: 12400, badge: "hot", author: "Tanaka Rex",
+                episodes: [
+                    { title: "The Beginning", panels: [{ bg: PALETTES[0], emoji: "⚔️", dialogue: "Let's begin!", side: "left" }, { bg: PALETTES[3], emoji: "🔥", dialogue: "You think you can stop me?!", side: "right" }, { bg: PALETTES[1], emoji: "💥", dialogue: "I've trained my whole life…", side: "left" }, { bg: PALETTES[2], emoji: "🏆", dialogue: "Victory is mine!", side: "left" }] },
+                    { title: "The Rival", panels: [{ bg: PALETTES[4], emoji: "👊", dialogue: "So you're the legend.", side: "right" }, { bg: PALETTES[5], emoji: "😤", dialogue: "Don't underestimate me.", side: "left" }] }
+                ], comments: ["Anya: This is SO GOOD!!!", "Zoro: Love the art style 🔥"]
+            },
+            {
+                id: "starfall", title: "Starfall", genre: "Romance", emoji: "🌸", bg: PALETTES[1], likes: 43800, badge: "new", author: "Mia Chen",
+                episodes: [{ title: "First Glance", panels: [{ bg: PALETTES[4], emoji: "🌸", dialogue: "He caught me staring…", side: "left" }, { bg: PALETTES[7], emoji: "💖", dialogue: "Can I sit here?", side: "right" }, { bg: PALETTES[1], emoji: "😳", dialogue: "S-sure!", side: "left" }] }],
+                comments: ["Luna: I'm crying 😭", "Kai: Best romance on here!"]
+            },
+            {
+                id: "void-protocol", title: "Void Protocol", genre: "Sci-Fi", emoji: "🚀", bg: PALETTES[6], likes: 29000, badge: "up", author: "Zara AI",
+                episodes: [{ title: "System Boot", panels: [{ bg: PALETTES[6], emoji: "🚀", dialogue: "Initiating launch…", side: "left" }, { bg: PALETTES[0], emoji: "🤖", dialogue: "Anomaly detected.", side: "right" }, { bg: PALETTES[2], emoji: "🌌", dialogue: "What's out there?", side: "left" }] }],
+                comments: []
+            },
+            {
+                id: "hex-shadow", title: "Hex & Shadow", genre: "Fantasy", emoji: "🧙", bg: PALETTES[4], likes: 31000, badge: "hot", author: "Elias Dark",
+                episodes: [{ title: "The Spell", panels: [{ bg: PALETTES[1], emoji: "🧙", dialogue: "Ancient magic, awaken!", side: "left" }, { bg: PALETTES[4], emoji: "🌀", dialogue: "The prophecy is real.", side: "left" }, { bg: PALETTES[7], emoji: "✨", dialogue: "Stand back!", side: "right" }] }],
+                comments: ["Myra: The lore is incredible", "Sam: Need episode 2 NOW"]
+            },
+            {
+                id: "bean-cafe", title: "Bean Cafe", genre: "Slice of Life", emoji: "☕", bg: PALETTES[5], likes: 9800, badge: "", author: "Nori Y.",
+                episodes: [{ title: "Monday Morning", panels: [{ bg: PALETTES[5], emoji: "☕", dialogue: "The usual?", side: "left" }, { bg: PALETTES[3], emoji: "😊", dialogue: "You remembered!", side: "right" }] }],
+                comments: ["Tori: So wholesome ☕"]
+            },
+            {
+                id: "dark-masquerade", title: "Dark Masquerade", genre: "Horror", emoji: "😈", bg: PALETTES[7], likes: 7200, badge: "new", author: "V. Nocturne",
+                episodes: [{ title: "The Invitation", panels: [{ bg: PALETTES[7], emoji: "😈", dialogue: "You weren't invited.", side: "right" }, { bg: PALETTES[4], emoji: "😱", dialogue: "How did you get in here?!", side: "left" }] }],
+                comments: []
+            },
+            {
+                id: "savanna-king", title: "Savanna King", genre: "Action", emoji: "🦁", bg: PALETTES[3], likes: 2100, badge: "new", author: "Kwame O.",
+                episodes: [{ title: "The Roar", panels: [{ bg: PALETTES[3], emoji: "🦁", dialogue: "This land is mine.", side: "left" }, { bg: PALETTES[0], emoji: "⚔️", dialogue: "Not for long.", side: "right" }] }],
+                comments: []
+            },
+            {
+                id: "lagos-chronicles", title: "The Lagos Chronicles", genre: "Drama", emoji: "🏙️", bg: PALETTES[2], likes: 18000, badge: "hot", author: "Chidi A.",
+                episodes: [{ title: "Streets of Lagos", panels: [{ bg: PALETTES[2], emoji: "🏙️", dialogue: "This city never sleeps.", side: "left" }, { bg: PALETTES[0], emoji: "💪", dialogue: "And neither will I.", side: "right" }, { bg: PALETTES[5], emoji: "🌍", dialogue: "Lagos gave me everything.", side: "left" }] }],
+                comments: ["Ada: This is my story 🇳🇬", "Emeka: Chidi did it again!"]
+            },
+        ];
+
+        let currentComic = null;
+        let currentEp = 0;
+        let likedComics = {};
+        let previousPage = "home";
+        let blockList = [
+            { id: 1, type: "image", image: null },
+            { id: 2, type: "dialogue", text: "" },
+            { id: 3, type: "image", image: null },
+        ];
+
+        function goTo(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+            previousPage = document.querySelector('.page.active')?.id?.replace('page-', '') || 'home';
+            document.getElementById('page-' + page).classList.add('active');
+            const nb = document.getElementById('nav-' + page);
+            if (nb) nb.classList.add('active');
+            window.scrollTo(0, 0);
+            if (page === 'home') renderHome();
+            if (page === 'browse') { renderBrowse('All'); clearSearch(); }
+            if (page === 'library') renderLibrary();
+            if (page === 'create') renderCanvas();
+        }
+
+        function goBack() { goTo(previousPage || 'home'); }
+
+        function filterGenre(pill, ctx) {
+            const barId = ctx === 'home' ? 'home-genre-bar' : 'browse-genre-bar';
+            document.getElementById(barId).querySelectorAll('.genre-pill').forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+            if (ctx === 'browse') renderBrowse(pill.textContent);
+        }
+
+        function fmt(n) { return n >= 1000 ? (n / 1000).toFixed(1) + 'K' : n; }
+
+        function cardHTML(c) {
+            const badge = c.badge ? `<div class="comic-badge badge-${c.badge}">${c.badge.toUpperCase()}</div>` : '';
+            const coverInner = c.coverImage
+                ? `<img src="${c.coverImage}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" alt="${c.title}"/>`
+                : `<span style="font-size:48px">${c.emoji}</span>`;
+            return `<div class="comic-card" onclick="openReader('${c.id}')">
+        <div class="comic-cover" style="background:${c.bg};position:relative;">
+          ${coverInner}
+          ${badge}
+          <div class="comic-likes" style="position:absolute;bottom:8px;right:8px;">❤️ ${fmt(c.likes)}</div>
+        </div>
+        <div class="comic-info">
+          <div class="comic-title">${c.title}</div>
+          <div class="comic-genre">${c.genre}</div>
+        </div>
+      </div>`;
+        }
+
+        function renderHome() {
+            const trending = [...comics].sort((a, b) => b.likes - a.likes).slice(0, 6);
+            const newest = comics.filter(c => c.badge === 'new').slice(0, 5);
+            document.getElementById('trending-row').innerHTML = trending.map(cardHTML).join('');
+            document.getElementById('new-row').innerHTML = newest.map(cardHTML).join('');
+            const rc = ['gold', 'gold', 'silver', 'bronze', 'normal', 'normal'];
+            document.getElementById('ranking-list').innerHTML = trending.map((c, i) => `
+        <div class="rank-item" onclick="openReader('${c.id}')">
+          <div class="rank-num ${rc[i]}">${i + 1}</div>
+          <div class="rank-cover" style="background:${c.bg}">${c.emoji}</div>
+          <div class="rank-info">
+            <div class="rank-title">${c.title}</div>
+            <div class="rank-meta">${c.genre} · ${c.episodes.length} ep${c.episodes.length > 1 ? 's' : ''}</div>
+          </div>
+          <div class="rank-likes">❤️ ${fmt(c.likes)}</div>
+        </div>`).join('');
+        }
+
+        function renderBrowse(genre) {
+            const list = genre === 'All' ? comics : comics.filter(c => c.genre === genre);
+            document.getElementById('browse-grid').innerHTML = list.map(cardHTML).join('');
+        }
+
+        function openReader(id) {
+            currentComic = comics.find(c => c.id === id);
+            if (!currentComic) return;
+            currentEp = 0;
+            previousPage = document.querySelector('.page.active')?.id?.replace('page-', '') || 'home';
+            document.getElementById('reader-title').textContent = currentComic.title;
+            document.getElementById('reader-meta').textContent = `by ${currentComic.author} · ${currentComic.genre}`;
+            document.getElementById('like-count').textContent = fmt(currentComic.likes);
+            document.getElementById('like-btn').classList.toggle('liked', !!likedComics[id]);
+            renderEpTabs(); renderStrip(); renderComments();
+            // Update save button state
+            const lib = getLibrary();
+            const isSaved = lib.includes(currentComic.id);
+            document.getElementById('save-label').textContent = isSaved ? 'Saved' : 'Save';
+            document.getElementById('save-btn').classList.toggle('saved', isSaved);
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+            document.getElementById('page-reader').classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function renderEpTabs() {
+            document.getElementById('episode-tabs').innerHTML = currentComic.episodes.map((ep, i) =>
+                `<button class="ep-tab ${i === currentEp ? 'active' : ''}" onclick="switchEp(${i})">EP ${i + 1}: ${ep.title}</button>`).join('');
+        }
+
+        function switchEp(i) { currentEp = i; renderEpTabs(); renderStrip(); }
+
+        function renderStrip() {
+            const ep = currentComic.episodes[currentEp];
+            const strip = document.getElementById('panel-strip');
+            // New webtoon block format
+            if (ep.blocks) {
+                strip.innerHTML = ep.blocks.map(b => {
+                    if (b.type === 'image' && b.image) {
+                        return `<img src="${b.image}" style="width:100%;display:block;" alt="comic"/>`;
+                    } else if (b.type === 'image') {
+                        return `<div style="width:100%;min-height:200px;background:#1a1a1a;display:flex;align-items:center;justify-content:center;color:#444;font-size:13px;font-weight:700;">No image uploaded</div>`;
+                    } else if (b.type === 'dialogue' && b.text) {
+                        return `<div style="background:#111;padding:14px 20px;font-size:15px;font-weight:700;color:var(--text);border-top:1px solid #222;border-bottom:1px solid #222;">${b.text}</div>`;
+                    }
+                    return '';
+                }).join('');
+            } else {
+                // Legacy panel format fallback
+                const heights = [300, 340, 280, 360, 320];
+                strip.innerHTML = (ep.panels || []).map((p, i) =>
+                    `<div class="comic-panel" style="background:${p.bg};min-height:${heights[i % heights.length]}px">
+            <div class="panel-emoji">${p.emoji}</div>
+            ${p.dialogue ? `<div class="panel-dialogue ${p.side}">${p.dialogue}</div>` : ''}
+          </div>`).join('');
+            }
+        }
+
+        function toggleSave() {
+            if (!currentComic) return;
+            let lib = getLibrary();
+            const idx = lib.findIndex(id => id === currentComic.id);
+            if (idx === -1) {
+                lib.push(currentComic.id);
+                document.getElementById('save-label').textContent = 'Saved';
+                document.getElementById('save-btn').classList.add('saved');
+                showToast('🔖 Saved to Library!');
+            } else {
+                lib.splice(idx, 1);
+                document.getElementById('save-label').textContent = 'Save';
+                document.getElementById('save-btn').classList.remove('saved');
+                showToast('Removed from Library');
+            }
+            saveLibrary(lib);
+            renderLibrary();
+        }
+
+        function downloadComic() {
+            if (!currentComic) return;
+            const ep = currentComic.episodes[currentEp];
+            let html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${currentComic.title}</title>
+        <style>body{margin:0;background:#111;font-family:sans-serif;color:white} img{width:100%;display:block} .txt{padding:16px 20px;font-size:15px;background:#1a1a1a;border-top:1px solid #333;border-bottom:1px solid #333;} h1{font-size:22px;padding:20px;background:#0e0e0e;margin:0;} p{font-size:13px;padding:0 20px 20px;color:#888;margin:0;}</style>
+        </head><body><h1>${currentComic.title}</h1><p>by ${currentComic.author} · ${currentComic.genre} · EP ${currentEp + 1}: ${ep.title}</p>`;
+            if (ep.blocks) {
+                ep.blocks.forEach(b => {
+                    if (b.type === 'image' && b.image) html += `<img src="${b.image}"/>`;
+                    else if (b.type === 'dialogue' && b.text) html += `<div class="txt">${b.text}</div>`;
+                });
+            }
+            html += '</body></html>';
+            const blob = new Blob([html], { type: 'text/html' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = currentComic.title.replace(/\s+/g, '-') + '-EP' + (currentEp + 1) + '.html';
+            a.click();
+            showToast('⬇️ Downloading…');
+        }
+
+        function renderLibrary() {
+            const lib = getLibrary();
+            const grid = document.getElementById('library-grid');
+            if (!grid) return;
+            const saved = comics.filter(c => lib.includes(c.id));
+            if (saved.length === 0) {
+                grid.innerHTML = `<div class="library-empty" style="grid-column:1/-1">
+          <div class="empty-icon">📚</div>
+          <p>No saved comics yet.<br/>Hit 🔖 Save while reading to add comics here.</p>
+          <button class="btn-hero-primary" style="margin:0 auto;display:block" onclick="goTo('browse')">Browse Comics</button>
+        </div>`;
+            } else {
+                grid.innerHTML = saved.map(cardHTML).join('');
+            }
+        }
+
+        function toggleLike() {
+            if (!currentComic) return;
+            likedComics[currentComic.id] = !likedComics[currentComic.id];
+            currentComic.likes += likedComics[currentComic.id] ? 1 : -1;
+            document.getElementById('like-count').textContent = fmt(currentComic.likes);
+            document.getElementById('like-btn').classList.toggle('liked', likedComics[currentComic.id]);
+        }
+
+        function renderComments() {
+            const list = document.getElementById('comment-list');
+            if (!currentComic.comments.length) {
+                list.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:10px 0">No comments yet. Be the first!</div>';
+                return;
+            }
+            list.innerHTML = currentComic.comments.map(c => {
+                const [author, ...rest] = c.split(': ');
+                return `<div class="comment"><div class="comment-author">${author}</div><div class="comment-text">${rest.join(': ')}</div></div>`;
+            }).join('');
+        }
+
+        function postComment() {
+            const inp = document.getElementById('comment-input');
+            if (!inp.value.trim() || !currentComic) return;
+            currentComic.comments.unshift('You: ' + inp.value.trim());
+            inp.value = '';
+            renderComments();
+        }
+
+        function checkPublish() {
+            const v = document.getElementById('c-title').value.trim();
+            document.getElementById('publish-btn').disabled = !v;
+            document.getElementById('publish-hint').style.display = v ? 'none' : 'inline';
+        }
+
+        function renderCanvas() {
+            const strip = document.getElementById('webtoon-strip');
+            const count = blockList.filter(b => b.type === 'image').length;
+            document.getElementById('panel-count').textContent = count + ' image' + (count !== 1 ? 's' : '');
+            strip.innerHTML = blockList.map((b, i) => {
+                if (b.type === 'image') {
+                    return `<div class="webtoon-image-block">
+            <div class="block-controls">
+              <span class="block-label">🖼️ Image Block ${i + 1}</span>
+              <button class="block-btn" onclick="moveBlock(${b.id},-1)">↑</button>
+              <button class="block-btn" onclick="moveBlock(${b.id},1)">↓</button>
+              <button class="block-btn del" onclick="removeBlock(${b.id})">✕ Remove</button>
+            </div>
+            ${b.image
+                            ? `<img src="${b.image}" alt="comic strip"/><button class="block-btn del" style="margin:6px 10px;font-size:11px" onclick="clearImage(${b.id})">✕ Clear Image</button>`
+                            : `<div class="webtoon-placeholder" onclick="triggerImgUpload(${b.id})">
+                  <span class="ph-icon">🖼️</span>
+                  <span class="ph-text">Click to Upload Image</span>
+                  <span class="ph-sub">JPG, PNG, WEBP — any height</span>
+                </div>`
+                        }
+            <input class="file-input" id="file-${b.id}" type="file" accept="image/*" onchange="handleImg(event,${b.id})"/>
+          </div>`;
+                } else {
+                    return `<div class="dialogue-block">
+            <div class="block-controls" style="padding:0;background:transparent;border:none;flex:1">
+              <span class="block-label" style="font-size:10px">💬 Dialogue</span>
+              <button class="block-btn" onclick="moveBlock(${b.id},-1)">↑</button>
+              <button class="block-btn" onclick="moveBlock(${b.id},1)">↓</button>
+              <button class="block-btn del" onclick="removeBlock(${b.id})">✕</button>
+            </div>
+            <input placeholder="Character says something…" value="${b.text}" oninput="updText(${b.id},this.value)" style="flex:2;padding:8px 12px;border:1.5px solid #333;border-radius:6px;background:#0d0d0d;color:var(--text);font-family:'Nunito',sans-serif;font-size:13px;outline:none;"/>
+          </div>`;
+                }
+            }).join('');
+        }
+
+        function addImageBlock() {
+            blockList.push({ id: Date.now(), type: 'image', image: null });
+            renderCanvas();
+        }
+
+        function addDialogueBlock() {
+            blockList.push({ id: Date.now(), type: 'dialogue', text: '' });
+            renderCanvas();
+        }
+
+        function removeBlock(id) {
+            if (blockList.length <= 1) return;
+            blockList = blockList.filter(b => b.id !== id);
+            renderCanvas();
+        }
+
+        function moveBlock(id, dir) {
+            const idx = blockList.findIndex(b => b.id === id);
+            const newIdx = idx + dir;
+            if (newIdx < 0 || newIdx >= blockList.length) return;
+            const arr = [...blockList];
+            [arr[idx], arr[newIdx]] = [arr[newIdx], arr[idx]];
+            blockList = arr;
+            renderCanvas();
+        }
+
+        function triggerImgUpload(id) {
+            const input = document.getElementById('file-' + id);
+            if (input) input.click();
+        }
+
+        function handleImg(event, id) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                blockList = blockList.map(b => b.id === id ? { ...b, image: e.target.result } : b);
+                renderCanvas();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearImage(id) {
+            blockList = blockList.map(b => b.id === id ? { ...b, image: null } : b);
+            renderCanvas();
+        }
+
+        function updText(id, v) {
+            blockList = blockList.map(b => b.id === id ? { ...b, text: v } : b);
+        }
+
+        function publishComic() {
+            const title = document.getElementById('c-title').value.trim();
+            const genre = document.getElementById('c-genre').value;
+            const epTitle = document.getElementById('c-ep-title').value || 'Episode 1';
+            if (!title) return;
+            const firstImage = blockList.find(b => b.type === 'image' && b.image);
+            comics.unshift({
+                id: 'user-' + Date.now(), title, genre,
+                emoji: '📖',
+                bg: firstImage ? 'none' : PALETTES[0],
+                coverImage: firstImage ? firstImage.image : null,
+                likes: 0, badge: 'new', author: 'You',
+                episodes: [{ title: epTitle, blocks: [...blockList] }],
+                comments: []
+            });
+            document.getElementById('c-title').value = '';
+            document.getElementById('c-synopsis').value = '';
+            document.getElementById('c-ep-title').value = '';
+            blockList = [
+                { id: 1, type: 'image', image: null },
+                { id: 2, type: 'dialogue', text: '' },
+                { id: 3, type: 'image', image: null },
+            ];
+            renderCanvas(); checkPublish();
+            saveComicsToStorage();
+            showToast('✅ Comic published!');
+            const toast = document.getElementById('publish-success');
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 3500);
+        }
+
+        loadComicsFromStorage();
+        renderHome();
+        renderCanvas();
+    </script>
+</body>
+
+</html>
