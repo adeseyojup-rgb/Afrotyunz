@@ -2998,47 +2998,91 @@
             const { data: { session } } = await sb.auth.getSession();
             if (session) {
                 currentUser = session.user;
-                const { data: profile } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
-                if (profile) currentUser.username = profile.username;
+                try {
+                    const { data: profile } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+                    if (profile) currentUser.username = profile.username;
+                    else currentUser.username = currentUser.email.split('@')[0];
+                } catch (e) { currentUser.username = currentUser.email.split('@')[0]; }
                 updateNavForUser();
+                // Load this user's published comics from Supabase
+                await loadUserComicsFromSupabase();
             }
+        }
+
+        async function loadUserComicsFromSupabase() {
+            if (!currentUser) return;
+            try {
+                const { data: sbComics } = await sb.from('comics')
+                    .select('*')
+                    .eq('author_id', currentUser.id)
+                    .eq('is_demo', false)
+                    .order('created_at', { ascending: false });
+
+                if (!sbComics || !sbComics.length) return;
+
+                for (const c of sbComics) {
+                    if (comics.find(x => x.id === c.id)) continue; // skip if already loaded
+                    // Load episodes
+                    const { data: eps } = await sb.from('episodes')
+                        .select('*').eq('comic_id', c.id).order('episode_number');
+                    const episodes = (eps || []).map(ep => ({
+                        title: ep.title,
+                        blocks: ep.content?.blocks || []
+                    }));
+                    comics.unshift({
+                        id: c.id, title: c.title, genre: c.genre,
+                        synopsis: c.synopsis, pi: 0, likes: c.likes || 0,
+                        badge: c.badge || 'new', author: c.author_name,
+                        isDemo: false, episodes, comments: []
+                    });
+                }
+                renderHome();
+            } catch (e) { console.warn('Could not load user comics from Supabase', e); }
         }
 
         // ── SUPABASE COMICS ───────────────────────────────────────────
         async function publishComicToSupabase(title, genre, synopsis, epTitle, blocks) {
-            if (!currentUser) { openAuth('signup'); return false; }
+            if (!currentUser) { openAuth('signup'); return null; }
             try {
+                const authorName = currentUser.username || currentUser.email.split('@')[0];
                 // Insert comic
                 const { data: comic, error: comicErr } = await sb.from('comics').insert({
                     title, genre, synopsis,
                     author_id: currentUser.id,
-                    author_name: currentUser.username || currentUser.email.split('@')[0],
+                    author_name: authorName,
                     likes: 0, badge: 'new', is_demo: false
                 }).select().single();
-                if (comicErr) { showToast('Error publishing: ' + comicErr.message); return false; }
+                if (comicErr) { showToast('Error publishing: ' + comicErr.message); return null; }
 
-                // Insert episode — save actual image URLs (Supabase Storage URLs are safe to store)
+                // Save blocks — keep Supabase URLs, drop base64
+                const savedBlocks = blocks.map(b => {
+                    if (b.type === 'image') {
+                        const imgUrl = b.image && b.image.startsWith('http') ? b.image : null;
+                        return { ...b, image: imgUrl };
+                    }
+                    return b;
+                });
+
                 await sb.from('episodes').insert({
                     comic_id: comic.id,
                     title: epTitle || 'Episode 1',
                     episode_number: 1,
-                    content: {
-                        blocks: blocks.map(b => {
-                            if (b.type === 'image') {
-                                // Only save if it's a Supabase URL (not base64)
-                                const imgUrl = b.image && b.image.startsWith('http') ? b.image : null;
-                                return { ...b, image: imgUrl };
-                            }
-                            return b;
-                        })
-                    }
+                    content: { blocks: savedBlocks }
                 });
 
-                showToast('Comic published to Afrotyunz!');
-                return true;
+                // Return comic data with blocks so we can display it locally immediately
+                return {
+                    id: comic.id,
+                    title, genre, synopsis,
+                    pi: 0, likes: 0, badge: 'new',
+                    author: authorName,
+                    isDemo: false,
+                    episodes: [{ title: epTitle || 'Episode 1', blocks: savedBlocks }],
+                    comments: []
+                };
             } catch (e) {
                 showToast('Error publishing comic');
-                return false;
+                return null;
             }
         }
 
@@ -3940,12 +3984,23 @@
             const genre = document.getElementById('c-genre').value;
             const epTitle = document.getElementById('c-ep-title').value || 'Episode 1';
             const fi = blockList.find(b => b.type === 'image' && b.image);
-            // Try Supabase first if logged in
             if (currentUser) {
-                await publishComicToSupabase(title, genre, document.getElementById('c-synopsis').value.trim(), epTitle, blockList);
+                // Publish to Supabase and use returned data (has real URLs)
+                const sbComic = await publishComicToSupabase(title, genre, document.getElementById('c-synopsis').value.trim(), epTitle, blockList);
+                if (sbComic) {
+                    comics.unshift(sbComic);
+                    document.getElementById('c-title').value = '';
+                    document.getElementById('c-synopsis').value = '';
+                    document.getElementById('c-ep-title').value = '';
+                    blockList = [{ id: 1, type: 'image', image: null }, { id: 2, type: 'dialogue', text: '' }, { id: 3, type: 'image', image: null }];
+                    renderCanvas(); checkPublish(); saveToStore();
+                    const t = document.getElementById('pub-success'); t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3500);
+                    showToast('Comic published!');
+                    return;
+                }
             }
-            // Always add locally too so it shows immediately
-            comics.unshift({ id: 'user-' + Date.now(), title, genre, pi: 0, likes: 0, badge: 'new', author: currentUser ? (currentUser.username || 'You') : 'You', coverImage: fi ? fi.image : null, episodes: [{ title: epTitle, blocks: [...blockList] }], comments: [] });
+            // Not logged in — save locally with base64 (won't survive reload)
+            comics.unshift({ id: 'user-' + Date.now(), title, genre, pi: 0, likes: 0, badge: 'new', author: 'You', coverImage: fi ? fi.image : null, episodes: [{ title: epTitle, blocks: [...blockList] }], comments: [] });
             document.getElementById('c-title').value = '';
             document.getElementById('c-synopsis').value = '';
             document.getElementById('c-ep-title').value = '';
