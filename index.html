@@ -3017,12 +3017,21 @@
                 }).select().single();
                 if (comicErr) { showToast('Error publishing: ' + comicErr.message); return false; }
 
-                // Insert episode
+                // Insert episode — save actual image URLs (Supabase Storage URLs are safe to store)
                 await sb.from('episodes').insert({
                     comic_id: comic.id,
                     title: epTitle || 'Episode 1',
                     episode_number: 1,
-                    content: { blocks: blocks.map(b => b.type === 'image' ? { ...b, image: b.image ? '[IMAGE]' : null } : b) }
+                    content: {
+                        blocks: blocks.map(b => {
+                            if (b.type === 'image') {
+                                // Only save if it's a Supabase URL (not base64)
+                                const imgUrl = b.image && b.image.startsWith('http') ? b.image : null;
+                                return { ...b, image: imgUrl };
+                            }
+                            return b;
+                        })
+                    }
                 });
 
                 showToast('Comic published to Afrotyunz!');
@@ -3458,10 +3467,28 @@
         }
 
         // ── OPEN READER ───────────────────────────────────────────────
-        function openReader(id) {
+        async function openReader(id) {
             currentComic = comics.find(c => c.id === id);
             if (!currentComic) return;
             currentEp = 0;
+            // Load real episodes from Supabase if not a demo comic
+            if (!currentComic.isDemo && !id.startsWith('user-')) {
+                try {
+                    const { data: eps } = await sb.from('episodes')
+                        .select('*').eq('comic_id', id).order('episode_number');
+                    if (eps && eps.length) {
+                        currentComic.episodes = eps.map(ep => ({
+                            title: ep.title,
+                            blocks: ep.content?.blocks || []
+                        }));
+                    }
+                    // Load comments from Supabase
+                    const dbComments = await loadCommentsFromSupabase(id);
+                    if (dbComments) {
+                        currentComic._dbComments = dbComments;
+                    }
+                } catch (e) { console.warn('Could not load from Supabase', e); }
+            }
             previousPage = document.querySelector('.page.active')?.id?.replace('page-', '') || 'home';
             document.getElementById('reader-title').textContent = currentComic.title;
             const demoBadge = currentComic.isDemo ? ' <span class="demo-badge">DEMO</span>' : '';
@@ -3661,6 +3688,11 @@
         // ── COMMENTS ──────────────────────────────────────────────────
         function renderComments() {
             const list = document.getElementById('comment-list');
+            // Use Supabase comments if available
+            if (currentComic._dbComments) {
+                renderDbComments(currentComic._dbComments);
+                return;
+            }
             if (!currentComic.comments.length) { list.innerHTML = '<div style="color:var(--muted);font-size:12px;padding:8px 0">No comments yet. Be the first!</div>'; return; }
             list.innerHTML = currentComic.comments.map(c => {
                 const [a, ...r] = c.split(': ');
