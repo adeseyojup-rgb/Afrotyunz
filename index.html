@@ -3788,11 +3788,16 @@
             ${b.image
                             ? `<img src="${b.image}" style="width:100%;display:block;" alt="panel"/>
                  <button class="block-btn del" style="margin:5px 8px;font-size:10px" onclick="clearImg(${b.id})">✕ Clear</button>`
-                            : `<div class="webtoon-placeholder" onclick="triggerImg(${b.id})">
-                  <div class="ph-icon">↑</div>
-                  <span class="ph-text">Click to Upload Image</span>
-                  <span class="ph-sub">JPG, PNG, WEBP — any height</span>
-                </div>`
+                            : b.uploading
+                                ? `<div class="webtoon-placeholder" style="cursor:default;">
+                    <div class="ph-icon">⏳</div>
+                    <span class="ph-text">Uploading to cloud…</span>
+                  </div>`
+                                : `<div class="webtoon-placeholder" onclick="triggerImg(${b.id})">
+                    <div class="ph-icon">↑</div>
+                    <span class="ph-text">${currentUser ? 'Click to Upload Image' : 'Log in to upload images'}</span>
+                    <span class="ph-sub">JPG, PNG, WEBP — any height</span>
+                  </div>`
                         }
             <input class="file-input" id="file-${b.id}" type="file" accept="image/*" onchange="handleImg(event,${b.id})"/>
           </div>`;
@@ -3816,7 +3821,36 @@
         function removeBlock(id) { if (blockList.length <= 1) return; blockList = blockList.filter(b => b.id !== id); renderCanvas(); }
         function moveBlock(id, dir) { const i = blockList.findIndex(b => b.id === id), ni = i + dir; if (ni < 0 || ni >= blockList.length) return; const a = [...blockList];[a[i], a[ni]] = [a[ni], a[i]]; blockList = a; renderCanvas(); }
         function triggerImg(id) { const f = document.getElementById('file-' + id); if (f) f.click(); }
-        function handleImg(e, id) { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = ev => { blockList = blockList.map(b => b.id === id ? { ...b, image: ev.target.result } : b); renderCanvas(); }; r.readAsDataURL(f); }
+
+        async function handleImg(e, id) {
+            const file = e.target.files[0];
+            if (!file) return;
+            // Show loading state
+            blockList = blockList.map(b => b.id === id ? { ...b, uploading: true } : b);
+            renderCanvas();
+            if (currentUser) {
+                // Upload to Supabase Storage
+                try {
+                    const ext = file.name.split('.').pop();
+                    const path = `panels/${currentUser.id}/${Date.now()}.${ext}`;
+                    const { data, error } = await sb.storage.from('comic-panels').upload(path, file, { upsert: true });
+                    if (!error) {
+                        const { data: urlData } = sb.storage.from('comic-panels').getPublicUrl(path);
+                        blockList = blockList.map(b => b.id === id ? { ...b, image: urlData.publicUrl, uploading: false } : b);
+                        renderCanvas();
+                        return;
+                    }
+                } catch (e) { console.warn('Storage upload failed, falling back to base64'); }
+            }
+            // Fallback to base64 if not logged in or upload failed
+            const r = new FileReader();
+            r.onload = ev => {
+                blockList = blockList.map(b => b.id === id ? { ...b, image: ev.target.result, uploading: false } : b);
+                renderCanvas();
+            };
+            r.readAsDataURL(file);
+        }
+
         function clearImg(id) { blockList = blockList.map(b => b.id === id ? { ...b, image: null } : b); renderCanvas(); }
         function updText(id, v) { blockList = blockList.map(b => b.id === id ? { ...b, text: v } : b); }
         function redrawPanel(id) { blockList = blockList.map(b => b.id === id ? { ...b, saved: false, image: null } : b); renderCanvas(); setTimeout(() => initBlockDraw(id), 100); }
@@ -3842,7 +3876,31 @@
         function setBlockColor(id, c) { if (blockDrawState[id]) blockDrawState[id].color = c; }
         function setBlockSize(id, s) { if (blockDrawState[id]) blockDrawState[id].size = parseInt(s); }
         function clearBlockDraw(id) { const c = document.getElementById('bcanvas-' + id); if (!c) return; const ctx = c.getContext('2d'); ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, c.width, c.height); }
-        function saveBlockDraw(id) { const c = document.getElementById('bcanvas-' + id); if (!c) return; const data = c.toDataURL('image/png'); blockList = blockList.map(b => b.id === id ? { ...b, image: data, saved: true } : b); renderCanvas(); showToast('Drawing saved!'); }
+        async function saveBlockDraw(id) {
+            const c = document.getElementById('bcanvas-' + id);
+            if (!c) return;
+            const dataUrl = c.toDataURL('image/png');
+            if (currentUser) {
+                try {
+                    // Convert base64 to blob
+                    const res = await fetch(dataUrl);
+                    const blob = await res.blob();
+                    const path = `panels/${currentUser.id}/drawing-${Date.now()}.png`;
+                    const { data, error } = await sb.storage.from('comic-panels').upload(path, blob, { upsert: true, contentType: 'image/png' });
+                    if (!error) {
+                        const { data: urlData } = sb.storage.from('comic-panels').getPublicUrl(path);
+                        blockList = blockList.map(b => b.id === id ? { ...b, image: urlData.publicUrl, saved: true } : b);
+                        renderCanvas();
+                        showToast('Drawing saved to cloud!');
+                        return;
+                    }
+                } catch (e) { console.warn('Drawing upload failed, saving locally'); }
+            }
+            // Fallback local
+            blockList = blockList.map(b => b.id === id ? { ...b, image: dataUrl, saved: true } : b);
+            renderCanvas();
+            showToast('Drawing saved!');
+        }
 
         async function publishComic() {
             const title = document.getElementById('c-title').value.trim();
