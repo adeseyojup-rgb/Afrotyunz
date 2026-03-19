@@ -3901,24 +3901,35 @@
         async function handleImg(e, id) {
             const file = e.target.files[0];
             if (!file) return;
-            // Show loading state
             blockList = blockList.map(b => b.id === id ? { ...b, uploading: true } : b);
             renderCanvas();
+            showToast('Uploading image…');
             if (currentUser) {
-                // Upload to Supabase Storage
                 try {
-                    const ext = file.name.split('.').pop();
+                    const ext = file.name.split('.').pop() || 'jpg';
                     const path = `panels/${currentUser.id}/${Date.now()}.${ext}`;
-                    const { data, error } = await sb.storage.from('comic-panels').upload(path, file, { upsert: true });
-                    if (!error) {
+                    const { data, error } = await sb.storage.from('comic-panels').upload(path, file, {
+                        upsert: true,
+                        contentType: file.type || 'image/jpeg'
+                    });
+                    if (error) {
+                        showToast('Upload failed: ' + error.message);
+                        console.error('Storage error:', error);
+                    } else {
                         const { data: urlData } = sb.storage.from('comic-panels').getPublicUrl(path);
                         blockList = blockList.map(b => b.id === id ? { ...b, image: urlData.publicUrl, uploading: false } : b);
                         renderCanvas();
+                        showToast('Image uploaded successfully!');
                         return;
                     }
-                } catch (e) { console.warn('Storage upload failed, falling back to base64'); }
+                } catch (err) {
+                    showToast('Upload error: ' + err.message);
+                    console.error('Upload exception:', err);
+                }
+            } else {
+                showToast('Log in to save images permanently');
             }
-            // Fallback to base64 if not logged in or upload failed
+            // Fallback to base64
             const r = new FileReader();
             r.onload = ev => {
                 blockList = blockList.map(b => b.id === id ? { ...b, image: ev.target.result, uploading: false } : b);
