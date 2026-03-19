@@ -2886,6 +2886,7 @@
 
         // ── AUTH FUNCTIONS ────────────────────────────────────────────
         function openAuth(mode) {
+            authMode = mode;
             switchAuthTab(mode);
             document.getElementById('auth-modal').classList.add('open');
             document.getElementById('auth-error').style.display = 'none';
@@ -2937,12 +2938,15 @@
                     }
                 } else {
                     const { data, error } = await sb.auth.signInWithPassword({ email, password });
-                    if (error) { showAuthError(error.message); return; }
+                    if (error) { showAuthError(error.message.includes('Invalid') ? 'Incorrect email or password' : error.message); return; }
                     if (data.user) {
                         currentUser = data.user;
-                        // Fetch profile
-                        const { data: profile } = await sb.from('profiles').select('*').eq('id', data.user.id).single();
-                        if (profile) currentUser.username = profile.username;
+                        // Fetch profile safely
+                        try {
+                            const { data: profile } = await sb.from('profiles').select('*').eq('id', data.user.id).single();
+                            if (profile) currentUser.username = profile.username;
+                            else currentUser.username = data.user.email.split('@')[0];
+                        } catch (e) { currentUser.username = data.user.email.split('@')[0]; }
                         onAuthSuccess();
                     }
                 }
