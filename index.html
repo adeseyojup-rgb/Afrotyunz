@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Afrotyunz</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&display=swap"
         rel="stylesheet" />
@@ -2179,6 +2180,111 @@
             display: none;
         }
 
+        .auth-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .auth-modal.open {
+            display: flex;
+        }
+
+        .auth-box {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .auth-logo {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 22px;
+            letter-spacing: 2px;
+            color: var(--gold);
+            text-align: center;
+            margin-bottom: 4px;
+        }
+
+        .auth-sub {
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 24px;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 24px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 9px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            transition: all 0.2s;
+        }
+
+        .auth-tab.active {
+            background: var(--gold);
+            color: #1a1208;
+        }
+
+        .auth-error {
+            background: rgba(192, 57, 43, 0.12);
+            border: 1px solid var(--red);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 12px;
+            color: var(--red);
+            margin-bottom: 12px;
+            display: none;
+        }
+
+        .auth-success {
+            background: rgba(45, 138, 110, 0.12);
+            border: 1px solid var(--green);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 12px;
+            color: var(--green);
+            margin-bottom: 12px;
+            display: none;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 800;
+            color: #1a1208;
+            cursor: pointer;
+            border: 2px solid var(--border);
+            flex-shrink: 0;
+        }
+
         .demo-badge {
             display: inline-block;
             padding: 2px 8px;
@@ -2300,8 +2406,14 @@
             <button class="btn-icon" onclick="toggleMode()" id="mode-btn" title="Toggle theme">🌙</button>
             <button class="btn-icon" onclick="toggleNotif()">🔔<span class="notif-badge"
                     id="notif-badge">3</span></button>
-            <button class="btn-login" onclick="goTo('profile')">👤 Profile</button>
-            <button class="btn-start" onclick="goTo('browse')">Start Reading</button>
+            <div id="nav-user-area">
+                <button class="btn-login" onclick="openAuth('login')">Log In</button>
+                <button class="btn-start" onclick="openAuth('signup')">Sign Up Free</button>
+            </div>
+            <div id="nav-logged-in" style="display:none;align-items:center;gap:8px;">
+                <div class="user-avatar" id="user-avatar" onclick="goTo('profile')">?</div>
+                <button class="btn-login" onclick="signOut()">Sign Out</button>
+            </div>
         </div>
     </nav>
 
@@ -2736,8 +2848,211 @@
         </div>
     </div>
 
+    <!-- AUTH MODAL -->
+    <div class="auth-modal" id="auth-modal">
+        <div class="auth-box">
+            <div class="auth-logo">Afrotyunz</div>
+            <div class="auth-sub" id="auth-sub">Join the home of African comics</div>
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Log In</button>
+                <button class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">Sign Up</button>
+            </div>
+            <div class="auth-error" id="auth-error"></div>
+            <div class="auth-success" id="auth-success"></div>
+            <div id="auth-signup-fields" style="display:none;">
+                <label class="form-label">Username</label>
+                <input class="form-input" id="auth-username" placeholder="e.g. comicfan123" />
+            </div>
+            <label class="form-label">Email</label>
+            <input class="form-input" id="auth-email" type="email" placeholder="you@example.com" />
+            <label class="form-label">Password</label>
+            <input class="form-input" id="auth-password" type="password" placeholder="••••••••" />
+            <button class="btn-full" id="auth-submit-btn" onclick="submitAuth()">Log In</button>
+            <div style="text-align:center;margin-top:14px;">
+                <button onclick="closeAuth()"
+                    style="background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // ── THEMES ────────────────────────────────────────────────────
+        // ── SUPABASE INIT ─────────────────────────────────────────────
+        const SUPABASE_URL = 'https://fjeqjmwfsrmvrxfrexee.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_zskPpgbpCB2kfSMET6f8ew_inRb83c6';
+        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let currentUser = null;
+        let authMode = 'login';
+
+        // ── AUTH FUNCTIONS ────────────────────────────────────────────
+        function openAuth(mode) {
+            switchAuthTab(mode);
+            document.getElementById('auth-modal').classList.add('open');
+            document.getElementById('auth-error').style.display = 'none';
+            document.getElementById('auth-success').style.display = 'none';
+            document.getElementById('auth-email').value = '';
+            document.getElementById('auth-password').value = '';
+            document.getElementById('auth-username').value = '';
+        }
+
+        function closeAuth() {
+            document.getElementById('auth-modal').classList.remove('open');
+        }
+
+        function switchAuthTab(mode) {
+            authMode = mode;
+            document.getElementById('tab-login').classList.toggle('active', mode === 'login');
+            document.getElementById('tab-signup').classList.toggle('active', mode === 'signup');
+            document.getElementById('auth-submit-btn').textContent = mode === 'login' ? 'Log In' : 'Create Account';
+            document.getElementById('auth-sub').textContent = mode === 'login' ? 'Welcome back to Afrotyunz' : 'Join the home of African comics';
+            document.getElementById('auth-signup-fields').style.display = mode === 'signup' ? 'block' : 'none';
+            document.getElementById('auth-error').style.display = 'none';
+        }
+
+        async function submitAuth() {
+            const email = document.getElementById('auth-email').value.trim();
+            const password = document.getElementById('auth-password').value.trim();
+            const username = document.getElementById('auth-username').value.trim();
+            const errEl = document.getElementById('auth-error');
+            const sucEl = document.getElementById('auth-success');
+            const btn = document.getElementById('auth-submit-btn');
+
+            if (!email || !password) { showAuthError('Please fill in all fields'); return; }
+            if (authMode === 'signup' && !username) { showAuthError('Please enter a username'); return; }
+
+            btn.textContent = 'Please wait…';
+            btn.disabled = true;
+            errEl.style.display = 'none';
+
+            try {
+                if (authMode === 'signup') {
+                    const { data, error } = await sb.auth.signUp({ email, password });
+                    if (error) { showAuthError(error.message); return; }
+                    if (data.user) {
+                        // Create profile
+                        await sb.from('profiles').insert({ id: data.user.id, username: username || email.split('@')[0] });
+                        currentUser = data.user;
+                        currentUser.username = username || email.split('@')[0];
+                        onAuthSuccess();
+                    }
+                } else {
+                    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+                    if (error) { showAuthError(error.message); return; }
+                    if (data.user) {
+                        currentUser = data.user;
+                        // Fetch profile
+                        const { data: profile } = await sb.from('profiles').select('*').eq('id', data.user.id).single();
+                        if (profile) currentUser.username = profile.username;
+                        onAuthSuccess();
+                    }
+                }
+            } catch (e) {
+                showAuthError('Something went wrong. Please try again.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = authMode === 'login' ? 'Log In' : 'Create Account';
+            }
+        }
+
+        function showAuthError(msg) {
+            const el = document.getElementById('auth-error');
+            el.textContent = msg;
+            el.style.display = 'block';
+        }
+
+        function onAuthSuccess() {
+            closeAuth();
+            updateNavForUser();
+            showToast('Welcome to Afrotyunz! 🎉');
+            renderHome();
+        }
+
+        async function signOut() {
+            await sb.auth.signOut();
+            currentUser = null;
+            updateNavForUser();
+            showToast('Signed out successfully');
+            renderHome();
+        }
+
+        function updateNavForUser() {
+            const loggedIn = document.getElementById('nav-logged-in');
+            const loggedOut = document.getElementById('nav-user-area');
+            if (currentUser) {
+                loggedIn.style.display = 'flex';
+                loggedOut.style.display = 'none';
+                const initials = (currentUser.username || currentUser.email || '?')[0].toUpperCase();
+                document.getElementById('user-avatar').textContent = initials;
+            } else {
+                loggedIn.style.display = 'none';
+                loggedOut.style.display = 'flex';
+            }
+        }
+
+        // Check session on load
+        async function checkSession() {
+            const { data: { session } } = await sb.auth.getSession();
+            if (session) {
+                currentUser = session.user;
+                const { data: profile } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+                if (profile) currentUser.username = profile.username;
+                updateNavForUser();
+            }
+        }
+
+        // ── SUPABASE COMICS ───────────────────────────────────────────
+        async function publishComicToSupabase(title, genre, synopsis, epTitle, blocks) {
+            if (!currentUser) { openAuth('signup'); return false; }
+            try {
+                // Insert comic
+                const { data: comic, error: comicErr } = await sb.from('comics').insert({
+                    title, genre, synopsis,
+                    author_id: currentUser.id,
+                    author_name: currentUser.username || currentUser.email.split('@')[0],
+                    likes: 0, badge: 'new', is_demo: false
+                }).select().single();
+                if (comicErr) { showToast('Error publishing: ' + comicErr.message); return false; }
+
+                // Insert episode
+                await sb.from('episodes').insert({
+                    comic_id: comic.id,
+                    title: epTitle || 'Episode 1',
+                    episode_number: 1,
+                    content: { blocks: blocks.map(b => b.type === 'image' ? { ...b, image: b.image ? '[IMAGE]' : null } : b) }
+                });
+
+                showToast('Comic published to Afrotyunz!');
+                return true;
+            } catch (e) {
+                showToast('Error publishing comic');
+                return false;
+            }
+        }
+
+        async function postCommentToSupabase(comicId, text) {
+            if (!currentUser) { openAuth('login'); return false; }
+            try {
+                const { error } = await sb.from('comments').insert({
+                    comic_id: comicId,
+                    user_id: currentUser.id,
+                    username: currentUser.username || currentUser.email.split('@')[0],
+                    content: text
+                });
+                if (error) { showToast('Error posting comment'); return false; }
+                return true;
+            } catch (e) { return false; }
+        }
+
+        async function loadCommentsFromSupabase(comicId) {
+            try {
+                const { data, error } = await sb.from('comments')
+                    .select('*').eq('comic_id', comicId).order('created_at', { ascending: false });
+                if (error || !data) return null;
+                return data;
+            } catch (e) { return null; }
+        }
+
+        // ── THEMES ────────────────────────────────────────────────────────
         const THEMES = [
             { name: 'Warm & Earthy', vars: { '--bg': '#1a1208', '--bg2': '#221a0e', '--bg3': '#2e2010', '--gold': '#e8a045', '--red': '#c0392b', '--green': '#2d8a6e', '--text': '#f5ede0', '--muted': '#8a7560', '--border': '#3d2e1a' } },
             { name: 'Midnight Africa', vars: { '--bg': '#060b1f', '--bg2': '#0d1430', '--bg3': '#141d40', '--gold': '#f0c040', '--red': '#e63946', '--green': '#2ec4b6', '--text': '#e8eeff', '--muted': '#6070a0', '--border': '#1e2a5a' } },
@@ -2768,6 +3083,17 @@
             isDark = !isDark;
             document.body.classList.toggle('light', !isDark);
             document.getElementById('mode-btn').textContent = isDark ? '🌙' : '☀️';
+            if (!isDark) {
+                // Light mode — override theme variables directly on root
+                const lightVars = {
+                    '--bg': '#fdf6ec', '--bg2': '#ffffff', '--bg3': '#f5ede0',
+                    '--text': '#2a1a08', '--muted': '#7a6550', '--border': '#e0d0bc'
+                };
+                Object.entries(lightVars).forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
+            } else {
+                // Dark mode — reapply current theme
+                applyTheme(currentTheme);
+            }
         }
 
         // ── PALETTES ──────────────────────────────────────────────────
@@ -3338,12 +3664,35 @@
             }).join('');
         }
 
-        function postComment() {
+        async function postComment() {
             const inp = document.getElementById('comment-input');
             if (!inp.value.trim() || !currentComic) return;
-            currentComic.comments.unshift('You: ' + inp.value.trim());
+            const text = inp.value.trim();
+            if (currentUser && !currentComic.isDemo) {
+                const ok = await postCommentToSupabase(currentComic.id, text);
+                if (ok) {
+                    inp.value = '';
+                    // Reload comments from Supabase
+                    const dbComments = await loadCommentsFromSupabase(currentComic.id);
+                    if (dbComments) {
+                        renderDbComments(dbComments);
+                        return;
+                    }
+                }
+            }
+            // Fallback to local
+            const author = currentUser ? (currentUser.username || 'You') : 'You';
+            currentComic.comments.unshift(author + ': ' + text);
             inp.value = '';
             renderComments();
+        }
+
+        function renderDbComments(dbComments) {
+            const list = document.getElementById('comment-list');
+            if (!dbComments.length) { list.innerHTML = '<div style="color:var(--muted);font-size:12px;padding:8px 0">No comments yet. Be the first!</div>'; return; }
+            list.innerHTML = dbComments.map(c =>
+                `<div class="comment"><div class="comment-author">${c.username || 'User'}</div><div class="comment-text">${c.content}</div></div>`
+            ).join('');
         }
 
         // ── TRENDING ──────────────────────────────────────────────────
@@ -3491,13 +3840,18 @@
         function clearBlockDraw(id) { const c = document.getElementById('bcanvas-' + id); if (!c) return; const ctx = c.getContext('2d'); ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, c.width, c.height); }
         function saveBlockDraw(id) { const c = document.getElementById('bcanvas-' + id); if (!c) return; const data = c.toDataURL('image/png'); blockList = blockList.map(b => b.id === id ? { ...b, image: data, saved: true } : b); renderCanvas(); showToast('Drawing saved!'); }
 
-        function publishComic() {
+        async function publishComic() {
             const title = document.getElementById('c-title').value.trim();
             if (!title) return;
             const genre = document.getElementById('c-genre').value;
             const epTitle = document.getElementById('c-ep-title').value || 'Episode 1';
             const fi = blockList.find(b => b.type === 'image' && b.image);
-            comics.unshift({ id: 'user-' + Date.now(), title, genre, pi: 0, likes: 0, badge: 'new', author: 'You', coverImage: fi ? fi.image : null, episodes: [{ title: epTitle, blocks: [...blockList] }], comments: [] });
+            // Try Supabase first if logged in
+            if (currentUser) {
+                await publishComicToSupabase(title, genre, document.getElementById('c-synopsis').value.trim(), epTitle, blockList);
+            }
+            // Always add locally too so it shows immediately
+            comics.unshift({ id: 'user-' + Date.now(), title, genre, pi: 0, likes: 0, badge: 'new', author: currentUser ? (currentUser.username || 'You') : 'You', coverImage: fi ? fi.image : null, episodes: [{ title: epTitle, blocks: [...blockList] }], comments: [] });
             document.getElementById('c-title').value = '';
             document.getElementById('c-synopsis').value = '';
             document.getElementById('c-ep-title').value = '';
@@ -3565,6 +3919,7 @@
         loadFromStore();
         renderNotifs();
         renderHome();
+        checkSession();
         renderCanvas();
         renderStars(0);
     </script>
