@@ -3908,7 +3908,7 @@
                 try {
                     const ext = file.name.split('.').pop() || 'jpg';
                     const path = `panels/${currentUser.id}/${Date.now()}.${ext}`;
-                    const { data, error } = await sb.storage.from('comic-panels').upload(path, file, {
+                    const { data, error } = await sb.storage.from('comic panels').upload(path, file, {
                         upsert: true,
                         contentType: file.type || 'image/jpeg'
                     });
@@ -3916,7 +3916,7 @@
                         showToast('Upload failed: ' + error.message);
                         console.error('Storage error:', error);
                     } else {
-                        const { data: urlData } = sb.storage.from('comic-panels').getPublicUrl(path);
+                        const { data: urlData } = sb.storage.from('comic panels').getPublicUrl(path);
                         blockList = blockList.map(b => b.id === id ? { ...b, image: urlData.publicUrl, uploading: false } : b);
                         renderCanvas();
                         showToast('Image uploaded successfully!');
@@ -3973,9 +3973,9 @@
                     const res = await fetch(dataUrl);
                     const blob = await res.blob();
                     const path = `panels/${currentUser.id}/drawing-${Date.now()}.png`;
-                    const { data, error } = await sb.storage.from('comic-panels').upload(path, blob, { upsert: true, contentType: 'image/png' });
+                    const { data, error } = await sb.storage.from('comic panels').upload(path, blob, { upsert: true, contentType: 'image/png' });
                     if (!error) {
-                        const { data: urlData } = sb.storage.from('comic-panels').getPublicUrl(path);
+                        const { data: urlData } = sb.storage.from('comic panels').getPublicUrl(path);
                         blockList = blockList.map(b => b.id === id ? { ...b, image: urlData.publicUrl, saved: true } : b);
                         renderCanvas();
                         showToast('Drawing saved to cloud!');
