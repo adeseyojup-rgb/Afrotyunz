@@ -3516,7 +3516,8 @@
             if (!currentComic) return;
             currentEp = 0;
             // Load real episodes from Supabase if not a demo comic
-            if (!currentComic.isDemo && !id.startsWith('user-')) {
+            const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+            if (!currentComic.isDemo && isUUID) {
                 try {
                     const { data: eps } = await sb.from('episodes')
                         .select('*').eq('comic_id', id).order('episode_number');
@@ -4011,8 +4012,9 @@
                     return;
                 }
             }
-            // Not logged in — save locally with base64 (won't survive reload)
-            comics.unshift({ id: 'user-' + Date.now(), title, genre, pi: 0, likes: 0, badge: 'new', author: 'You', coverImage: fi ? fi.image : null, episodes: [{ title: epTitle, blocks: [...blockList] }], comments: [] });
+            // Not logged in — save locally with current blocks (base64, won't survive reload)
+            const localBlocks = blockList.map(b => ({ ...b }));
+            comics.unshift({ id: 'user-' + Date.now(), title, genre, pi: 0, likes: 0, badge: 'new', author: 'You', coverImage: fi ? fi.image : null, episodes: [{ title: epTitle || 'Episode 1', blocks: localBlocks }], comments: [] });
             document.getElementById('c-title').value = '';
             document.getElementById('c-synopsis').value = '';
             document.getElementById('c-ep-title').value = '';
