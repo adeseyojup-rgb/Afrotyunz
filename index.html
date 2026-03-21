@@ -2585,6 +2585,8 @@
                 <button class="dl-btn" onclick="downloadComic()">⬇️ Download</button>
                 <button class="dl-btn" id="edit-btn" onclick="editComic()"
                     style="display:none;border-color:var(--gold);color:var(--gold)">✏️ Edit Demo</button>
+                <button class="dl-btn" id="delete-btn" onclick="deleteComic()"
+                    style="display:none;border-color:var(--red);color:var(--red)">🗑️ Delete</button>
             </div>
             <div class="comments-section">
                 <div class="comments-title">💬 Comments</div>
@@ -3575,6 +3577,12 @@
             const saved = lib.includes(id);
             document.getElementById('save-label').textContent = saved ? 'Saved' : 'Save';
             document.getElementById('save-btn').classList.toggle('saved', saved);
+            // Show delete button only for comics owned by current user
+            const isOwner = currentUser && (
+                currentComic.author === (currentUser.username || currentUser.email?.split('@')[0]) ||
+                currentComic.author_id === currentUser.id
+            );
+            document.getElementById('delete-btn').style.display = (isOwner && !currentComic.isDemo) ? 'flex' : 'none';
             renderEpTabs(); renderStrip(); renderComments();
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-links button, .mob-btn').forEach(b => b.classList.remove('active'));
@@ -3723,6 +3731,27 @@
         }
 
         // ── LIKES / SAVE / DOWNLOAD ───────────────────────────────────
+        async function deleteComic() {
+            if (!currentComic || !currentUser) return;
+            if (!confirm('Delete "' + currentComic.title + '"? This cannot be undone.')) return;
+            try {
+                // Delete from Supabase if it has a UUID id
+                const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(currentComic.id);
+                if (isUUID) {
+                    const { error } = await sb.from('comics').delete().eq('id', currentComic.id);
+                    if (error) { showToast('Error deleting: ' + error.message); return; }
+                }
+                // Remove from local array
+                comics = comics.filter(c => c.id !== currentComic.id);
+                currentComic = null;
+                showToast('Comic deleted');
+                goBack();
+                renderHome();
+            } catch (e) {
+                showToast('Error deleting comic');
+            }
+        }
+
         function toggleLike() {
             if (!currentComic) return;
             likedComics[currentComic.id] = !likedComics[currentComic.id];
