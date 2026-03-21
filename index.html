@@ -3898,40 +3898,37 @@
         function moveBlock(id, dir) { const i = blockList.findIndex(b => b.id === id), ni = i + dir; if (ni < 0 || ni >= blockList.length) return; const a = [...blockList];[a[i], a[ni]] = [a[ni], a[i]]; blockList = a; renderCanvas(); }
         function triggerImg(id) { const f = document.getElementById('file-' + id); if (f) f.click(); }
 
+        const CLOUDINARY_CLOUD = 'duy8v3edi';
+        const CLOUDINARY_PRESET = 'afrotyunz';
+
         async function handleImg(e, id) {
             const file = e.target.files[0];
             if (!file) return;
             blockList = blockList.map(b => b.id === id ? { ...b, uploading: true } : b);
             renderCanvas();
             showToast('Uploading image…');
-            if (currentUser) {
-                try {
-                    // Normalize extension — always use jpg for safety
-                    const mimeToExt = { 'image/jpeg': 'jpg', 'image/jpg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' };
-                    const ext = mimeToExt[file.type] || 'jpg';
-                    const path = `panels/${currentUser.id}/${Date.now()}.${ext}`;
-                    // Convert to blob with correct mime type
-                    const blob = new Blob([await file.arrayBuffer()], { type: mimeToExt[file.type] ? file.type : 'image/jpeg' });
-                    const { data, error } = await sb.storage.from('comic panels').upload(path, blob, {
-                        upsert: true,
-                        contentType: mimeToExt[file.type] ? file.type : 'image/jpeg'
-                    });
-                    if (error) {
-                        showToast('Upload failed: ' + error.message);
-                        console.error('Storage error:', error);
-                    } else {
-                        const { data: urlData } = sb.storage.from('comic panels').getPublicUrl(path);
-                        blockList = blockList.map(b => b.id === id ? { ...b, image: urlData.publicUrl, uploading: false } : b);
-                        renderCanvas();
-                        showToast('Image uploaded successfully!');
-                        return;
-                    }
-                } catch (err) {
-                    showToast('Upload error: ' + err.message);
-                    console.error('Upload exception:', err);
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload_preset', CLOUDINARY_PRESET);
+                formData.append('cloud_name', CLOUDINARY_CLOUD);
+                const res = await fetch(
+                    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,
+                    { method: 'POST', body: formData }
+                );
+                const data = await res.json();
+                if (data.secure_url) {
+                    blockList = blockList.map(b => b.id === id ? { ...b, image: data.secure_url, uploading: false } : b);
+                    renderCanvas();
+                    showToast('Image uploaded successfully!');
+                    return;
+                } else {
+                    showToast('Upload failed: ' + (data.error?.message || 'Unknown error'));
+                    console.error('Cloudinary error:', data);
                 }
-            } else {
-                showToast('Log in to save images permanently');
+            } catch (err) {
+                showToast('Upload error: ' + err.message);
+                console.error('Upload exception:', err);
             }
             // Fallback to base64
             const r = new FileReader();
