@@ -3906,11 +3906,15 @@
             showToast('Uploading image…');
             if (currentUser) {
                 try {
-                    const ext = file.name.split('.').pop() || 'jpg';
+                    // Normalize extension — always use jpg for safety
+                    const mimeToExt = { 'image/jpeg': 'jpg', 'image/jpg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' };
+                    const ext = mimeToExt[file.type] || 'jpg';
                     const path = `panels/${currentUser.id}/${Date.now()}.${ext}`;
-                    const { data, error } = await sb.storage.from('comic panels').upload(path, file, {
+                    // Convert to blob with correct mime type
+                    const blob = new Blob([await file.arrayBuffer()], { type: mimeToExt[file.type] ? file.type : 'image/jpeg' });
+                    const { data, error } = await sb.storage.from('comic panels').upload(path, blob, {
                         upsert: true,
-                        contentType: file.type || 'image/jpeg'
+                        contentType: mimeToExt[file.type] ? file.type : 'image/jpeg'
                     });
                     if (error) {
                         showToast('Upload failed: ' + error.message);
