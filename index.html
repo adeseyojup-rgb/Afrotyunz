@@ -2591,8 +2591,9 @@
             <div class="comments-section">
                 <div class="comments-title">💬 Comments</div>
                 <div class="comment-row">
-                    <input class="comment-input" id="comment-input" placeholder="Write a comment…"
-                        onkeydown="if(event.key==='Enter')postComment()" />
+                    <input class="comment-input" id="comment-input" placeholder="Log in to write a comment…"
+                        onkeydown="if(event.key==='Enter')postComment()"
+                        onfocus="if(!currentUser){openAuth('signup');this.blur();}" />
                     <button class="btn-comment" onclick="postComment()">Post</button>
                 </div>
                 <div class="comment-list" id="comment-list"></div>
@@ -2880,6 +2881,7 @@
     <script>
         // ── SUPABASE INIT ─────────────────────────────────────────────
         const SUPABASE_URL = 'https://fjeqjmwfsrmvrxfrexee.supabase.co';
+        const ADMIN_EMAIL = 'adeseyojup@gmail.com'; // Only admin can delete all comics
         const SUPABASE_KEY = 'sb_publishable_zskPpgbpCB2kfSMET6f8ew_inRb83c6';
         const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -3026,11 +3028,14 @@
         }
 
         async function loadUserComicsFromSupabase() {
-            if (!currentUser) return;
+            // Load ALL comics from Supabase — not just the current user's
+            await loadAllComicsFromSupabase();
+        }
+
+        async function loadAllComicsFromSupabase() {
             try {
                 const { data: sbComics } = await sb.from('comics')
                     .select('*')
-                    .eq('author_id', currentUser.id)
                     .eq('is_demo', false)
                     .order('created_at', { ascending: false });
 
@@ -3038,7 +3043,6 @@
 
                 for (const c of sbComics) {
                     if (comics.find(x => x.id === c.id)) continue; // skip if already loaded
-                    // Load episodes
                     const { data: eps } = await sb.from('episodes')
                         .select('*').eq('comic_id', c.id).order('episode_number');
                     const episodes = (eps || []).map(ep => ({
@@ -3049,11 +3053,15 @@
                         id: c.id, title: c.title, genre: c.genre,
                         synopsis: c.synopsis, pi: 0, likes: c.likes || 0,
                         badge: c.badge || 'new', author: c.author_name,
+                        author_id: c.author_id,
                         isDemo: false, episodes, comments: []
                     });
                 }
                 renderHome();
-            } catch (e) { console.warn('Could not load user comics from Supabase', e); }
+                // Also refresh browse if on browse page
+                const activePage = document.querySelector('.page.active')?.id?.replace('page-', '');
+                if (activePage === 'browse') renderBrowse('All');
+            } catch (e) { console.warn('Could not load comics from Supabase', e); }
         }
 
         // ── SUPABASE COMICS ───────────────────────────────────────────
@@ -3566,7 +3574,9 @@
             const synopsisEl = document.getElementById('reader-synopsis');
             if (currentComic.synopsis) { synopsisEl.textContent = currentComic.synopsis; synopsisEl.style.display = 'block'; }
             else { synopsisEl.style.display = 'none'; }
-            document.getElementById('edit-btn').style.display = currentComic.isDemo ? 'flex' : 'none';
+            // Show edit for demo comics OR if admin
+            const showEdit = currentComic.isDemo || (currentUser && currentUser.email === ADMIN_EMAIL);
+            document.getElementById('edit-btn').style.display = showEdit ? 'flex' : 'none';
             document.getElementById('like-count').textContent = fmt(currentComic.likes);
             document.getElementById('like-btn').classList.toggle('liked', !!likedComics[id]);
             const ur = userRatings[id] || 0;
@@ -3577,12 +3587,13 @@
             const saved = lib.includes(id);
             document.getElementById('save-label').textContent = saved ? 'Saved' : 'Save';
             document.getElementById('save-btn').classList.toggle('saved', saved);
-            // Show delete button only for comics owned by current user
+            // Show delete button for own comics OR if admin
+            const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
             const isOwner = currentUser && (
                 currentComic.author === (currentUser.username || currentUser.email?.split('@')[0]) ||
                 currentComic.author_id === currentUser.id
             );
-            document.getElementById('delete-btn').style.display = (isOwner && !currentComic.isDemo) ? 'flex' : 'none';
+            document.getElementById('delete-btn').style.display = (isOwner || isAdmin) ? 'flex' : 'none';
             renderEpTabs(); renderStrip(); renderComments();
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-links button, .mob-btn').forEach(b => b.classList.remove('active'));
@@ -3594,7 +3605,9 @@
         let editingComic = null;
 
         function editComic() {
-            if (!currentComic || !currentComic.isDemo) return;
+            if (!currentComic) return;
+            const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
+            if (!currentComic.isDemo && !isAdmin) return;
             editingComic = currentComic;
             document.getElementById('edit-title').value = currentComic.title;
             document.getElementById('edit-synopsis').value = currentComic.synopsis || '';
@@ -3660,7 +3673,7 @@
             renderEditEpisodes();
         }
 
-        function saveEditedComic() {
+        async function saveEditedComic() {
             if (!editingComic) return;
             editingComic.title = document.getElementById('edit-title').value.trim() || editingComic.title;
             editingComic.synopsis = document.getElementById('edit-synopsis').value.trim();
@@ -3670,11 +3683,22 @@
             const idx = comics.findIndex(c => c.id === editingComic.id);
             if (idx !== -1) comics[idx] = { ...editingComic };
             currentComic = comics[idx];
+            // Save to Supabase if UUID-based comic
+            const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(editingComic.id);
+            if (isUUID) {
+                await sb.from('comics').update({
+                    title: editingComic.title,
+                    synopsis: editingComic.synopsis,
+                    genre: editingComic.genre,
+                    author_name: editingComic.author
+                }).eq('id', editingComic.id);
+            }
             closeEditModal();
             // Refresh reader
             document.getElementById('reader-title').textContent = currentComic.title;
-            const demoBadge = '<span class="demo-badge">DEMO</span>';
-            document.getElementById('reader-meta').innerHTML = `by ${currentComic.author} · ${currentComic.genre} ` + demoBadge;
+            const isDemo = currentComic.isDemo;
+            const badge = isDemo ? ' <span class="demo-badge">DEMO</span>' : '';
+            document.getElementById('reader-meta').innerHTML = `by ${currentComic.author} · ${currentComic.genre}` + badge;
             if (currentComic.synopsis) { document.getElementById('reader-synopsis').textContent = currentComic.synopsis; document.getElementById('reader-synopsis').style.display = 'block'; }
             renderEpTabs(); renderStrip();
             showToast('Comic updated!');
@@ -3738,10 +3762,12 @@
                 // Delete from Supabase if it has a UUID id
                 const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(currentComic.id);
                 if (isUUID) {
+                    await sb.from('episodes').delete().eq('comic_id', currentComic.id);
+                    await sb.from('comments').delete().eq('comic_id', currentComic.id);
                     const { error } = await sb.from('comics').delete().eq('id', currentComic.id);
                     if (error) { showToast('Error deleting: ' + error.message); return; }
                 }
-                // Remove from local array
+                // Remove from local array (works for demos and local comics too)
                 comics = comics.filter(c => c.id !== currentComic.id);
                 currentComic = null;
                 showToast('Comic deleted');
@@ -3749,11 +3775,13 @@
                 renderHome();
             } catch (e) {
                 showToast('Error deleting comic');
+                console.error(e);
             }
         }
 
         function toggleLike() {
             if (!currentComic) return;
+            if (!currentUser) { openAuth('signup'); showToast('Sign up to like comics!'); return; }
             likedComics[currentComic.id] = !likedComics[currentComic.id];
             currentComic.likes += likedComics[currentComic.id] ? 1 : -1;
             document.getElementById('like-count').textContent = fmt(currentComic.likes);
@@ -3771,6 +3799,7 @@
 
         function downloadComic() {
             if (!currentComic) return;
+            if (!currentUser) { openAuth('signup'); showToast('Sign up to download comics!'); return; }
             const ep = currentComic.episodes[currentEp];
             let html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${currentComic.title}</title><style>body{margin:0;background:#111;font-family:sans-serif;color:white}img{width:100%;display:block}.txt{padding:14px 18px;font-size:14px;background:#1a1a1a;border-top:1px solid #333}h1{font-size:20px;padding:18px;background:#0e0e0e;margin:0}p{font-size:12px;padding:0 18px 18px;color:#888;margin:0}</style></head><body><h1>${currentComic.title}</h1><p>by ${currentComic.author} · EP ${currentEp + 1}: ${ep.title}</p>`;
             if (ep.blocks) ep.blocks.forEach(b => { if (b.type === 'image' && b.image) html += `<img src="${b.image}"/>`; else if (b.type === 'dialogue' && b.text) html += `<div class="txt">${b.text}</div>`; });
@@ -3784,6 +3813,9 @@
 
         // ── COMMENTS ──────────────────────────────────────────────────
         function renderComments() {
+            // Update comment input placeholder based on login state
+            const inp = document.getElementById('comment-input');
+            if (inp) inp.placeholder = currentUser ? 'Write a comment…' : 'Log in to write a comment…';
             const list = document.getElementById('comment-list');
             // Use Supabase comments if available
             if (currentComic._dbComments) {
@@ -3800,6 +3832,7 @@
         async function postComment() {
             const inp = document.getElementById('comment-input');
             if (!inp.value.trim() || !currentComic) return;
+            if (!currentUser) { openAuth('signup'); showToast('Sign up to post comments!'); return; }
             const text = inp.value.trim();
             if (currentUser && !currentComic.isDemo) {
                 const ok = await postCommentToSupabase(currentComic.id, text);
@@ -4044,6 +4077,7 @@
         }
 
         async function publishComic() {
+            if (!currentUser) { openAuth('signup'); showToast('Sign up to publish comics!'); return; }
             const title = document.getElementById('c-title').value.trim();
             if (!title) return;
             const genre = document.getElementById('c-genre').value;
@@ -4135,6 +4169,8 @@
         renderNotifs();
         renderHome();
         checkSession();
+        // Load all published comics from Supabase for everyone (logged in or not)
+        loadAllComicsFromSupabase();
         renderCanvas();
         renderStars(0);
     </script>
