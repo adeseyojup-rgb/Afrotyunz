@@ -2930,8 +2930,11 @@
                     const { data, error } = await sb.auth.signUp({ email, password });
                     if (error) { showAuthError(error.message); return; }
                     if (data.user) {
-                        // Create profile
-                        await sb.from('profiles').insert({ id: data.user.id, username: username || email.split('@')[0] });
+                        // Create profile with upsert to avoid conflicts
+                        await sb.from('profiles').upsert({
+                            id: data.user.id,
+                            username: username || email.split('@')[0]
+                        }, { onConflict: 'id' });
                         currentUser = data.user;
                         currentUser.username = username || email.split('@')[0];
                         onAuthSuccess();
@@ -2943,9 +2946,14 @@
                         currentUser = data.user;
                         // Fetch profile safely
                         try {
-                            const { data: profile } = await sb.from('profiles').select('*').eq('id', data.user.id).single();
-                            if (profile) currentUser.username = profile.username;
-                            else currentUser.username = data.user.email.split('@')[0];
+                            const { data: profile } = await sb.from('profiles').select('*').eq('id', data.user.id).maybeSingle();
+                            if (profile) {
+                                currentUser.username = profile.username;
+                            } else {
+                                const username = data.user.email.split('@')[0];
+                                await sb.from('profiles').upsert({ id: data.user.id, username }, { onConflict: 'id' });
+                                currentUser.username = username;
+                            }
                         } catch (e) { currentUser.username = data.user.email.split('@')[0]; }
                         onAuthSuccess();
                     }
@@ -2999,9 +3007,15 @@
             if (session) {
                 currentUser = session.user;
                 try {
-                    const { data: profile } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
-                    if (profile) currentUser.username = profile.username;
-                    else currentUser.username = currentUser.email.split('@')[0];
+                    const { data: profile } = await sb.from('profiles').select('*').eq('id', currentUser.id).maybeSingle();
+                    if (profile) {
+                        currentUser.username = profile.username;
+                    } else {
+                        // Create profile if it doesn't exist
+                        const username = currentUser.email.split('@')[0];
+                        await sb.from('profiles').upsert({ id: currentUser.id, username }, { onConflict: 'id' });
+                        currentUser.username = username;
+                    }
                 } catch (e) { currentUser.username = currentUser.email.split('@')[0]; }
                 updateNavForUser();
                 // Load this user's published comics from Supabase
@@ -3051,7 +3065,7 @@
                     author_id: currentUser.id,
                     author_name: authorName,
                     likes: 0, badge: 'new', is_demo: false
-                }).select().single();
+                }).select('id, title, genre, synopsis, author_id, author_name, likes, badge, is_demo').single();
                 if (comicErr) { showToast('Error publishing: ' + comicErr.message); return null; }
 
                 // Save blocks — keep Supabase URLs, drop base64
