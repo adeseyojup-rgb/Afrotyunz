@@ -3417,8 +3417,14 @@
         });
 
         // ── NAVIGATION ────────────────────────────────────────────────
+        const pageHistory = [];
+
         function goTo(page) {
-            previousPage = document.querySelector('.page.active')?.id?.replace('page-', '') || 'home';
+            const current = document.querySelector('.page.active')?.id?.replace('page-', '');
+            if (current && current !== page && current !== 'reader') {
+                pageHistory.push(current);
+                if (pageHistory.length > 10) pageHistory.shift();
+            }
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-links button, .mob-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('page-' + page).classList.add('active');
@@ -3437,7 +3443,10 @@
             else if (page === 'draw') initDrawStudio();
         }
 
-        function goBack() { goTo(previousPage || 'home'); }
+        function goBack() {
+            const prev = pageHistory.pop() || 'home';
+            goTo(prev);
+        }
 
         function filterGenre(pill, ctx) {
             const bar = document.getElementById(ctx === 'home' ? 'home-genre-bar' : 'browse-genre-bar');
