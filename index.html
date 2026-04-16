@@ -1344,31 +1344,42 @@
             background: rgba(192, 57, 43, 0.08);
         }
 
-        /* READER */
-        .reader-page {
-            max-width: 700px;
-            margin: 0 auto;
-            padding: 24px 18px;
+        /* READER — full-screen immersive Webtoon style */
+        #page-reader {
+            background: #000;
         }
 
-        .reader-back {
+        .reader-floatbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 900;
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 20px;
+            padding: 10px 16px;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.85) 0%, transparent 100%);
+            transition: opacity 0.3s;
+        }
+
+        .reader-floatbar.hidden {
+            opacity: 0;
+            pointer-events: none;
         }
 
         .btn-back {
-            padding: 7px 16px;
-            background: var(--bg3);
-            border: 1px solid var(--border);
+            padding: 7px 14px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
             border-radius: 20px;
-            color: var(--text);
+            color: #fff;
             font-family: 'DM Sans', sans-serif;
             font-weight: 700;
             font-size: 12px;
             cursor: pointer;
             transition: all 0.2s;
+            backdrop-filter: blur(6px);
         }
 
         .btn-back:hover {
@@ -1376,40 +1387,68 @@
             color: var(--gold);
         }
 
-        .reader-title {
+        .reader-float-title {
             font-family: 'Playfair Display', serif;
-            font-size: 24px;
-            font-weight: 900;
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
         }
 
-        .reader-meta {
-            font-size: 12px;
-            color: var(--muted);
-            margin-bottom: 18px;
+        .reader-float-ep {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 700;
+            white-space: nowrap;
         }
 
-        .ep-tabs {
+        /* Episode switcher bar — floats at bottom */
+        .ep-switcher {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 900;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, transparent 100%);
+            padding: 18px 16px 24px;
             display: flex;
-            gap: 7px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+            gap: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            transition: opacity 0.3s;
+        }
+
+        .ep-switcher.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .ep-switcher::-webkit-scrollbar {
+            display: none;
         }
 
         .ep-tab {
             padding: 6px 14px;
             border-radius: 20px;
-            border: 1.5px solid var(--border);
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
             font-family: 'DM Sans', sans-serif;
             font-weight: 700;
-            font-size: 12px;
-            color: var(--muted);
-            background: transparent;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.7);
+            background: rgba(0, 0, 0, 0.5);
             cursor: pointer;
             transition: all 0.2s;
+            white-space: nowrap;
+            backdrop-filter: blur(4px);
         }
 
         .ep-tab:hover {
-            color: var(--text);
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.6);
         }
 
         .ep-tab.active {
@@ -1418,9 +1457,12 @@
             border-color: var(--gold);
         }
 
+        /* Main strip — true edge-to-edge */
         .panel-strip {
             display: flex;
             flex-direction: column;
+            width: 100%;
+            background: #000;
         }
 
         .comic-panel {
@@ -1430,18 +1472,6 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            border-left: 3px solid #222;
-            border-right: 3px solid #222;
-        }
-
-        .comic-panel:first-child {
-            border-top: 3px solid #222;
-            border-radius: 10px 10px 0 0;
-        }
-
-        .comic-panel:last-child {
-            border-bottom: 3px solid #222;
-            border-radius: 0 0 10px 10px;
         }
 
         .panel-text-overlay {
@@ -1474,6 +1504,26 @@
 
         .panel-dialogue.right {
             right: 12px;
+        }
+
+        /* Reader bottom sheet — interactions */
+        .reader-sheet {
+            background: var(--bg2);
+            border-top: 1px solid var(--border);
+            padding: 20px 16px 36px;
+        }
+
+        .reader-sheet-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            font-weight: 900;
+            margin-bottom: 4px;
+        }
+
+        .reader-sheet-meta {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 18px;
         }
 
         .rating-row {
@@ -1612,7 +1662,7 @@
             padding: 9px 14px;
             border: 1.5px solid var(--border);
             border-radius: 8px;
-            background: var(--bg2);
+            background: var(--bg3);
             color: var(--text);
             font-family: 'DM Sans', sans-serif;
             font-size: 13px;
@@ -1643,7 +1693,7 @@
         }
 
         .comment {
-            background: var(--bg2);
+            background: var(--bg3);
             border: 1px solid var(--border);
             border-radius: 8px;
             padding: 10px 14px;
@@ -1658,7 +1708,7 @@
 
         .comment-text {
             font-size: 13px;
-            color: #ccc;
+            color: var(--text);
             line-height: 1.5;
         }
 
@@ -2973,6 +3023,22 @@
                     </select>
                     <label class="form-label">Synopsis</label>
                     <textarea class="form-textarea" id="c-synopsis" placeholder="What is your comic about?"></textarea>
+                    <label class="form-label">Front Cover Image</label>
+                    <div id="cover-upload-area" onclick="triggerCoverUpload()"
+                        style="width:100%;aspect-ratio:3/4;border:2px dashed var(--border);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:all 0.2s;margin-bottom:12px;overflow:hidden;position:relative;background:var(--bg3);">
+                        <div id="cover-preview" style="display:none;width:100%;height:100%;position:absolute;inset:0;">
+                            <img id="cover-img" style="width:100%;height:100%;object-fit:cover;" alt="cover" /><button
+                                onclick="event.stopPropagation();clearCover()"
+                                style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.7);color:#fff;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:12px;font-weight:700;">✕</button>
+                        </div>
+                        <div id="cover-placeholder" style="text-align:center;padding:12px;">
+                            <div style="font-size:28px;opacity:0.4;margin-bottom:6px;">🖼️</div>
+                            <div style="font-size:11px;font-weight:700;color:var(--muted);">Upload Cover Image</div>
+                            <div style="font-size:10px;color:#555;margin-top:3px;">Appears on comic card</div>
+                        </div>
+                    </div>
+                    <input type="file" id="cover-file-input" accept="image/*" class="file-input"
+                        onchange="handleCoverUpload(event)" />
                     <label class="form-label">Episode Title</label>
                     <input class="form-input" id="c-ep-title" placeholder="e.g. The Beginning" />
                     <button class="tool-btn" style="width:100%;margin-top:4px" onclick="goTo('draw')">🎨 Open Drawing
@@ -3320,7 +3386,7 @@
                     if (comics.find(x => x.id === c.id)) continue;
                     const { data: eps } = await sb.from('episodes').select('*').eq('comic_id', c.id).order('episode_number');
                     const episodes = (eps || []).map(ep => ({ title: ep.title, blocks: ep.content?.blocks || [] }));
-                    comics.unshift({ id: c.id, title: c.title, genre: c.genre, synopsis: c.synopsis, pi: 0, likes: c.likes || 0, badge: c.badge || 'new', author: c.author_name, author_id: c.author_id, isDemo: false, episodes, comments: [] });
+                    comics.unshift({ id: c.id, title: c.title, genre: c.genre, synopsis: c.synopsis, pi: 0, likes: c.likes || 0, badge: c.badge || 'new', author: c.author_name, author_id: c.author_id, coverUrl: c.cover_url || null, isDemo: false, episodes, comments: [] });
                 }
                 renderHome();
                 const activePage = document.querySelector('.page.active')?.id?.replace('page-', '');
@@ -3333,11 +3399,11 @@
             if (!currentUser) { openAuth('signup'); return null; }
             try {
                 const authorName = currentUser.username || currentUser.email.split('@')[0];
-                const { data: comic, error: comicErr } = await sb.from('comics').insert({ title, genre, synopsis, author_id: currentUser.id, author_name: authorName, likes: 0, badge: 'new', is_demo: false }).select('id,title,genre,synopsis,author_id,author_name,likes,badge,is_demo').single();
+                const { data: comic, error: comicErr } = await sb.from('comics').insert({ title, genre, synopsis, author_id: currentUser.id, author_name: authorName, cover_url: coverImageUrl || null, likes: 0, badge: 'new', is_demo: false }).select('id,title,genre,synopsis,author_id,author_name,cover_url,likes,badge,is_demo').single();
                 if (comicErr) { showToast('Error publishing: ' + comicErr.message); return null; }
                 const savedBlocks = blocks.map(b => b.type === 'image' ? { ...b, image: b.image && b.image.startsWith('http') ? b.image : null } : b);
                 await sb.from('episodes').insert({ comic_id: comic.id, title: epTitle || 'Episode 1', episode_number: 1, content: { blocks: savedBlocks } });
-                return { id: comic.id, title, genre, synopsis, pi: 0, likes: 0, badge: 'new', author: authorName, isDemo: false, episodes: [{ title: epTitle || 'Episode 1', blocks: savedBlocks }], comments: [] };
+                return { id: comic.id, title, genre, synopsis, pi: 0, likes: 0, badge: 'new', author: authorName, coverUrl: comic.cover_url || null, isDemo: false, episodes: [{ title: epTitle || 'Episode 1', blocks: savedBlocks }], comments: [] };
             } catch (e) { showToast('Error publishing comic'); return null; }
         }
         async function postCommentToSupabase(comicId, text) {
@@ -3499,11 +3565,12 @@
             const badge = c.badge ? `<div class="comic-badge badge-${c.badge}">${c.badge.toUpperCase()}</div>` : '';
             const rating = (c.rating || (3.8 + (c.likes % 13) * 0.1)).toFixed(1);
             const stars = '★'.repeat(Math.min(5, Math.round(rating))) + '☆'.repeat(Math.max(0, 5 - Math.round(rating)));
+            const coverContent = (c.coverUrl || c.cover_url)
+                ? `<img src="${c.coverUrl || c.cover_url}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" alt="${c.title}"/>`
+                : `<div class="comic-cover-icon">✦</div><div class="comic-cover-title">${c.title}</div><div class="comic-cover-genre">${c.genre}</div>`;
             return `<div class="comic-card" onclick="openComicIntro('${c.id}')">
               <div class="comic-cover" style="background:${getBg(c)}">
-                <div class="comic-cover-icon">✦</div>
-                <div class="comic-cover-title">${c.title}</div>
-                <div class="comic-cover-genre">${c.genre}</div>
+                ${coverContent}
                 ${badge}<div class="comic-likes">❤️ ${fmt(c.likes)}</div>
               </div>
               <div class="comic-info">
@@ -3567,8 +3634,11 @@
             const isLiked = !!likedComics[comic.id];
 
             // Cover banner
+            const coverImg = comic.coverUrl || comic.cover_url;
             document.getElementById('intro-cover-banner').style.background = getBg(comic);
-            document.getElementById('intro-cover-art').innerHTML = `<div class="intro-cover-icon-big">${comic.title}</div>`;
+            document.getElementById('intro-cover-art').innerHTML = coverImg
+                ? `<img src="${coverImg}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" alt="${comic.title}"/>`
+                : `<div class="intro-cover-icon-big">${comic.title}</div>`;
             document.getElementById('intro-genre-pill').textContent = comic.genre;
             document.getElementById('intro-comic-title').textContent = comic.title;
 
@@ -3666,9 +3736,16 @@
             }
 
             document.getElementById('reader-title').textContent = comic.title;
+            const sheetTitle = document.getElementById('reader-sheet-title');
+            if (sheetTitle) sheetTitle.textContent = comic.title;
             const demoBadge = comic.isDemo ? ' <span class="demo-badge">DEMO</span>' : '';
-            document.getElementById('reader-meta').innerHTML = `by ${comic.author} · ${comic.genre} · EP ${currentEp + 1}${demoBadge}`;
-            document.getElementById('reader-synopsis').style.display = 'none'; // synopsis shown on intro page
+            document.getElementById('reader-meta').innerHTML = `by ${comic.author} · ${comic.genre}` + demoBadge;
+            // show bars on load
+            readerBarsVisible = true;
+            const fb = document.getElementById('reader-floatbar');
+            const es = document.getElementById('ep-switcher');
+            if (fb) fb.classList.remove('hidden');
+            if (es) es.classList.remove('hidden');
 
             const showEdit = comic.isDemo || (currentUser && currentUser.email === ADMIN_EMAIL);
             document.getElementById('edit-btn').style.display = showEdit ? 'flex' : 'none';
@@ -3786,11 +3863,24 @@
             showToast('Comic updated!');
         }
 
-        function renderEpTabs() {
-            document.getElementById('ep-tabs').innerHTML = currentComic.episodes.map((ep, i) =>
-                `<button class="ep-tab ${i === currentEp ? 'active' : ''}" onclick="switchEp(${i})">EP ${i + 1}: ${ep.title}</button>`).join('');
+        let readerBarsVisible = true;
+        function toggleReaderBars() {
+            readerBarsVisible = !readerBarsVisible;
+            const fb = document.getElementById('reader-floatbar');
+            const es = document.getElementById('ep-switcher');
+            if (fb) fb.classList.toggle('hidden', !readerBarsVisible);
+            if (es) es.classList.toggle('hidden', !readerBarsVisible);
         }
-        function switchEp(i) { currentEp = i; renderEpTabs(); renderStrip(); }
+        function renderEpTabs() {
+            // Update floating episode switcher
+            const switcher = document.getElementById('ep-switcher');
+            if (switcher) switcher.innerHTML = currentComic.episodes.map((ep, i) =>
+                `<button class="ep-tab ${i === currentEp ? 'active' : ''}" onclick="switchEp(${i})">EP ${i + 1}: ${ep.title}</button>`).join('');
+            // Update float ep label
+            const floatEp = document.getElementById('reader-float-ep');
+            if (floatEp && currentComic.episodes[currentEp]) floatEp.textContent = 'EP ' + (currentEp + 1) + ' of ' + currentComic.episodes.length;
+        }
+        function switchEp(i) { currentEp = i; renderEpTabs(); renderStrip(); window.scrollTo(0, 0); }
         function renderStrip() {
             const ep = currentComic.episodes[currentEp];
             const heights = [300, 340, 280, 360, 310];
@@ -3829,18 +3919,31 @@
         // ── LIKES / SAVE / DOWNLOAD ───────────────────────────────────
         async function deleteComic() {
             if (!currentComic || !currentUser) return;
+            const isAdmin = currentUser.email === ADMIN_EMAIL;
+            const isOwner = currentUser && (currentComic.author_id === currentUser.id || currentComic.author === (currentUser.username || currentUser.email?.split('@')[0]));
+            if (!isAdmin && !isOwner) { showToast('You can only delete your own comics'); return; }
             if (!confirm('Delete "' + currentComic.title + '"? This cannot be undone.')) return;
             try {
                 const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(currentComic.id);
                 if (isUUID) {
+                    // Delete episodes and comments first (cascade)
                     await sb.from('episodes').delete().eq('comic_id', currentComic.id);
                     await sb.from('comments').delete().eq('comic_id', currentComic.id);
                     const { error } = await sb.from('comics').delete().eq('id', currentComic.id);
                     if (error) { showToast('Error deleting: ' + error.message); return; }
+                    // Remove from local array so all in-session views update
+                    comics = comics.filter(c => c.id !== currentComic.id);
+                    saveToStore();
+                    showToast('Comic deleted — synced across all devices');
+                } else {
+                    // Demo or local comic — remove from local array
+                    comics = comics.filter(c => c.id !== currentComic.id);
+                    showToast('Comic deleted');
                 }
-                comics = comics.filter(c => c.id !== currentComic.id);
-                currentComic = null; showToast('Comic deleted'); goBack(); renderHome();
-            } catch (e) { showToast('Error deleting comic'); }
+                currentComic = null;
+                renderHome();
+                goBack();
+            } catch (e) { showToast('Error deleting comic'); console.error(e); }
         }
         function toggleLike() {
             if (!currentComic) return;
@@ -3993,6 +4096,31 @@
         function triggerImg(id) { const f = document.getElementById('file-' + id); if (f) f.click(); }
 
         const CLOUDINARY_CLOUD = 'duy8v3edi', CLOUDINARY_PRESET = 'afrotyunz';
+        let coverImageUrl = null;
+
+        function triggerCoverUpload() { document.getElementById('cover-file-input')?.click(); }
+        function clearCover() {
+            coverImageUrl = null;
+            document.getElementById('cover-preview').style.display = 'none';
+            document.getElementById('cover-placeholder').style.display = 'flex';
+        }
+        async function handleCoverUpload(e) {
+            const file = e.target.files[0]; if (!file) return;
+            showToast('Uploading cover…');
+            try {
+                const formData = new FormData();
+                formData.append('file', file); formData.append('upload_preset', CLOUDINARY_PRESET);
+                const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.secure_url) {
+                    coverImageUrl = data.secure_url;
+                    document.getElementById('cover-img').src = data.secure_url;
+                    document.getElementById('cover-preview').style.display = 'block';
+                    document.getElementById('cover-placeholder').style.display = 'none';
+                    showToast('Cover uploaded!');
+                } else { showToast('Cover upload failed'); }
+            } catch (err) { showToast('Cover upload error'); }
+        }
         async function handleImg(e, id) {
             const file = e.target.files[0]; if (!file) return;
             blockList = blockList.map(b => b.id === id ? { ...b, uploading: true } : b); renderCanvas(); showToast('Uploading image…');
@@ -4051,6 +4179,7 @@
                     comics.unshift(sbComic);
                     document.getElementById('c-title').value = ''; document.getElementById('c-synopsis').value = ''; document.getElementById('c-ep-title').value = '';
                     blockList = [{ id: 1, type: 'image', image: null }, { id: 2, type: 'dialogue', text: '' }, { id: 3, type: 'image', image: null }];
+                    clearCover();
                     renderCanvas(); checkPublish(); saveToStore();
                     const t = document.getElementById('pub-success'); t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3500);
                     showToast('Comic published!'); return;
@@ -4121,6 +4250,14 @@
         loadAllComicsFromSupabase();
         renderCanvas();
         renderStars(0);
+        // Periodic sync every 90s so deletes/edits by admin/creators are reflected
+        setInterval(async () => {
+            const activePage = document.querySelector('.page.active')?.id?.replace('page-', '');
+            if (activePage === 'reader' || activePage === 'intro') return; // don't refresh mid-read
+            // Remove all non-demo supabase comics from local array
+            comics = comics.filter(c => c.isDemo || c.id.startsWith('user-'));
+            await loadAllComicsFromSupabase();
+        }, 90000);
     </script>
 </body>
 
