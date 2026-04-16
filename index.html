@@ -34,7 +34,6 @@
             scroll-behavior: smooth;
         }
 
-        /* ── LIGHT MODE ── */
         body.light {
             --bg: #fdf6ec;
             --bg2: #ffffff;
@@ -98,7 +97,7 @@
             color: inherit;
         }
 
-        /* ── THEME SWITCHER ── */
+        /* THEME SWITCHER */
         .theme-switcher {
             position: fixed;
             bottom: 90px;
@@ -149,7 +148,7 @@
             opacity: 1;
         }
 
-        /* ── NAVBAR ── */
+        /* NAVBAR */
         nav {
             position: sticky;
             top: 0;
@@ -288,7 +287,7 @@
             background: #f0b055;
         }
 
-        /* ── NOTIFICATION DROPDOWN ── */
+        /* NOTIFICATION DROPDOWN */
         .notif-drop {
             position: absolute;
             top: 62px;
@@ -312,7 +311,6 @@
             padding: 12px 14px;
             font-family: 'Playfair Display', serif;
             font-size: 15px;
-            letter-spacing: 0;
             font-weight: 700;
             border-bottom: 1px solid var(--border);
             display: flex;
@@ -326,7 +324,6 @@
             font-weight: 700;
             color: var(--gold);
             cursor: pointer;
-            letter-spacing: 0;
         }
 
         .notif-item {
@@ -369,7 +366,7 @@
             font-size: 13px;
         }
 
-        /* ── MOBILE NAV ── */
+        /* MOBILE NAV */
         .mob-nav {
             display: none;
             position: fixed;
@@ -417,7 +414,7 @@
             letter-spacing: 0.5px;
         }
 
-        /* ── HERO ── */
+        /* HERO */
         .hero {
             position: relative;
             min-height: 440px;
@@ -558,7 +555,7 @@
             margin-top: 2px;
         }
 
-        /* ── GENRE BAR ── */
+        /* GENRE BAR */
         .genre-bar {
             display: flex;
             gap: 8px;
@@ -598,7 +595,7 @@
             border-color: var(--gold);
         }
 
-        /* ── SECTIONS ── */
+        /* SECTIONS */
         .section {
             padding: 28px 20px;
         }
@@ -638,7 +635,7 @@
             font-family: 'DM Sans', sans-serif;
         }
 
-        /* ── COMIC CARDS ── */
+        /* COMIC CARDS */
         .comics-row {
             display: flex;
             gap: 14px;
@@ -685,7 +682,6 @@
         .comic-cover-title {
             font-family: 'Playfair Display', serif;
             font-size: 11px;
-            letter-spacing: 0;
             font-weight: 700;
             color: rgba(255, 255, 255, 0.9);
             text-align: center;
@@ -783,7 +779,7 @@
             color: var(--gold);
         }
 
-        /* ── FEATURED ── */
+        /* FEATURED */
         .featured-banner {
             margin: 0 20px 28px;
             border-radius: 12px;
@@ -827,7 +823,6 @@
         .featured-title {
             font-family: 'Playfair Display', serif;
             font-size: 26px;
-            letter-spacing: 0;
             font-weight: 900;
             margin-bottom: 6px;
         }
@@ -857,7 +852,7 @@
             background: #f0b055;
         }
 
-        /* ── TWO COL ── */
+        /* TWO COL */
         .two-col {
             display: grid;
             grid-template-columns: 1fr 320px;
@@ -952,7 +947,7 @@
             flex-shrink: 0;
         }
 
-        /* ── SEARCH ── */
+        /* SEARCH */
         .search-wrap {
             display: flex;
             align-items: center;
@@ -960,6 +955,7 @@
             padding: 12px 20px;
             background: var(--bg2);
             border-bottom: 1px solid var(--border);
+            position: relative;
         }
 
         .search-input {
@@ -988,10 +984,6 @@
             pointer-events: none;
         }
 
-        .search-wrap {
-            position: relative;
-        }
-
         .search-clear {
             padding: 6px 12px;
             border: 1.5px solid var(--border);
@@ -1009,7 +1001,7 @@
             display: block;
         }
 
-        /* ── BROWSE ── */
+        /* BROWSE */
         .browse-header {
             padding: 28px 20px 16px;
         }
@@ -1017,7 +1009,6 @@
         .browse-header h2 {
             font-family: 'Playfair Display', serif;
             font-size: 30px;
-            letter-spacing: 0;
             font-weight: 900;
             color: var(--gold);
             margin-bottom: 4px;
@@ -1043,7 +1034,317 @@
             grid-column: 1/-1;
         }
 
-        /* ── READER ── */
+        /* ── COMIC INTRO PAGE ── */
+        .intro-page {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 28px 20px 60px;
+        }
+
+        .intro-back-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+
+        .intro-cover-banner {
+            width: 100%;
+            min-height: 260px;
+            border-radius: 14px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+
+        .intro-cover-art {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .intro-cover-icon-big {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: clamp(36px, 8vw, 80px);
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.08);
+            letter-spacing: 2px;
+            text-align: center;
+            padding: 0 20px;
+            line-height: 1.1;
+        }
+
+        .intro-cover-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.3) 50%, transparent 100%);
+        }
+
+        .intro-cover-content {
+            position: relative;
+            z-index: 2;
+            padding: 24px;
+            width: 100%;
+        }
+
+        .intro-genre-pill {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 20px;
+            background: rgba(232, 160, 69, 0.15);
+            border: 1px solid rgba(232, 160, 69, 0.4);
+            color: var(--gold);
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
+        }
+
+        .intro-comic-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(22px, 5vw, 38px);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 6px;
+            color: #fff;
+        }
+
+        .intro-author-line {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .intro-author-dot {
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .intro-stats-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .intro-stat {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .intro-stat-val {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--gold);
+        }
+
+        .intro-stat-lbl {
+            font-size: 10px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 700;
+        }
+
+        .intro-synopsis-box {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--gold);
+            border-radius: 0 10px 10px 0;
+            padding: 14px 18px;
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text);
+            margin-bottom: 28px;
+        }
+
+        .intro-synopsis-label {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+
+        .intro-episodes-label {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .intro-episodes-label::before {
+            content: '';
+            width: 3px;
+            height: 18px;
+            background: var(--gold);
+            border-radius: 2px;
+        }
+
+        .intro-ep-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 28px;
+        }
+
+        .intro-ep-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .intro-ep-item:hover {
+            border-color: var(--gold);
+            background: var(--bg3);
+            transform: translateX(4px);
+        }
+
+        .intro-ep-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(232, 160, 69, 0.12);
+            border: 1.5px solid rgba(232, 160, 69, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--gold);
+            flex-shrink: 0;
+        }
+
+        .intro-ep-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .intro-ep-title {
+            font-weight: 800;
+            font-size: 13px;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .intro-ep-sub {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .intro-ep-arrow {
+            font-size: 14px;
+            color: var(--muted);
+            flex-shrink: 0;
+            transition: color 0.2s;
+        }
+
+        .intro-ep-item:hover .intro-ep-arrow {
+            color: var(--gold);
+        }
+
+        .intro-start-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--gold);
+            color: #1a1208;
+            border: none;
+            border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 0.3px;
+        }
+
+        .intro-start-btn:hover {
+            background: #f0b055;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(232, 160, 69, 0.3);
+        }
+
+        .intro-action-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .intro-save-btn {
+            padding: 9px 18px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .intro-save-btn:hover,
+        .intro-save-btn.saved {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: rgba(232, 160, 69, 0.08);
+        }
+
+        .intro-like-btn {
+            padding: 9px 18px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .intro-like-btn:hover,
+        .intro-like-btn.liked {
+            border-color: var(--red);
+            color: var(--red);
+            background: rgba(192, 57, 43, 0.08);
+        }
+
+        /* READER */
         .reader-page {
             max-width: 700px;
             margin: 0 auto;
@@ -1078,7 +1379,6 @@
         .reader-title {
             font-family: 'Playfair Display', serif;
             font-size: 24px;
-            letter-spacing: 0;
             font-weight: 900;
         }
 
@@ -1297,7 +1597,6 @@
         .comments-title {
             font-family: 'Playfair Display', serif;
             font-size: 18px;
-            letter-spacing: 0;
             font-weight: 700;
             margin-bottom: 12px;
         }
@@ -1363,7 +1662,7 @@
             line-height: 1.5;
         }
 
-        /* ── CREATE ── */
+        /* CREATE */
         .create-page {
             max-width: 840px;
             margin: 0 auto;
@@ -1373,7 +1672,6 @@
         .create-title {
             font-family: 'Playfair Display', serif;
             font-size: 28px;
-            letter-spacing: 0;
             font-weight: 900;
             color: var(--gold);
             margin-bottom: 4px;
@@ -1632,7 +1930,7 @@
             background: rgba(232, 160, 69, 0.06);
         }
 
-        /* ── DRAWING STUDIO ── */
+        /* DRAWING STUDIO */
         .dtool-btn {
             width: 36px;
             height: 36px;
@@ -1708,7 +2006,7 @@
             background: rgba(232, 160, 69, 0.08);
         }
 
-        /* ── PUBLISH ── */
+        /* PUBLISH */
         .publish-bar {
             margin-top: 18px;
             padding-top: 14px;
@@ -1754,7 +2052,7 @@
             display: none;
         }
 
-        /* ── LIBRARY ── */
+        /* LIBRARY */
         .lib-header {
             padding: 28px 20px 16px;
         }
@@ -1762,7 +2060,6 @@
         .lib-header h2 {
             font-family: 'Playfair Display', serif;
             font-size: 28px;
-            letter-spacing: 0;
             font-weight: 900;
             color: var(--gold);
             margin-bottom: 4px;
@@ -1797,7 +2094,7 @@
             margin-bottom: 18px;
         }
 
-        /* ── TRENDING PAGE ── */
+        /* TRENDING */
         .trend-page {
             padding: 28px 20px;
             max-width: 860px;
@@ -1901,7 +2198,7 @@
             color: var(--green);
         }
 
-        /* ── PROFILE ── */
+        /* PROFILE */
         .profile-page {
             max-width: 840px;
             margin: 0 auto;
@@ -1934,7 +2231,6 @@
         .profile-name {
             font-family: 'Playfair Display', serif;
             font-size: 26px;
-            letter-spacing: 0;
             font-weight: 900;
             margin-bottom: 4px;
         }
@@ -1989,7 +2285,7 @@
             gap: 16px;
         }
 
-        /* ── LOGIN ── */
+        /* LOGIN */
         .login-page {
             max-width: 400px;
             margin: 70px auto;
@@ -2051,7 +2347,7 @@
             font-weight: 700;
         }
 
-        /* ── FOOTER ── */
+        /* FOOTER */
         footer {
             background: var(--bg2);
             border-top: 1px solid var(--border);
@@ -2090,7 +2386,7 @@
             color: var(--muted);
         }
 
-        /* ── TOAST ── */
+        /* TOAST */
         .toast {
             position: fixed;
             bottom: 24px;
@@ -2113,7 +2409,7 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        /* ── RESPONSIVE ── */
+        /* RESPONSIVE */
         @media(max-width:680px) {
 
             nav .nav-links,
@@ -2163,16 +2459,15 @@
             }
         }
 
-        /* ── ANIMATIONS ── */
         @keyframes fadeUp {
             from {
                 opacity: 0;
-                transform: translateY(14px);
+                transform: translateY(14px)
             }
 
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0)
             }
         }
 
@@ -2418,8 +2713,6 @@
             onclick="applyTheme(5)" onmouseover="showTip('Desert Night')" onmouseout="hideTip()"></div>
     </div>
     <div class="theme-tip" id="theme-tip"></div>
-
-    <!-- TOAST -->
     <div class="toast" id="toast"></div>
 
     <!-- NAV -->
@@ -2500,7 +2793,6 @@
                 </div>
             </div>
         </section>
-
         <div class="genre-bar" id="home-genre-bar">
             <button class="genre-pill active" onclick="filterGenre(this,'home')">All</button>
             <button class="genre-pill" onclick="filterGenre(this,'home')">Action</button>
@@ -2512,8 +2804,7 @@
             <button class="genre-pill" onclick="filterGenre(this,'home')">Slice of Life</button>
             <button class="genre-pill" onclick="filterGenre(this,'home')">Drama</button>
         </div>
-
-        <div class="featured-banner" onclick="openReader('lagos-chronicles')">
+        <div class="featured-banner" onclick="openComicIntro('lagos-chronicles')">
             <div class="featured-bg"></div>
             <div class="featured-content">
                 <div class="featured-label">✦ Editor's Pick</div>
@@ -2523,7 +2814,6 @@
                 <button class="btn-featured">Read Now — Free</button>
             </div>
         </div>
-
         <div class="two-col">
             <div>
                 <div class="section">
@@ -2550,7 +2840,6 @@
                 </div>
             </div>
         </div>
-
         <footer>
             <div class="footer-logo">Afrotyunz</div>
             <div class="footer-links"><a href="#">About</a><a href="#">Create</a><a href="#">Community</a><a
@@ -2587,11 +2876,39 @@
         <div class="browse-grid" id="browse-grid"></div>
     </div>
 
+    <!-- ══ COMIC INTRO PAGE ══ -->
+    <div id="page-intro" class="page">
+        <div class="intro-page">
+            <div class="intro-back-row">
+                <button class="btn-back" onclick="goBack()">← Back</button>
+            </div>
+            <div class="intro-cover-banner" id="intro-cover-banner">
+                <div class="intro-cover-art" id="intro-cover-art"></div>
+                <div class="intro-cover-overlay"></div>
+                <div class="intro-cover-content">
+                    <div class="intro-genre-pill" id="intro-genre-pill"></div>
+                    <div class="intro-comic-title" id="intro-comic-title"></div>
+                    <div class="intro-author-line" id="intro-author-line"></div>
+                </div>
+            </div>
+            <div class="intro-stats-row" id="intro-stats-row"></div>
+            <div class="intro-action-row" id="intro-action-row"></div>
+            <div class="intro-synopsis-box" id="intro-synopsis-box" style="display:none;">
+                <div class="intro-synopsis-label">Synopsis</div>
+                <div id="intro-synopsis-text"></div>
+            </div>
+            <div class="intro-episodes-label">Episodes</div>
+            <div class="intro-ep-list" id="intro-ep-list"></div>
+            <button class="intro-start-btn" id="intro-start-btn" onclick="startReadingFromIntro()">▶ Start Reading —
+                Episode 1</button>
+        </div>
+    </div>
+
     <!-- ══ READER ══ -->
     <div id="page-reader" class="page">
         <div class="reader-page">
             <div class="reader-back">
-                <button class="btn-back" onclick="goBack()">← Back</button>
+                <button class="btn-back" onclick="goBackToIntro()">← Back</button>
                 <div id="reader-title" class="reader-title"></div>
             </div>
             <div id="reader-meta" class="reader-meta"></div>
@@ -2663,8 +2980,7 @@
                 </aside>
                 <div class="canvas-area">
                     <div class="canvas-toolbar">
-                        <span
-                            style="font-family:'Playfair Display',serif;font-size:14px;font-weight:700;letter-spacing:0">COMIC
+                        <span style="font-family:'Playfair Display',serif;font-size:14px;font-weight:700;">COMIC
                             CANVAS</span>
                         <span id="panel-count" style="font-size:11px;color:var(--muted);margin-left:auto"></span>
                     </div>
@@ -2712,8 +3028,7 @@
                 <div
                     style="background:#0d0a05;border-bottom:1px solid var(--border);padding:7px 12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
                     <button class="dtop-btn" onclick="goBack()">← Back</button>
-                    <div
-                        style="font-family:'Playfair Display',serif;font-size:12px;font-weight:700;color:var(--gold);letter-spacing:0;">
+                    <div style="font-family:'Playfair Display',serif;font-size:12px;font-weight:700;color:var(--gold);">
                         Drawing Studio</div>
                     <div style="margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
                         <label style="font-size:10px;color:var(--muted);font-weight:700;">Size</label>
@@ -2852,17 +3167,16 @@
     <div class="edit-modal" id="edit-modal">
         <div
             style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:28px;width:100%;max-width:580px;max-height:90vh;overflow-y:auto;">
-            <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:900;letter-spacing:0;color:var(--gold);margin-bottom:6px;"
+            <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:var(--gold);margin-bottom:6px;"
                 id="edit-modal-title">✏️ EDIT COMIC</div>
-            <p style="font-size:12px;color:var(--muted);margin-bottom:18px;">Changes here update the demo comic. Only
-                demo comics can be edited this way.</p>
-            <label class="form-label">Title</label>
-            <input class="form-input" id="edit-title" placeholder="Comic title" />
-            <label class="form-label">Synopsis</label>
-            <textarea class="form-textarea" id="edit-synopsis" placeholder="Comic synopsis"
-                style="min-height:80px;"></textarea>
-            <label class="form-label">Author Name</label>
-            <input class="form-input" id="edit-author" placeholder="Author name" />
+            <p style="font-size:12px;color:var(--muted);margin-bottom:18px;">Changes here update the comic permanently.
+            </p>
+            <label class="form-label">Title</label><input class="form-input" id="edit-title"
+                placeholder="Comic title" />
+            <label class="form-label">Synopsis</label><textarea class="form-textarea" id="edit-synopsis"
+                placeholder="Comic synopsis" style="min-height:80px;"></textarea>
+            <label class="form-label">Author Name</label><input class="form-input" id="edit-author"
+                placeholder="Author name" />
             <label class="form-label">Genre</label>
             <select class="form-select" id="edit-genre">
                 <option>Action</option>
@@ -2913,17 +3227,15 @@
     <script>
         // ── SUPABASE INIT ─────────────────────────────────────────────
         const SUPABASE_URL = 'https://fjeqjmwfsrmvrxfrexee.supabase.co';
-        const ADMIN_EMAIL = 'adeseyojup@gmail.com'; // Only admin can delete all comics
+        const ADMIN_EMAIL = 'adeseyojup@gmail.com';
         const SUPABASE_KEY = 'sb_publishable_zskPpgbpCB2kfSMET6f8ew_inRb83c6';
         const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
         let currentUser = null;
         let authMode = 'login';
 
-        // ── AUTH FUNCTIONS ────────────────────────────────────────────
+        // ── AUTH ──────────────────────────────────────────────────────
         function openAuth(mode) {
-            authMode = mode;
-            switchAuthTab(mode);
+            authMode = mode; switchAuthTab(mode);
             document.getElementById('auth-modal').classList.add('open');
             document.getElementById('auth-error').style.display = 'none';
             document.getElementById('auth-success').style.display = 'none';
@@ -2931,11 +3243,7 @@
             document.getElementById('auth-password').value = '';
             document.getElementById('auth-username').value = '';
         }
-
-        function closeAuth() {
-            document.getElementById('auth-modal').classList.remove('open');
-        }
-
+        function closeAuth() { document.getElementById('auth-modal').classList.remove('open'); }
         function switchAuthTab(mode) {
             authMode = mode;
             document.getElementById('tab-login').classList.toggle('active', mode === 'login');
@@ -2945,34 +3253,22 @@
             document.getElementById('auth-signup-fields').style.display = mode === 'signup' ? 'block' : 'none';
             document.getElementById('auth-error').style.display = 'none';
         }
-
         async function submitAuth() {
             const email = document.getElementById('auth-email').value.trim();
             const password = document.getElementById('auth-password').value.trim();
             const username = document.getElementById('auth-username').value.trim();
-            const errEl = document.getElementById('auth-error');
-            const sucEl = document.getElementById('auth-success');
             const btn = document.getElementById('auth-submit-btn');
-
             if (!email || !password) { showAuthError('Please fill in all fields'); return; }
             if (authMode === 'signup' && !username) { showAuthError('Please enter a username'); return; }
-
-            btn.textContent = 'Please wait…';
-            btn.disabled = true;
-            errEl.style.display = 'none';
-
+            btn.textContent = 'Please wait…'; btn.disabled = true;
+            document.getElementById('auth-error').style.display = 'none';
             try {
                 if (authMode === 'signup') {
                     const { data, error } = await sb.auth.signUp({ email, password });
                     if (error) { showAuthError(error.message); return; }
                     if (data.user) {
-                        // Create profile with upsert to avoid conflicts
-                        await sb.from('profiles').upsert({
-                            id: data.user.id,
-                            username: username || email.split('@')[0]
-                        }, { onConflict: 'id' });
-                        currentUser = data.user;
-                        currentUser.username = username || email.split('@')[0];
+                        await sb.from('profiles').upsert({ id: data.user.id, username: username || email.split('@')[0] }, { onConflict: 'id' });
+                        currentUser = data.user; currentUser.username = username || email.split('@')[0];
                         onAuthSuccess();
                     }
                 } else {
@@ -2980,117 +3276,53 @@
                     if (error) { showAuthError(error.message.includes('Invalid') ? 'Incorrect email or password' : error.message); return; }
                     if (data.user) {
                         currentUser = data.user;
-                        // Fetch profile safely
                         try {
                             const { data: profile } = await sb.from('profiles').select('*').eq('id', data.user.id).maybeSingle();
-                            if (profile) {
-                                currentUser.username = profile.username;
-                            } else {
-                                const username = data.user.email.split('@')[0];
-                                await sb.from('profiles').upsert({ id: data.user.id, username }, { onConflict: 'id' });
-                                currentUser.username = username;
-                            }
+                            if (profile) { currentUser.username = profile.username; }
+                            else { const u = data.user.email.split('@')[0]; await sb.from('profiles').upsert({ id: data.user.id, username: u }, { onConflict: 'id' }); currentUser.username = u; }
                         } catch (e) { currentUser.username = data.user.email.split('@')[0]; }
                         onAuthSuccess();
                     }
                 }
-            } catch (e) {
-                showAuthError('Something went wrong. Please try again.');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = authMode === 'login' ? 'Log In' : 'Create Account';
-            }
+            } catch (e) { showAuthError('Something went wrong. Please try again.'); }
+            finally { btn.disabled = false; btn.textContent = authMode === 'login' ? 'Log In' : 'Create Account'; }
         }
-
-        function showAuthError(msg) {
-            const el = document.getElementById('auth-error');
-            el.textContent = msg;
-            el.style.display = 'block';
-        }
-
-        function onAuthSuccess() {
-            closeAuth();
-            updateNavForUser();
-            showToast('Welcome to Afrotyunz! 🎉');
-            renderHome();
-        }
-
-        async function signOut() {
-            await sb.auth.signOut();
-            currentUser = null;
-            updateNavForUser();
-            showToast('Signed out successfully');
-            renderHome();
-        }
-
+        function showAuthError(msg) { const el = document.getElementById('auth-error'); el.textContent = msg; el.style.display = 'block'; }
+        function onAuthSuccess() { closeAuth(); updateNavForUser(); showToast('Welcome to Afrotyunz! 🎉'); renderHome(); }
+        async function signOut() { await sb.auth.signOut(); currentUser = null; updateNavForUser(); showToast('Signed out successfully'); renderHome(); }
         function updateNavForUser() {
             const loggedIn = document.getElementById('nav-logged-in');
             const loggedOut = document.getElementById('nav-user-area');
             if (currentUser) {
-                loggedIn.style.display = 'flex';
-                loggedOut.style.display = 'none';
-                const initials = (currentUser.username || currentUser.email || '?')[0].toUpperCase();
-                document.getElementById('user-avatar').textContent = initials;
-            } else {
-                loggedIn.style.display = 'none';
-                loggedOut.style.display = 'flex';
-            }
+                loggedIn.style.display = 'flex'; loggedOut.style.display = 'none';
+                document.getElementById('user-avatar').textContent = (currentUser.username || currentUser.email || '?')[0].toUpperCase();
+            } else { loggedIn.style.display = 'none'; loggedOut.style.display = 'flex'; }
         }
-
-        // Check session on load
         async function checkSession() {
             const { data: { session } } = await sb.auth.getSession();
             if (session) {
                 currentUser = session.user;
                 try {
                     const { data: profile } = await sb.from('profiles').select('*').eq('id', currentUser.id).maybeSingle();
-                    if (profile) {
-                        currentUser.username = profile.username;
-                    } else {
-                        // Create profile if it doesn't exist
-                        const username = currentUser.email.split('@')[0];
-                        await sb.from('profiles').upsert({ id: currentUser.id, username }, { onConflict: 'id' });
-                        currentUser.username = username;
-                    }
+                    if (profile) { currentUser.username = profile.username; }
+                    else { const u = currentUser.email.split('@')[0]; await sb.from('profiles').upsert({ id: currentUser.id, username: u }, { onConflict: 'id' }); currentUser.username = u; }
                 } catch (e) { currentUser.username = currentUser.email.split('@')[0]; }
                 updateNavForUser();
-                // Load this user's published comics from Supabase
                 await loadUserComicsFromSupabase();
             }
         }
-
-        async function loadUserComicsFromSupabase() {
-            // Load ALL comics from Supabase — not just the current user's
-            await loadAllComicsFromSupabase();
-        }
-
+        async function loadUserComicsFromSupabase() { await loadAllComicsFromSupabase(); }
         async function loadAllComicsFromSupabase() {
             try {
-                const { data: sbComics } = await sb.from('comics')
-                    .select('*')
-                    .eq('is_demo', false)
-                    .order('created_at', { ascending: false });
-
+                const { data: sbComics } = await sb.from('comics').select('*').eq('is_demo', false).order('created_at', { ascending: false });
                 if (!sbComics || !sbComics.length) return;
-
                 for (const c of sbComics) {
-                    if (comics.find(x => x.id === c.id)) continue; // skip if already loaded
-                    const { data: eps } = await sb.from('episodes')
-                        .select('*').eq('comic_id', c.id).order('episode_number');
-                    const episodes = (eps || []).map(ep => ({
-                        title: ep.title,
-                        blocks: ep.content?.blocks || []
-                    }));
-                    comics.unshift({
-                        id: c.id, title: c.title, genre: c.genre,
-                        synopsis: c.synopsis, pi: 0, likes: c.likes || 0,
-                        badge: c.badge || 'new', author: c.author_name,
-                        author_id: c.author_id,
-                        isDemo: false, episodes, comments: []
-                    });
+                    if (comics.find(x => x.id === c.id)) continue;
+                    const { data: eps } = await sb.from('episodes').select('*').eq('comic_id', c.id).order('episode_number');
+                    const episodes = (eps || []).map(ep => ({ title: ep.title, blocks: ep.content?.blocks || [] }));
+                    comics.unshift({ id: c.id, title: c.title, genre: c.genre, synopsis: c.synopsis, pi: 0, likes: c.likes || 0, badge: c.badge || 'new', author: c.author_name, author_id: c.author_id, isDemo: false, episodes, comments: [] });
                 }
                 renderHome();
-                // Also refresh browse if on browse page
                 const activePage = document.querySelector('.page.active')?.id?.replace('page-', '');
                 if (activePage === 'browse') renderBrowse('All');
             } catch (e) { console.warn('Could not load comics from Supabase', e); }
@@ -3101,71 +3333,30 @@
             if (!currentUser) { openAuth('signup'); return null; }
             try {
                 const authorName = currentUser.username || currentUser.email.split('@')[0];
-                // Insert comic
-                const { data: comic, error: comicErr } = await sb.from('comics').insert({
-                    title, genre, synopsis,
-                    author_id: currentUser.id,
-                    author_name: authorName,
-                    likes: 0, badge: 'new', is_demo: false
-                }).select('id, title, genre, synopsis, author_id, author_name, likes, badge, is_demo').single();
+                const { data: comic, error: comicErr } = await sb.from('comics').insert({ title, genre, synopsis, author_id: currentUser.id, author_name: authorName, likes: 0, badge: 'new', is_demo: false }).select('id,title,genre,synopsis,author_id,author_name,likes,badge,is_demo').single();
                 if (comicErr) { showToast('Error publishing: ' + comicErr.message); return null; }
-
-                // Save blocks — keep Supabase URLs, drop base64
-                const savedBlocks = blocks.map(b => {
-                    if (b.type === 'image') {
-                        const imgUrl = b.image && b.image.startsWith('http') ? b.image : null;
-                        return { ...b, image: imgUrl };
-                    }
-                    return b;
-                });
-
-                await sb.from('episodes').insert({
-                    comic_id: comic.id,
-                    title: epTitle || 'Episode 1',
-                    episode_number: 1,
-                    content: { blocks: savedBlocks }
-                });
-
-                // Return comic data with blocks so we can display it locally immediately
-                return {
-                    id: comic.id,
-                    title, genre, synopsis,
-                    pi: 0, likes: 0, badge: 'new',
-                    author: authorName,
-                    isDemo: false,
-                    episodes: [{ title: epTitle || 'Episode 1', blocks: savedBlocks }],
-                    comments: []
-                };
-            } catch (e) {
-                showToast('Error publishing comic');
-                return null;
-            }
+                const savedBlocks = blocks.map(b => b.type === 'image' ? { ...b, image: b.image && b.image.startsWith('http') ? b.image : null } : b);
+                await sb.from('episodes').insert({ comic_id: comic.id, title: epTitle || 'Episode 1', episode_number: 1, content: { blocks: savedBlocks } });
+                return { id: comic.id, title, genre, synopsis, pi: 0, likes: 0, badge: 'new', author: authorName, isDemo: false, episodes: [{ title: epTitle || 'Episode 1', blocks: savedBlocks }], comments: [] };
+            } catch (e) { showToast('Error publishing comic'); return null; }
         }
-
         async function postCommentToSupabase(comicId, text) {
             if (!currentUser) { openAuth('login'); return false; }
             try {
-                const { error } = await sb.from('comments').insert({
-                    comic_id: comicId,
-                    user_id: currentUser.id,
-                    username: currentUser.username || currentUser.email.split('@')[0],
-                    content: text
-                });
+                const { error } = await sb.from('comments').insert({ comic_id: comicId, user_id: currentUser.id, username: currentUser.username || currentUser.email.split('@')[0], content: text });
                 if (error) { showToast('Error posting comment'); return false; }
                 return true;
             } catch (e) { return false; }
         }
-
         async function loadCommentsFromSupabase(comicId) {
             try {
-                const { data, error } = await sb.from('comments')
-                    .select('*').eq('comic_id', comicId).order('created_at', { ascending: false });
+                const { data, error } = await sb.from('comments').select('*').eq('comic_id', comicId).order('created_at', { ascending: false });
                 if (error || !data) return null;
                 return data;
             } catch (e) { return null; }
         }
 
-        // ── THEMES ────────────────────────────────────────────────────────
+        // ── THEMES ────────────────────────────────────────────────────
         const THEMES = [
             { name: 'Warm & Earthy', vars: { '--bg': '#1a1208', '--bg2': '#221a0e', '--bg3': '#2e2010', '--gold': '#e8a045', '--red': '#c0392b', '--green': '#2d8a6e', '--text': '#f5ede0', '--muted': '#8a7560', '--border': '#3d2e1a' } },
             { name: 'Midnight Africa', vars: { '--bg': '#060b1f', '--bg2': '#0d1430', '--bg3': '#141d40', '--gold': '#f0c040', '--red': '#e63946', '--green': '#2ec4b6', '--text': '#e8eeff', '--muted': '#6070a0', '--border': '#1e2a5a' } },
@@ -3174,53 +3365,28 @@
             { name: 'Royal Kente', vars: { '--bg': '#0a0a0a', '--bg2': '#111111', '--bg3': '#1a1a1a', '--gold': '#ffd700', '--red': '#e63946', '--green': '#2ecc71', '--text': '#ffffff', '--muted': '#888888', '--border': '#2a2a2a' } },
             { name: 'Desert Night', vars: { '--bg': '#111118', '--bg2': '#18181f', '--bg3': '#222230', '--gold': '#b87333', '--red': '#9b2335', '--green': '#2e6e6e', '--text': '#f0ece4', '--muted': '#7070a0', '--border': '#2a2a3a' } },
         ];
-        let currentTheme = 0;
-        let isDark = true;
-
+        let currentTheme = 0, isDark = true;
         function applyTheme(idx) {
             currentTheme = idx;
             const t = THEMES[idx];
             Object.entries(t.vars).forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
             document.querySelectorAll('.theme-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
             const page = document.querySelector('.page.active')?.id?.replace('page-', '');
-            if (page === 'home') renderHome();
-            else if (page === 'browse') renderBrowse('All');
-            else if (page === 'trending') renderTrending();
-            else if (page === 'library') renderLibrary();
+            if (page === 'home') renderHome(); else if (page === 'browse') renderBrowse('All'); else if (page === 'trending') renderTrending(); else if (page === 'library') renderLibrary();
             showToast('🎨 ' + t.name);
         }
-
         function showTip(n) { const t = document.getElementById('theme-tip'); t.textContent = n; t.classList.add('show'); }
         function hideTip() { document.getElementById('theme-tip').classList.remove('show'); }
         function toggleMode() {
             isDark = !isDark;
             document.body.classList.toggle('light', !isDark);
             document.getElementById('mode-btn').textContent = isDark ? '🌙' : '☀️';
-            if (!isDark) {
-                // Light mode — override theme variables directly on root
-                const lightVars = {
-                    '--bg': '#fdf6ec', '--bg2': '#ffffff', '--bg3': '#f5ede0',
-                    '--text': '#2a1a08', '--muted': '#7a6550', '--border': '#e0d0bc'
-                };
-                Object.entries(lightVars).forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
-            } else {
-                // Dark mode — reapply current theme
-                applyTheme(currentTheme);
-            }
+            if (!isDark) { const lv = { '--bg': '#fdf6ec', '--bg2': '#ffffff', '--bg3': '#f5ede0', '--text': '#2a1a08', '--muted': '#7a6550', '--border': '#e0d0bc' }; Object.entries(lv).forEach(([k, v]) => document.documentElement.style.setProperty(k, v)); }
+            else { applyTheme(currentTheme); }
         }
 
         // ── PALETTES ──────────────────────────────────────────────────
-        const PALETTES = [
-            'linear-gradient(135deg,#8B4513,#D2691E)',
-            'linear-gradient(135deg,#CD853F,#DEB887)',
-            'linear-gradient(135deg,#2F4F2F,#556B2F)',
-            'linear-gradient(135deg,#B8860B,#DAA520)',
-            'linear-gradient(135deg,#8B0000,#CD5C5C)',
-            'linear-gradient(135deg,#4A3728,#8B6914)',
-            'linear-gradient(135deg,#1a3a2a,#2d6a4f)',
-            'linear-gradient(135deg,#6B3A2A,#A0522D)',
-        ];
-
+        const PALETTES = ['linear-gradient(135deg,#8B4513,#D2691E)', 'linear-gradient(135deg,#CD853F,#DEB887)', 'linear-gradient(135deg,#2F4F2F,#556B2F)', 'linear-gradient(135deg,#B8860B,#DAA520)', 'linear-gradient(135deg,#8B0000,#CD5C5C)', 'linear-gradient(135deg,#4A3728,#8B6914)', 'linear-gradient(135deg,#1a3a2a,#2d6a4f)', 'linear-gradient(135deg,#6B3A2A,#A0522D)'];
         function getBg(item) {
             if (typeof item.pi === 'number') return PALETTES[item.pi % PALETTES.length];
             if (item.bg && item.bg !== 'none') return item.bg;
@@ -3229,251 +3395,56 @@
 
         // ── COMICS DATA ───────────────────────────────────────────────
         let comics = [
-            {
-                id: 'anansi-web', title: "Anansi's Web", genre: 'Fantasy', pi: 4, likes: 18400, badge: 'hot', author: 'Kofi Mensah', isDemo: true,
-                synopsis: "A spider deity weaves fate across modern Accra. When a young journalist discovers ancient patterns in her city, she realises the Trickster God has been telling their story all along.",
-                episodes: [
-                    {
-                        title: 'The First Thread', panels: [
-                            { pi: 4, dialogue: "Accra never sleeps. Neither does Anansi.", side: 'left' },
-                            { pi: 0, dialogue: "You think you found this story. I let you find it.", side: 'right' },
-                            { pi: 6, dialogue: "Every city has a spider at its centre. Ours just happens to be a god.", side: 'left' },
-                            { pi: 3, dialogue: "Follow the web, child. It leads everywhere.", side: 'right' },
-                        ]
-                    },
-                    {
-                        title: 'The Trickster Speaks', panels: [
-                            { pi: 2, dialogue: "They forgot the old stories. I never let them.", side: 'left' },
-                            { pi: 5, dialogue: "What do you want from me?", side: 'right' },
-                            { pi: 4, dialogue: "Not from you. Through you.", side: 'left' },
-                        ]
-                    },
-                ], comments: ["Abena: This is the most Ghanaian thing I have ever read", "Kweku: Anansi in modern Accra is GENIUS"]
-            },
-
-            {
-                id: 'iron-mask-benin', title: 'Iron Mask of Benin', genre: 'Action', pi: 0, likes: 24100, badge: 'hot', author: 'Emeka Okafor', isDemo: true,
-                synopsis: "Prince Adeyemi was stripped of his throne and left for dead. Now masked in iron forged from his father's broken crown, he returns to reclaim what was taken.",
-                episodes: [
-                    {
-                        title: 'The Fallen Prince', panels: [
-                            { pi: 0, dialogue: "They took everything. The throne. The name. The face.", side: 'left' },
-                            { pi: 3, dialogue: "But they could not take what my father forged into me.", side: 'right' },
-                            { pi: 1, dialogue: "The Iron Mask rises tonight.", side: 'left' },
-                            { pi: 5, dialogue: "Who are you?! Show your face!", side: 'right' },
-                            { pi: 0, dialogue: "This IS my face now.", side: 'left' },
-                        ]
-                    },
-                    {
-                        title: 'Blood and Bronze', panels: [
-                            { pi: 2, dialogue: "The palace guards did not recognise their prince.", side: 'left' },
-                            { pi: 4, dialogue: "Good. Let them fear the mask instead.", side: 'right' },
-                        ]
-                    },
-                ], comments: ["Tunde: Better than any Marvel comic", "Ngozi: The Benin Kingdom lore is so rich here"]
-            },
-
-            {
-                id: 'daughter-of-nile', title: 'Daughter of the Nile', genre: 'Romance', pi: 1, likes: 43200, badge: 'new', author: 'Amira Hassan', isDemo: true,
-                synopsis: "Cairo archaeologist Nadia discovers a love letter buried with a pharaoh — written in her own handwriting. Across three thousand years, two souls keep finding each other.",
-                episodes: [
-                    {
-                        title: 'Written in Sand', panels: [
-                            { pi: 1, dialogue: "I have translated a thousand inscriptions. None were addressed to me.", side: 'left' },
-                            { pi: 7, dialogue: "And yet here we are again, Nadia.", side: 'right' },
-                            { pi: 4, dialogue: "How do you know my name?", side: 'left' },
-                            { pi: 1, dialogue: "I have always known your name.", side: 'right' },
-                        ]
-                    },
-                    {
-                        title: 'The Second Life', panels: [
-                            { pi: 6, dialogue: "The Nile remembers what we forget.", side: 'left' },
-                            { pi: 3, dialogue: "Then let me remember with you.", side: 'right' },
-                        ]
-                    },
-                ], comments: ["Fatima: I literally cried reading this", "Hassan: Ancient Egypt romance done RIGHT"]
-            },
-
-            {
-                id: 'juju-circuit', title: 'Juju Circuit', genre: 'Sci-Fi', pi: 6, likes: 29800, badge: 'up', author: 'Zara Obi', isDemo: true,
-                synopsis: "Lagos 2087. Technology runs on juju energy harvested from ancestral spirits. But when the grid starts failing, sixteen-year-old Temi discovers her grandmother is the source.",
-                episodes: [
-                    {
-                        title: 'Power Grid', panels: [
-                            { pi: 6, dialogue: "In 2087 Lagos runs on juju. Everyone knows this. No one asks why.", side: 'left' },
-                            { pi: 2, dialogue: "Grid failure in sector 7. Source: unknown. Power level: critical.", side: 'right' },
-                            { pi: 0, dialogue: "Grandma, what did you do?", side: 'left' },
-                            { pi: 6, dialogue: "What I had to, child. Now go. Fix what I started.", side: 'right' },
-                        ]
-                    },
-                    {
-                        title: 'Ancestral Code', panels: [
-                            { pi: 3, dialogue: "The old magic and the new tech were never separate.", side: 'left' },
-                            { pi: 5, dialogue: "They were always the same thing.", side: 'right' },
-                        ]
-                    },
-                ], comments: ["Dev: Afrofuturism at its finest", "Lola: TEMI IS MY SPIRIT ANIMAL"]
-            },
-
-            {
-                id: 'the-griots', title: 'The Griots', genre: 'Slice of Life', pi: 5, likes: 11200, badge: '', author: 'Moussa Diallo', isDemo: true,
-                synopsis: "Four young friends in Dakar carry the ancient tradition of the griot. In a world of TikTok and trending sounds, they fight to keep their culture alive.",
-                episodes: [
-                    {
-                        title: 'Old Words New Beats', panels: [
-                            { pi: 5, dialogue: "My grandfather memorised three hundred years of history. I can barely remember my Wi-Fi password.", side: 'left' },
-                            { pi: 3, dialogue: "Then write it down, fool.", side: 'right' },
-                            { pi: 5, dialogue: "Griots do not write. We remember.", side: 'left' },
-                            { pi: 7, dialogue: "Then remember better.", side: 'right' },
-                        ]
-                    },
-                ], comments: ["Binta: This is literally my family", "Oumar: The Dakar details are so accurate"]
-            },
-
-            {
-                id: 'nights-in-nairobi', title: 'Nights in Nairobi', genre: 'Horror', pi: 7, likes: 15600, badge: 'new', author: 'Wanjiru Kamau', isDemo: true,
-                synopsis: "Something ancient has awakened beneath Nairobi. Detective Aisha Njoroge has seen three impossible deaths in one week. The only link — each victim had been dreaming the same dream.",
-                episodes: [
-                    {
-                        title: 'The First Dream', panels: [
-                            { pi: 7, dialogue: "Three bodies. Three different causes of death. Three identical smiles.", side: 'left' },
-                            { pi: 4, dialogue: "They were not smiling, Detective. They were showing their teeth.", side: 'right' },
-                            { pi: 7, dialogue: "What is the difference?", side: 'left' },
-                            { pi: 2, dialogue: "Ask the thing that put them there.", side: 'right' },
-                        ]
-                    },
-                ], comments: ["Waweru: This scared me on the matatu home", "Aisha: The Nairobi setting makes it SO much scarier"]
-            },
-
-            {
-                id: 'mama-ngina-kitchen', title: "Mama Ngina's Kitchen", genre: 'Comedy', pi: 2, likes: 8900, badge: '', author: 'Njoki Mwangi', isDemo: true,
-                synopsis: "Mama Ngina runs the most chaotic catering business in Mombasa. Her daughter wants to modernise it. Her son keeps eating the inventory. And her husband just volunteered them for the President's state dinner.",
-                episodes: [
-                    {
-                        title: 'The State Dinner Disaster', panels: [
-                            { pi: 2, dialogue: "You volunteered us for WHAT?", side: 'left' },
-                            { pi: 5, dialogue: "The President himself! Think of the prestige!", side: 'right' },
-                            { pi: 2, dialogue: "Think of the MENU. We have three days.", side: 'left' },
-                            { pi: 3, dialogue: "I already ate the practice ugali.", side: 'right' },
-                            { pi: 2, dialogue: "BENSON.", side: 'left' },
-                        ]
-                    },
-                ], comments: ["Wanjiku: I know this family personally", "Kamau: The ugali panel killed me dead"]
-            },
-
-            {
-                id: 'lagos-chronicles', title: 'The Lagos Chronicles', genre: 'Drama', pi: 3, likes: 31000, badge: 'hot', author: 'Chidi Adeyemi', isDemo: true,
-                synopsis: "Three generations of a Lagos family navigate oil money, corruption, love and loss across fifty years of Nigerian history. From Fela's shrine to Silicon Lagoon.",
-                episodes: [
-                    {
-                        title: 'Streets of Lagos', panels: [
-                            { pi: 3, dialogue: "This city never sleeps. And it never forgets.", side: 'left' },
-                            { pi: 0, dialogue: "My grandfather built something here. My father spent it. Now it is my turn.", side: 'right' },
-                            { pi: 5, dialogue: "Lagos gives everything and takes everything. That is the deal.", side: 'left' },
-                        ]
-                    },
-                    {
-                        title: 'Silicon Lagoon', panels: [
-                            { pi: 2, dialogue: "They call it the future. We call it Tuesday.", side: 'left' },
-                            { pi: 6, dialogue: "The city changed. We changed with it. Or we did not survive.", side: 'right' },
-                        ]
-                    },
-                ], comments: ["Ada: This is MY story", "Emeka: Chidi always delivers"]
-            },
+            { id: 'anansi-web', title: "Anansi's Web", genre: 'Fantasy', pi: 4, likes: 18400, badge: 'hot', author: 'Kofi Mensah', isDemo: true, synopsis: "A spider deity weaves fate across modern Accra. When a young journalist discovers ancient patterns in her city, she realises the Trickster God has been telling their story all along.", episodes: [{ title: 'The First Thread', panels: [{ pi: 4, dialogue: "Accra never sleeps. Neither does Anansi.", side: 'left' }, { pi: 0, dialogue: "You think you found this story. I let you find it.", side: 'right' }, { pi: 6, dialogue: "Every city has a spider at its centre. Ours just happens to be a god.", side: 'left' }, { pi: 3, dialogue: "Follow the web, child. It leads everywhere.", side: 'right' }] }, { title: 'The Trickster Speaks', panels: [{ pi: 2, dialogue: "They forgot the old stories. I never let them.", side: 'left' }, { pi: 5, dialogue: "What do you want from me?", side: 'right' }, { pi: 4, dialogue: "Not from you. Through you.", side: 'left' }] }], comments: ["Abena: This is the most Ghanaian thing I have ever read", "Kweku: Anansi in modern Accra is GENIUS"] },
+            { id: 'iron-mask-benin', title: 'Iron Mask of Benin', genre: 'Action', pi: 0, likes: 24100, badge: 'hot', author: 'Emeka Okafor', isDemo: true, synopsis: "Prince Adeyemi was stripped of his throne and left for dead. Now masked in iron forged from his father's broken crown, he returns to reclaim what was taken.", episodes: [{ title: 'The Fallen Prince', panels: [{ pi: 0, dialogue: "They took everything. The throne. The name. The face.", side: 'left' }, { pi: 3, dialogue: "But they could not take what my father forged into me.", side: 'right' }, { pi: 1, dialogue: "The Iron Mask rises tonight.", side: 'left' }, { pi: 5, dialogue: "Who are you?! Show your face!", side: 'right' }, { pi: 0, dialogue: "This IS my face now.", side: 'left' }] }, { title: 'Blood and Bronze', panels: [{ pi: 2, dialogue: "The palace guards did not recognise their prince.", side: 'left' }, { pi: 4, dialogue: "Good. Let them fear the mask instead.", side: 'right' }] }], comments: ["Tunde: Better than any Marvel comic", "Ngozi: The Benin Kingdom lore is so rich here"] },
+            { id: 'daughter-of-nile', title: 'Daughter of the Nile', genre: 'Romance', pi: 1, likes: 43200, badge: 'new', author: 'Amira Hassan', isDemo: true, synopsis: "Cairo archaeologist Nadia discovers a love letter buried with a pharaoh — written in her own handwriting. Across three thousand years, two souls keep finding each other.", episodes: [{ title: 'Written in Sand', panels: [{ pi: 1, dialogue: "I have translated a thousand inscriptions. None were addressed to me.", side: 'left' }, { pi: 7, dialogue: "And yet here we are again, Nadia.", side: 'right' }, { pi: 4, dialogue: "How do you know my name?", side: 'left' }, { pi: 1, dialogue: "I have always known your name.", side: 'right' }] }, { title: 'The Second Life', panels: [{ pi: 6, dialogue: "The Nile remembers what we forget.", side: 'left' }, { pi: 3, dialogue: "Then let me remember with you.", side: 'right' }] }], comments: ["Fatima: I literally cried reading this", "Hassan: Ancient Egypt romance done RIGHT"] },
+            { id: 'juju-circuit', title: 'Juju Circuit', genre: 'Sci-Fi', pi: 6, likes: 29800, badge: 'up', author: 'Zara Obi', isDemo: true, synopsis: "Lagos 2087. Technology runs on juju energy harvested from ancestral spirits. But when the grid starts failing, sixteen-year-old Temi discovers her grandmother is the source.", episodes: [{ title: 'Power Grid', panels: [{ pi: 6, dialogue: "In 2087 Lagos runs on juju. Everyone knows this. No one asks why.", side: 'left' }, { pi: 2, dialogue: "Grid failure in sector 7. Source: unknown. Power level: critical.", side: 'right' }, { pi: 0, dialogue: "Grandma, what did you do?", side: 'left' }, { pi: 6, dialogue: "What I had to, child. Now go. Fix what I started.", side: 'right' }] }, { title: 'Ancestral Code', panels: [{ pi: 3, dialogue: "The old magic and the new tech were never separate.", side: 'left' }, { pi: 5, dialogue: "They were always the same thing.", side: 'right' }] }], comments: ["Dev: Afrofuturism at its finest", "Lola: TEMI IS MY SPIRIT ANIMAL"] },
+            { id: 'the-griots', title: 'The Griots', genre: 'Slice of Life', pi: 5, likes: 11200, badge: '', author: 'Moussa Diallo', isDemo: true, synopsis: "Four young friends in Dakar carry the ancient tradition of the griot. In a world of TikTok and trending sounds, they fight to keep their culture alive.", episodes: [{ title: 'Old Words New Beats', panels: [{ pi: 5, dialogue: "My grandfather memorised three hundred years of history. I can barely remember my Wi-Fi password.", side: 'left' }, { pi: 3, dialogue: "Then write it down, fool.", side: 'right' }, { pi: 5, dialogue: "Griots do not write. We remember.", side: 'left' }, { pi: 7, dialogue: "Then remember better.", side: 'right' }] }], comments: ["Binta: This is literally my family", "Oumar: The Dakar details are so accurate"] },
+            { id: 'nights-in-nairobi', title: 'Nights in Nairobi', genre: 'Horror', pi: 7, likes: 15600, badge: 'new', author: 'Wanjiru Kamau', isDemo: true, synopsis: "Something ancient has awakened beneath Nairobi. Detective Aisha Njoroge has seen three impossible deaths in one week. The only link — each victim had been dreaming the same dream.", episodes: [{ title: 'The First Dream', panels: [{ pi: 7, dialogue: "Three bodies. Three different causes of death. Three identical smiles.", side: 'left' }, { pi: 4, dialogue: "They were not smiling, Detective. They were showing their teeth.", side: 'right' }, { pi: 7, dialogue: "What is the difference?", side: 'left' }, { pi: 2, dialogue: "Ask the thing that put them there.", side: 'right' }] }], comments: ["Waweru: This scared me on the matatu home", "Aisha: The Nairobi setting makes it SO much scarier"] },
+            { id: 'mama-ngina-kitchen', title: "Mama Ngina's Kitchen", genre: 'Comedy', pi: 2, likes: 8900, badge: '', author: 'Njoki Mwangi', isDemo: true, synopsis: "Mama Ngina runs the most chaotic catering business in Mombasa. Her daughter wants to modernise it. Her son keeps eating the inventory. And her husband just volunteered them for the President's state dinner.", episodes: [{ title: 'The State Dinner Disaster', panels: [{ pi: 2, dialogue: "You volunteered us for WHAT?", side: 'left' }, { pi: 5, dialogue: "The President himself! Think of the prestige!", side: 'right' }, { pi: 2, dialogue: "Think of the MENU. We have three days.", side: 'left' }, { pi: 3, dialogue: "I already ate the practice ugali.", side: 'right' }, { pi: 2, dialogue: "BENSON.", side: 'left' }] }], comments: ["Wanjiku: I know this family personally", "Kamau: The ugali panel killed me dead"] },
+            { id: 'lagos-chronicles', title: 'The Lagos Chronicles', genre: 'Drama', pi: 3, likes: 31000, badge: 'hot', author: 'Chidi Adeyemi', isDemo: true, synopsis: "Three generations of a Lagos family navigate oil money, corruption, love and loss across fifty years of Nigerian history. From Fela's shrine to Silicon Lagoon.", episodes: [{ title: 'Streets of Lagos', panels: [{ pi: 3, dialogue: "This city never sleeps. And it never forgets.", side: 'left' }, { pi: 0, dialogue: "My grandfather built something here. My father spent it. Now it is my turn.", side: 'right' }, { pi: 5, dialogue: "Lagos gives everything and takes everything. That is the deal.", side: 'left' }] }, { title: 'Silicon Lagoon', panels: [{ pi: 2, dialogue: "They call it the future. We call it Tuesday.", side: 'left' }, { pi: 6, dialogue: "The city changed. We changed with it. Or we did not survive.", side: 'right' }] }], comments: ["Ada: This is MY story", "Emeka: Chidi always delivers"] },
         ];
 
-        let currentComic = null;
-        let currentEp = 0;
-        let likedComics = {};
-        let userRatings = {};
-        let previousPage = 'home';
-        let blockList = [
-            { id: 1, type: 'image', image: null },
-            { id: 2, type: 'dialogue', text: '' },
-            { id: 3, type: 'image', image: null },
-        ];
+        let currentComic = null, currentEp = 0, likedComics = {}, userRatings = {}, previousPage = 'home';
+        let blockList = [{ id: 1, type: 'image', image: null }, { id: 2, type: 'dialogue', text: '' }, { id: 3, type: 'image', image: null }];
 
         // ── STORAGE ───────────────────────────────────────────────────
-        const STORE_KEY = 'afrotyunz_comics';
-        const LIB_KEY = 'afrotyunz_lib';
-
-        function saveToStore() {
-            try {
-                const user = comics.filter(c => c.id.startsWith('user-')).map(c => ({
-                    ...c, coverImage: null,
-                    episodes: (c.episodes || []).map(ep => ({
-                        ...ep,
-                        blocks: (ep.blocks || []).map(b => b.type === 'image' ? { ...b, image: b.image ? '[IMG]' : null } : b)
-                    }))
-                }));
-                localStorage.setItem(STORE_KEY, JSON.stringify(user));
-            } catch (e) { }
-        }
-
-        function loadFromStore() {
-            try {
-                const d = localStorage.getItem(STORE_KEY);
-                if (d) JSON.parse(d).forEach(c => { if (!comics.find(x => x.id === c.id)) comics.unshift(c); });
-            } catch (e) { }
-        }
-
+        const STORE_KEY = 'afrotyunz_comics', LIB_KEY = 'afrotyunz_lib';
+        function saveToStore() { try { const user = comics.filter(c => c.id.startsWith('user-')).map(c => ({ ...c, coverImage: null, episodes: (c.episodes || []).map(ep => ({ ...ep, blocks: (ep.blocks || []).map(b => b.type === 'image' ? { ...b, image: b.image ? '[IMG]' : null } : b) })) })); localStorage.setItem(STORE_KEY, JSON.stringify(user)); } catch (e) { } }
+        function loadFromStore() { try { const d = localStorage.getItem(STORE_KEY); if (d) JSON.parse(d).forEach(c => { if (!comics.find(x => x.id === c.id)) comics.unshift(c); }); } catch (e) { } }
         function getLib() { try { return JSON.parse(localStorage.getItem(LIB_KEY) || '[]'); } catch (e) { return []; } }
         function saveLib(l) { try { localStorage.setItem(LIB_KEY, JSON.stringify(l)); } catch (e) { } }
 
         // ── TOAST ─────────────────────────────────────────────────────
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            t.textContent = msg;
-            t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 2400);
-        }
+        function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2400); }
 
         // ── NOTIFICATIONS ─────────────────────────────────────────────
         let notifs = [
-            { id: 1, icon: '🔥', text: 'Iron Hollow just dropped Episode 3!', time: '2 min ago', unread: true },
+            { id: 1, icon: '🔥', text: 'Iron Mask just dropped Episode 3!', time: '2 min ago', unread: true },
             { id: 2, icon: '❤️', text: 'Your comic got 10 new likes today', time: '1 hr ago', unread: true },
-            { id: 3, icon: '💬', text: 'Someone commented on Starfall', time: '3 hrs ago', unread: true },
+            { id: 3, icon: '💬', text: 'Someone commented on your comic', time: '3 hrs ago', unread: true },
         ];
-
         function renderNotifs() {
-            const list = document.getElementById('notif-list');
-            const badge = document.getElementById('notif-badge');
+            const list = document.getElementById('notif-list'), badge = document.getElementById('notif-badge');
             const unread = notifs.filter(n => n.unread).length;
-            badge.textContent = unread;
-            badge.style.display = unread > 0 ? 'flex' : 'none';
-            list.innerHTML = notifs.length
-                ? notifs.map(n => `<div class="notif-item ${n.unread ? 'unread' : ''}" onclick="markRead(${n.id})">
-            <div class="notif-icon">${n.icon}</div>
-            <div><div class="notif-text">${n.text}</div><div class="notif-time">${n.time}</div></div>
-          </div>`).join('')
-                : '<div class="notif-empty">You are all caught up!</div>';
+            badge.textContent = unread; badge.style.display = unread > 0 ? 'flex' : 'none';
+            list.innerHTML = notifs.length ? notifs.map(n => `<div class="notif-item ${n.unread ? 'unread' : ''}" onclick="markRead(${n.id})"><div class="notif-icon">${n.icon}</div><div><div class="notif-text">${n.text}</div><div class="notif-time">${n.time}</div></div></div>`).join('') : '<div class="notif-empty">You are all caught up!</div>';
         }
-
         function toggleNotif() { document.getElementById('notif-drop').classList.toggle('open'); }
         function markRead(id) { notifs = notifs.map(n => n.id === id ? { ...n, unread: false } : n); renderNotifs(); }
         function clearNotifs() { notifs = []; renderNotifs(); }
-
-        document.addEventListener('click', e => {
-            if (!e.target.closest('.btn-icon') && !e.target.closest('.notif-drop'))
-                document.getElementById('notif-drop').classList.remove('open');
-        });
+        document.addEventListener('click', e => { if (!e.target.closest('.btn-icon') && !e.target.closest('.notif-drop')) document.getElementById('notif-drop').classList.remove('open'); });
 
         // ── NAVIGATION ────────────────────────────────────────────────
         const pageHistory = [];
-
         function goTo(page) {
             const current = document.querySelector('.page.active')?.id?.replace('page-', '');
-            if (current && current !== page && current !== 'reader') {
-                pageHistory.push(current);
-                if (pageHistory.length > 10) pageHistory.shift();
-            }
+            if (current && current !== page && current !== 'reader' && current !== 'intro') { pageHistory.push(current); if (pageHistory.length > 10) pageHistory.shift(); }
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-links button, .mob-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('page-' + page).classList.add('active');
-            const nb = document.getElementById('nav-' + page);
-            if (nb) nb.classList.add('active');
-            const mb = document.getElementById('mob-' + page);
-            if (mb) mb.classList.add('active');
+            const nb = document.getElementById('nav-' + page); if (nb) nb.classList.add('active');
+            const mb = document.getElementById('mob-' + page); if (mb) mb.classList.add('active');
             document.getElementById('notif-drop').classList.remove('open');
             window.scrollTo(0, 0);
             if (page === 'home') renderHome();
@@ -3484,10 +3455,14 @@
             else if (page === 'create') renderCanvas();
             else if (page === 'draw') initDrawStudio();
         }
-
-        function goBack() {
-            const prev = pageHistory.pop() || 'home';
-            goTo(prev);
+        function goBack() { const prev = pageHistory.pop() || 'home'; goTo(prev); }
+        function goBackToIntro() {
+            // From reader, go back to intro if we came from there
+            if (currentComic) {
+                showIntroPage(currentComic);
+            } else {
+                goBack();
+            }
         }
 
         function filterGenre(pill, ctx) {
@@ -3500,20 +3475,15 @@
         // ── SEARCH ────────────────────────────────────────────────────
         function handleSearch(val) {
             const q = val.trim().toLowerCase();
-            const clearBtn = document.getElementById('search-clear');
-            const lbl = document.getElementById('search-label');
+            const clearBtn = document.getElementById('search-clear'), lbl = document.getElementById('search-label');
             clearBtn.classList.toggle('show', q.length > 0);
             if (q) {
                 const res = comics.filter(c => c.title.toLowerCase().includes(q) || c.genre.toLowerCase().includes(q) || c.author.toLowerCase().includes(q));
-                lbl.style.display = 'block';
-                lbl.textContent = res.length + ' result' + (res.length !== 1 ? 's' : '') + ' for "' + val.trim() + '"';
-                document.getElementById('browse-grid').innerHTML = res.length
-                    ? res.map(cardHTML).join('')
-                    : '<div class="no-results">No comics found for "' + val.trim() + '"</div>';
+                lbl.style.display = 'block'; lbl.textContent = res.length + ' result' + (res.length !== 1 ? 's' : '') + ' for "' + val.trim() + '"';
+                document.getElementById('browse-grid').innerHTML = res.length ? res.map(cardHTML).join('') : '<div class="no-results">No comics found for "' + val.trim() + '"</div>';
                 document.getElementById('browse-genre-bar').querySelectorAll('.genre-pill').forEach(p => p.classList.remove('active'));
             } else clearSearch();
         }
-
         function clearSearch() {
             document.getElementById('search-input').value = '';
             document.getElementById('search-clear').classList.remove('show');
@@ -3525,27 +3495,25 @@
 
         // ── HELPERS ───────────────────────────────────────────────────
         function fmt(n) { return n >= 1000 ? (n / 1000).toFixed(1) + 'K' : n; }
-
         function cardHTML(c) {
             const badge = c.badge ? `<div class="comic-badge badge-${c.badge}">${c.badge.toUpperCase()}</div>` : '';
             const rating = (c.rating || (3.8 + (c.likes % 13) * 0.1)).toFixed(1);
             const stars = '★'.repeat(Math.min(5, Math.round(rating))) + '☆'.repeat(Math.max(0, 5 - Math.round(rating)));
-            return `<div class="comic-card" onclick="openReader('${c.id}')">
-        <div class="comic-cover" style="background:${getBg(c)}">
-          <div class="comic-cover-icon">✦</div>
-          <div class="comic-cover-title">${c.title}</div>
-          <div class="comic-cover-genre">${c.genre}</div>
-          ${badge}
-          <div class="comic-likes">❤️ ${fmt(c.likes)}</div>
-        </div>
-        <div class="comic-info">
-          <div class="comic-title">${c.title}</div>
-          <div class="comic-meta-row">
-            <span class="comic-genre-tag">${c.genre}</span>
-            <span class="comic-rating">${stars.slice(0, 3)} ${rating}</span>
-          </div>
-        </div>
-      </div>`;
+            return `<div class="comic-card" onclick="openComicIntro('${c.id}')">
+              <div class="comic-cover" style="background:${getBg(c)}">
+                <div class="comic-cover-icon">✦</div>
+                <div class="comic-cover-title">${c.title}</div>
+                <div class="comic-cover-genre">${c.genre}</div>
+                ${badge}<div class="comic-likes">❤️ ${fmt(c.likes)}</div>
+              </div>
+              <div class="comic-info">
+                <div class="comic-title">${c.title}</div>
+                <div class="comic-meta-row">
+                  <span class="comic-genre-tag">${c.genre}</span>
+                  <span class="comic-rating">${stars.slice(0, 3)} ${rating}</span>
+                </div>
+              </div>
+            </div>`;
         }
 
         // ── RENDER HOME ───────────────────────────────────────────────
@@ -3556,91 +3524,183 @@
             document.getElementById('new-row').innerHTML = newest.map(cardHTML).join('');
             const rc = ['gold', 'gold', 'silver', 'bronze', 'normal', 'normal'];
             document.getElementById('ranking-list').innerHTML = trending.map((c, i) => `
-        <div class="rank-item" onclick="openReader('${c.id}')">
-          <div class="rank-num ${rc[i]}">${i + 1}</div>
-          <div class="rank-cover" style="background:${getBg(c)}">
-            <span class="trend-cover-text">${c.title}</span>
-          </div>
-          <div class="rank-info">
-            <div class="rank-title">${c.title}</div>
-            <div class="rank-meta">${c.genre} · ${c.episodes.length} ep${c.episodes.length > 1 ? 's' : ''}</div>
-          </div>
-          <div class="rank-likes">❤️ ${fmt(c.likes)}</div>
-        </div>`).join('');
+              <div class="rank-item" onclick="openComicIntro('${c.id}')">
+                <div class="rank-num ${rc[i]}">${i + 1}</div>
+                <div class="rank-cover" style="background:${getBg(c)}"><span class="trend-cover-text">${c.title}</span></div>
+                <div class="rank-info"><div class="rank-title">${c.title}</div><div class="rank-meta">${c.genre} · ${c.episodes.length} ep${c.episodes.length > 1 ? 's' : ''}</div></div>
+                <div class="rank-likes">❤️ ${fmt(c.likes)}</div>
+              </div>`).join('');
         }
 
-        // ── RENDER BROWSE ─────────────────────────────────────────────
         function renderBrowse(genre) {
             const list = genre === 'All' ? comics : comics.filter(c => c.genre === genre);
             document.getElementById('browse-grid').innerHTML = list.map(cardHTML).join('');
         }
 
-        // ── OPEN READER ───────────────────────────────────────────────
-        async function openReader(id) {
-            currentComic = comics.find(c => c.id === id);
-            if (!currentComic) return;
-            currentEp = 0;
-            // Load real episodes from Supabase if not a demo comic
+        // ── COMIC INTRO PAGE ──────────────────────────────────────────
+        async function openComicIntro(id) {
+            let comic = comics.find(c => c.id === id);
+            if (!comic) return;
+
+            // For Supabase comics, pre-load episodes if needed
             const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
-            if (!currentComic.isDemo && isUUID) {
+            if (!comic.isDemo && isUUID && (!comic.episodes || !comic.episodes.length)) {
                 try {
-                    const { data: eps } = await sb.from('episodes')
-                        .select('*').eq('comic_id', id).order('episode_number');
-                    if (eps && eps.length) {
-                        currentComic.episodes = eps.map(ep => ({
-                            title: ep.title,
-                            blocks: ep.content?.blocks || []
-                        }));
-                    }
-                    // Load comments from Supabase
+                    const { data: eps } = await sb.from('episodes').select('*').eq('comic_id', id).order('episode_number');
+                    if (eps && eps.length) comic.episodes = eps.map(ep => ({ title: ep.title, blocks: ep.content?.blocks || [] }));
+                } catch (e) { }
+            }
+
+            // Save previous page
+            const current = document.querySelector('.page.active')?.id?.replace('page-', '');
+            if (current && current !== 'intro' && current !== 'reader') { pageHistory.push(current); if (pageHistory.length > 10) pageHistory.shift(); }
+
+            currentComic = comic;
+            showIntroPage(comic);
+        }
+
+        function showIntroPage(comic) {
+            const rating = (comic.rating || (3.8 + (comic.likes % 13) * 0.1)).toFixed(1);
+            const epCount = comic.episodes ? comic.episodes.length : 0;
+            const lib = getLib();
+            const isSaved = lib.includes(comic.id);
+            const isLiked = !!likedComics[comic.id];
+
+            // Cover banner
+            document.getElementById('intro-cover-banner').style.background = getBg(comic);
+            document.getElementById('intro-cover-art').innerHTML = `<div class="intro-cover-icon-big">${comic.title}</div>`;
+            document.getElementById('intro-genre-pill').textContent = comic.genre;
+            document.getElementById('intro-comic-title').textContent = comic.title;
+
+            const demoBadge = comic.isDemo ? '<span style="font-size:10px;background:rgba(232,160,69,0.2);border:1px solid rgba(232,160,69,0.4);color:var(--gold);padding:2px 8px;border-radius:10px;font-weight:700;">DEMO</span>' : '';
+            document.getElementById('intro-author-line').innerHTML = `<span>by ${comic.author}</span><span class="intro-author-dot"></span><span>${epCount} episode${epCount !== 1 ? 's' : ''}</span>${demoBadge ? '<span class="intro-author-dot"></span>' + demoBadge : ''}`;
+
+            // Stats
+            const stars = '★'.repeat(Math.min(5, Math.round(rating))) + '☆'.repeat(Math.max(0, 5 - Math.round(rating)));
+            document.getElementById('intro-stats-row').innerHTML = `
+              <div class="intro-stat"><div class="intro-stat-val">❤️ ${fmt(comic.likes)}</div><div class="intro-stat-lbl">Likes</div></div>
+              <div class="intro-stat"><div class="intro-stat-val">${epCount}</div><div class="intro-stat-lbl">Episodes</div></div>
+              <div class="intro-stat"><div class="intro-stat-val">${stars.slice(0, 5)} ${rating}</div><div class="intro-stat-lbl">Rating</div></div>
+              <div class="intro-stat"><div class="intro-stat-val">${comic.genre}</div><div class="intro-stat-lbl">Genre</div></div>`;
+
+            // Action buttons
+            document.getElementById('intro-action-row').innerHTML = `
+              <button class="intro-like-btn ${isLiked ? 'liked' : ''}" id="intro-like-btn" onclick="toggleIntroLike()">❤️ ${isLiked ? 'Liked' : 'Like'}</button>
+              <button class="intro-save-btn ${isSaved ? 'saved' : ''}" id="intro-save-btn" onclick="toggleIntroSave()">${isSaved ? '🔖 Saved' : '🔖 Save'}</button>`;
+
+            // Synopsis
+            const synBox = document.getElementById('intro-synopsis-box');
+            if (comic.synopsis) {
+                document.getElementById('intro-synopsis-text').textContent = comic.synopsis;
+                synBox.style.display = 'block';
+            } else { synBox.style.display = 'none'; }
+
+            // Episode list
+            const epList = document.getElementById('intro-ep-list');
+            if (comic.episodes && comic.episodes.length) {
+                epList.innerHTML = comic.episodes.map((ep, i) => {
+                    const panelCount = ep.blocks ? ep.blocks.filter(b => b.type === 'image').length : (ep.panels ? ep.panels.length : 0);
+                    return `<div class="intro-ep-item" onclick="openReaderAtEp('${comic.id}', ${i})">
+                      <div class="intro-ep-num">${i + 1}</div>
+                      <div class="intro-ep-info">
+                        <div class="intro-ep-title">EP ${i + 1}: ${ep.title}</div>
+                        <div class="intro-ep-sub">${panelCount > 0 ? panelCount + ' panel' + (panelCount !== 1 ? 's' : '') : 'Tap to read'}</div>
+                      </div>
+                      <div class="intro-ep-arrow">▶</div>
+                    </div>`;
+                }).join('');
+            } else {
+                epList.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:12px 0;">No episodes yet.</div>';
+            }
+
+            // Start button
+            document.getElementById('intro-start-btn').textContent = epCount > 0 ? `▶ Start Reading — Episode 1` : '▶ Read';
+
+            // Show page
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-links button, .mob-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('page-intro').classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function toggleIntroLike() {
+            if (!currentComic) return;
+            if (!currentUser) { openAuth('signup'); showToast('Sign up to like comics!'); return; }
+            likedComics[currentComic.id] = !likedComics[currentComic.id];
+            currentComic.likes += likedComics[currentComic.id] ? 1 : -1;
+            const btn = document.getElementById('intro-like-btn');
+            if (btn) { btn.classList.toggle('liked', likedComics[currentComic.id]); btn.textContent = (likedComics[currentComic.id] ? '❤️ Liked' : '❤️ Like'); }
+        }
+
+        function toggleIntroSave() {
+            if (!currentComic) return;
+            if (!currentUser) { openAuth('signup'); showToast('Sign up to save comics!'); return; }
+            let lib = getLib();
+            const idx = lib.indexOf(currentComic.id);
+            const btn = document.getElementById('intro-save-btn');
+            if (idx === -1) { lib.push(currentComic.id); if (btn) { btn.classList.add('saved'); btn.textContent = '🔖 Saved'; } showToast('🔖 Saved to Library!'); }
+            else { lib.splice(idx, 1); if (btn) { btn.classList.remove('saved'); btn.textContent = '🔖 Save'; } showToast('Removed from Library'); }
+            saveLib(lib); renderLibrary();
+        }
+
+        function startReadingFromIntro() {
+            if (currentComic) openReaderAtEp(currentComic.id, 0);
+        }
+
+        // ── OPEN READER ───────────────────────────────────────────────
+        async function openReaderAtEp(id, epIndex) {
+            let comic = comics.find(c => c.id === id);
+            if (!comic) return;
+            currentComic = comic;
+            currentEp = epIndex || 0;
+
+            // Load real episodes from Supabase if not demo
+            const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+            if (!comic.isDemo && isUUID) {
+                try {
+                    const { data: eps } = await sb.from('episodes').select('*').eq('comic_id', id).order('episode_number');
+                    if (eps && eps.length) comic.episodes = eps.map(ep => ({ title: ep.title, blocks: ep.content?.blocks || [] }));
                     const dbComments = await loadCommentsFromSupabase(id);
-                    if (dbComments) {
-                        currentComic._dbComments = dbComments;
-                    }
+                    if (dbComments) comic._dbComments = dbComments;
                 } catch (e) { console.warn('Could not load from Supabase', e); }
             }
-            previousPage = document.querySelector('.page.active')?.id?.replace('page-', '') || 'home';
-            document.getElementById('reader-title').textContent = currentComic.title;
-            const demoBadge = currentComic.isDemo ? ' <span class="demo-badge">DEMO</span>' : '';
-            document.getElementById('reader-meta').innerHTML = `by ${currentComic.author} · ${currentComic.genre}` + demoBadge;
-            const synopsisEl = document.getElementById('reader-synopsis');
-            if (currentComic.synopsis) { synopsisEl.textContent = currentComic.synopsis; synopsisEl.style.display = 'block'; }
-            else { synopsisEl.style.display = 'none'; }
-            // Show edit for demo comics OR if admin
-            const showEdit = currentComic.isDemo || (currentUser && currentUser.email === ADMIN_EMAIL);
+
+            document.getElementById('reader-title').textContent = comic.title;
+            const demoBadge = comic.isDemo ? ' <span class="demo-badge">DEMO</span>' : '';
+            document.getElementById('reader-meta').innerHTML = `by ${comic.author} · ${comic.genre} · EP ${currentEp + 1}${demoBadge}`;
+            document.getElementById('reader-synopsis').style.display = 'none'; // synopsis shown on intro page
+
+            const showEdit = comic.isDemo || (currentUser && currentUser.email === ADMIN_EMAIL);
             document.getElementById('edit-btn').style.display = showEdit ? 'flex' : 'none';
-            document.getElementById('like-count').textContent = fmt(currentComic.likes);
+            document.getElementById('like-count').textContent = fmt(comic.likes);
             document.getElementById('like-btn').classList.toggle('liked', !!likedComics[id]);
             const ur = userRatings[id] || 0;
-            document.getElementById('rating-avg').textContent = (currentComic.rating || 4.5).toFixed(1);
+            document.getElementById('rating-avg').textContent = (comic.rating || 4.5).toFixed(1);
             document.getElementById('rating-info').textContent = ur ? 'You rated ' + ur + '/5' : 'Rate this comic';
             renderStars(ur);
-            const lib = getLib();
-            const saved = lib.includes(id);
+            const lib = getLib(), saved = lib.includes(id);
             document.getElementById('save-label').textContent = saved ? 'Saved' : 'Save';
             document.getElementById('save-btn').classList.toggle('saved', saved);
-            // Show delete button for own comics OR if admin
             const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
-            const isOwner = currentUser && (
-                currentComic.author === (currentUser.username || currentUser.email?.split('@')[0]) ||
-                currentComic.author_id === currentUser.id
-            );
+            const isOwner = currentUser && (comic.author === (currentUser.username || currentUser.email?.split('@')[0]) || comic.author_id === currentUser.id);
             document.getElementById('delete-btn').style.display = (isOwner || isAdmin) ? 'flex' : 'none';
             renderEpTabs(); renderStrip(); renderComments();
+
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-links button, .mob-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('page-reader').classList.add('active');
             window.scrollTo(0, 0);
         }
 
-        // ── EDIT DEMO COMIC ────────────────────────────────────────
-        let editingComic = null;
+        // Keep openReader for backward compatibility
+        async function openReader(id) { await openComicIntro(id); }
 
+        // ── EDIT COMIC ─────────────────────────────────────────────
+        let editingComic = null;
         function editComic() {
             if (!currentComic) return;
             const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
             if (!currentComic.isDemo && !isAdmin) return;
-            // Update button label
             document.getElementById('edit-btn').textContent = '✏️ Edit';
             editingComic = currentComic;
             document.getElementById('edit-title').value = currentComic.title;
@@ -3650,175 +3710,79 @@
             renderEditEpisodes();
             document.getElementById('edit-modal').classList.add('open');
         }
-
-        function closeEditModal() {
-            document.getElementById('edit-modal').classList.remove('open');
-            editingComic = null;
-        }
-
+        function closeEditModal() { document.getElementById('edit-modal').classList.remove('open'); editingComic = null; }
         function renderEditEpisodes() {
             if (!editingComic) return;
             const wrap = document.getElementById('edit-episodes-wrap');
             wrap.innerHTML = editingComic.episodes.map((ep, ei) => {
-                // Handle blocks (user-created via Supabase) and panels (demo) format
                 const items = (ep.blocks && ep.blocks.length) ? ep.blocks : (ep.panels || []);
                 const itemsHTML = items.map((p, pi) => {
-                    const isImageBlock = p.type === 'image' || p.type === undefined || (!p.type && p.pi !== undefined);
+                    const isImg = p.type === 'image' || p.type === undefined || (!p.type && p.pi !== undefined);
                     const imgSrc = p.image || null;
                     const dialogue = p.dialogue || p.text || '';
                     const side = p.side || 'left';
                     return `<div class="panel-edit-row">
-            <span style="font-size:10px;color:var(--muted);font-weight:700;min-width:16px;margin-top:4px">${pi + 1}</span>
-            ${isImageBlock || p.type === 'image'
-                            ? imgSrc
-                                ? `<img class="panel-edit-img" src="${imgSrc}" alt="panel"/>
-                   <button class="side-toggle" onclick="editPanelImage(${ei},${pi})" style="color:var(--gold);border-color:var(--gold);margin-top:4px">🖼️ Change</button>`
-                                : `<div class="panel-edit-img-placeholder" onclick="editPanelImage(${ei},${pi})">🖼️<br/>Upload Image</div>`
-                            : ''}
-            <input value="${dialogue}" placeholder="${p.type === 'dialogue' ? 'Dialogue text...' : 'Panel dialogue...'}" onchange="updatePanelDialogue(${ei},${pi},this.value)" style="margin-top:4px"/>
-            ${isImageBlock || p.type === 'image' ? `
-            <button class="side-toggle ${side === 'left' ? 'active' : ''}" onclick="togglePanelSide(${ei},${pi},'left')" style="margin-top:4px">L</button>
-            <button class="side-toggle ${side === 'right' ? 'active' : ''}" onclick="togglePanelSide(${ei},${pi},'right')" style="margin-top:4px">R</button>` : ''}
-            <button class="side-toggle" onclick="removePanelFromEdit(${ei},${pi})" style="color:var(--red);border-color:var(--red);margin-top:4px">✕</button>
-            <input type="file" accept="image/*" id="edit-img-${ei}-${pi}" class="file-input" onchange="handleEditPanelImage(event,${ei},${pi})"/>
-          </div>`;
+                      <span style="font-size:10px;color:var(--muted);font-weight:700;min-width:16px;margin-top:4px">${pi + 1}</span>
+                      ${isImg || p.type === 'image' ? (imgSrc ? `<img class="panel-edit-img" src="${imgSrc}" alt="panel"/><button class="side-toggle" onclick="editPanelImage(${ei},${pi})" style="color:var(--gold);border-color:var(--gold);margin-top:4px">🖼️ Change</button>` : `<div class="panel-edit-img-placeholder" onclick="editPanelImage(${ei},${pi})">🖼️<br/>Upload</div>`) : ''}
+                      <input value="${dialogue}" placeholder="Dialogue…" onchange="updatePanelDialogue(${ei},${pi},this.value)" style="margin-top:4px"/>
+                      ${isImg || p.type === 'image' ? `<button class="side-toggle ${side === 'left' ? 'active' : ''}" onclick="togglePanelSide(${ei},${pi},'left')" style="margin-top:4px">L</button><button class="side-toggle ${side === 'right' ? 'active' : ''}" onclick="togglePanelSide(${ei},${pi},'right')" style="margin-top:4px">R</button>` : ''}
+                      <button class="side-toggle" onclick="removePanelFromEdit(${ei},${pi})" style="color:var(--red);border-color:var(--red);margin-top:4px">✕</button>
+                      <input type="file" accept="image/*" id="edit-img-${ei}-${pi}" class="file-input" onchange="handleEditPanelImage(event,${ei},${pi})"/>
+                    </div>`;
                 }).join('');
                 return `<div class="ep-edit-block">
-          <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
-            <input style="flex:1;padding:6px 9px;border:1.5px solid var(--border);border-radius:6px;background:var(--bg2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;" value="${ep.title}" placeholder="Episode title" onchange="updateEpTitle(${ei},this.value)"/>
-            <button class="side-toggle" onclick="addPanelToEdit(${ei})" style="color:var(--green);border-color:var(--green)">+ Panel</button>
-            <button class="side-toggle" onclick="addDialogueToEdit(${ei})" style="color:var(--gold);border-color:var(--gold)">+ Text</button>
-            <button class="side-toggle" onclick="removeEpisode(${ei})" style="color:var(--red);border-color:var(--red)">✕ Ep</button>
-          </div>
-          ${itemsHTML}
-        </div>`;
+                  <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+                    <input style="flex:1;padding:6px 9px;border:1.5px solid var(--border);border-radius:6px;background:var(--bg2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;" value="${ep.title}" placeholder="Episode title" onchange="updateEpTitle(${ei},this.value)"/>
+                    <button class="side-toggle" onclick="addPanelToEdit(${ei})" style="color:var(--green);border-color:var(--green)">+ Panel</button>
+                    <button class="side-toggle" onclick="addDialogueToEdit(${ei})" style="color:var(--gold);border-color:var(--gold)">+ Text</button>
+                    <button class="side-toggle" onclick="removeEpisode(${ei})" style="color:var(--red);border-color:var(--red)">✕ Ep</button>
+                  </div>
+                  ${itemsHTML}
+                </div>`;
             }).join('');
         }
-
-        function editPanelImage(ei, pi) {
-            const input = document.getElementById(`edit-img-${ei}-${pi}`);
-            if (input) input.click();
-        }
-
+        function editPanelImage(ei, pi) { const input = document.getElementById(`edit-img-${ei}-${pi}`); if (input) input.click(); }
         async function handleEditPanelImage(event, ei, pi) {
-            const file = event.target.files[0];
-            if (!file) return;
+            const file = event.target.files[0]; if (!file) return;
             showToast('Uploading image…');
             try {
-                const formData = new FormData();
-                formData.append('file', file);
-                formData.append('upload_preset', CLOUDINARY_PRESET);
+                const formData = new FormData(); formData.append('file', file); formData.append('upload_preset', CLOUDINARY_PRESET);
                 const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, { method: 'POST', body: formData });
                 const data = await res.json();
-                if (data.secure_url) {
-                    const items = editingComic.episodes[ei].blocks || editingComic.episodes[ei].panels;
-                    items[pi].image = data.secure_url;
-                    renderEditEpisodes();
-                    showToast('Image updated!');
-                } else {
-                    showToast('Upload failed');
-                }
+                if (data.secure_url) { const items = editingComic.episodes[ei].blocks || editingComic.episodes[ei].panels; items[pi].image = data.secure_url; renderEditEpisodes(); showToast('Image updated!'); }
+                else { showToast('Upload failed'); }
             } catch (e) { showToast('Upload error'); }
         }
-
-        function addDialogueToEdit(ei) {
-            if (!editingComic) return;
-            const ep = editingComic.episodes[ei];
-            if (ep.blocks) ep.blocks.push({ type: 'dialogue', text: '' });
-            else ep.panels.push({ dialogue: '', side: 'left' });
-            renderEditEpisodes();
-        }
-
+        function addDialogueToEdit(ei) { if (!editingComic) return; const ep = editingComic.episodes[ei]; if (ep.blocks) ep.blocks.push({ type: 'dialogue', text: '' }); else ep.panels.push({ dialogue: '', side: 'left' }); renderEditEpisodes(); }
         function updateEpTitle(ei, val) { if (editingComic) editingComic.episodes[ei].title = val; }
-        function updatePanelDialogue(ei, pi, val) {
-            if (!editingComic) return;
-            const ep = editingComic.episodes[ei];
-            const items = ep.blocks || ep.panels;
-            if (items[pi].type === 'dialogue') items[pi].text = val;
-            else items[pi].dialogue = val;
-        }
-        function togglePanelSide(ei, pi, side) {
-            if (!editingComic) return;
-            const ep = editingComic.episodes[ei];
-            const items = ep.blocks || ep.panels;
-            items[pi].side = side;
-            renderEditEpisodes();
-        }
-        function removePanelFromEdit(ei, pi) {
-            if (!editingComic) return;
-            const ep = editingComic.episodes[ei];
-            const items = ep.blocks || ep.panels;
-            if (items.length <= 1) return;
-            items.splice(pi, 1);
-            renderEditEpisodes();
-        }
-        function removeEpisode(ei) {
-            if (!editingComic || editingComic.episodes.length <= 1) { showToast('Need at least 1 episode'); return; }
-            editingComic.episodes.splice(ei, 1);
-            renderEditEpisodes();
-        }
-        function addPanelToEdit(ei) {
-            if (!editingComic) return;
-            const ep = editingComic.episodes[ei];
-            if (ep.blocks) ep.blocks.push({ type: 'image', image: null });
-            else ep.panels.push({ pi: 0, dialogue: '', side: 'left' });
-            renderEditEpisodes();
-        }
-        function addEditEpisode() {
-            if (!editingComic) return;
-            editingComic.episodes.push({ title: 'New Episode', panels: [{ pi: 0, dialogue: '', side: 'left' }] });
-            renderEditEpisodes();
-        }
-
+        function updatePanelDialogue(ei, pi, val) { if (!editingComic) return; const ep = editingComic.episodes[ei]; const items = ep.blocks || ep.panels; if (items[pi].type === 'dialogue') items[pi].text = val; else items[pi].dialogue = val; }
+        function togglePanelSide(ei, pi, side) { if (!editingComic) return; const ep = editingComic.episodes[ei]; const items = ep.blocks || ep.panels; items[pi].side = side; renderEditEpisodes(); }
+        function removePanelFromEdit(ei, pi) { if (!editingComic) return; const ep = editingComic.episodes[ei]; const items = ep.blocks || ep.panels; if (items.length <= 1) return; items.splice(pi, 1); renderEditEpisodes(); }
+        function removeEpisode(ei) { if (!editingComic || editingComic.episodes.length <= 1) { showToast('Need at least 1 episode'); return; } editingComic.episodes.splice(ei, 1); renderEditEpisodes(); }
+        function addPanelToEdit(ei) { if (!editingComic) return; const ep = editingComic.episodes[ei]; if (ep.blocks) ep.blocks.push({ type: 'image', image: null }); else ep.panels.push({ pi: 0, dialogue: '', side: 'left' }); renderEditEpisodes(); }
+        function addEditEpisode() { if (!editingComic) return; editingComic.episodes.push({ title: 'New Episode', panels: [{ pi: 0, dialogue: '', side: 'left' }] }); renderEditEpisodes(); }
         async function saveEditedComic() {
             if (!editingComic) return;
             editingComic.title = document.getElementById('edit-title').value.trim() || editingComic.title;
             editingComic.synopsis = document.getElementById('edit-synopsis').value.trim();
             editingComic.author = document.getElementById('edit-author').value.trim() || editingComic.author;
             editingComic.genre = document.getElementById('edit-genre').value;
-            // Update in comics array
             const idx = comics.findIndex(c => c.id === editingComic.id);
             if (idx !== -1) comics[idx] = { ...editingComic };
             currentComic = comics[idx];
-            // Save to Supabase if UUID-based comic
             const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(editingComic.id);
             if (isUUID) {
-                await sb.from('comics').update({
-                    title: editingComic.title,
-                    synopsis: editingComic.synopsis,
-                    genre: editingComic.genre,
-                    author_name: editingComic.author
-                }).eq('id', editingComic.id);
-                // Update episodes
+                await sb.from('comics').update({ title: editingComic.title, synopsis: editingComic.synopsis, genre: editingComic.genre, author_name: editingComic.author }).eq('id', editingComic.id);
                 for (let i = 0; i < editingComic.episodes.length; i++) {
-                    const ep = editingComic.episodes[i];
-                    const blocks = ep.blocks || ep.panels;
-                    // Try update first, then insert if not found
-                    const { data: existingEp } = await sb.from('episodes')
-                        .select('id').eq('comic_id', editingComic.id).eq('episode_number', i + 1).maybeSingle();
-                    if (existingEp) {
-                        await sb.from('episodes').update({
-                            title: ep.title,
-                            content: { blocks }
-                        }).eq('id', existingEp.id);
-                    } else {
-                        await sb.from('episodes').insert({
-                            comic_id: editingComic.id,
-                            title: ep.title,
-                            episode_number: i + 1,
-                            content: { blocks }
-                        });
-                    }
+                    const ep = editingComic.episodes[i]; const blocks = ep.blocks || ep.panels;
+                    const { data: existingEp } = await sb.from('episodes').select('id').eq('comic_id', editingComic.id).eq('episode_number', i + 1).maybeSingle();
+                    if (existingEp) { await sb.from('episodes').update({ title: ep.title, content: { blocks } }).eq('id', existingEp.id); }
+                    else { await sb.from('episodes').insert({ comic_id: editingComic.id, title: ep.title, episode_number: i + 1, content: { blocks } }); }
                 }
             }
             closeEditModal();
-            // Refresh reader
-            document.getElementById('reader-title').textContent = currentComic.title;
-            const isDemo = currentComic.isDemo;
-            const badge = isDemo ? ' <span class="demo-badge">DEMO</span>' : '';
-            document.getElementById('reader-meta').innerHTML = `by ${currentComic.author} · ${currentComic.genre}` + badge;
-            if (currentComic.synopsis) { document.getElementById('reader-synopsis').textContent = currentComic.synopsis; document.getElementById('reader-synopsis').style.display = 'block'; }
-            renderEpTabs(); renderStrip();
+            // Refresh intro page
+            showIntroPage(currentComic);
             showToast('Comic updated!');
         }
 
@@ -3826,9 +3790,7 @@
             document.getElementById('ep-tabs').innerHTML = currentComic.episodes.map((ep, i) =>
                 `<button class="ep-tab ${i === currentEp ? 'active' : ''}" onclick="switchEp(${i})">EP ${i + 1}: ${ep.title}</button>`).join('');
         }
-
         function switchEp(i) { currentEp = i; renderEpTabs(); renderStrip(); }
-
         function renderStrip() {
             const ep = currentComic.episodes[currentEp];
             const heights = [300, 340, 280, 360, 310];
@@ -3842,25 +3804,18 @@
             } else {
                 document.getElementById('panel-strip').innerHTML = (ep.panels || []).map((p, i) =>
                     `<div class="comic-panel" style="background:${getBg(p)};min-height:${heights[i % heights.length]}px">
-            <div class="panel-text-overlay">Panel ${i + 1}</div>
-            ${p.dialogue ? `<div class="panel-dialogue ${p.side}">${p.dialogue}</div>` : ''}
-          </div>`).join('');
+                      <div class="panel-text-overlay">Panel ${i + 1}</div>
+                      ${p.dialogue ? `<div class="panel-dialogue ${p.side}">${p.dialogue}</div>` : ''}
+                    </div>`).join('');
             }
         }
 
         // ── STARS ─────────────────────────────────────────────────────
         function renderStars(ur) {
-            const c = document.getElementById('rating-stars');
-            if (!c) return;
-            c.innerHTML = [1, 2, 3, 4, 5].map(i =>
-                `<span class="star ${i <= ur ? 'active' : ''}" onclick="rateComic(${i})" onmouseover="hoverStars(${i})" onmouseout="renderStars(${ur})">${i <= ur ? '★' : '☆'}</span>`
-            ).join('');
+            const c = document.getElementById('rating-stars'); if (!c) return;
+            c.innerHTML = [1, 2, 3, 4, 5].map(i => `<span class="star ${i <= ur ? 'active' : ''}" onclick="rateComic(${i})" onmouseover="hoverStars(${i})" onmouseout="renderStars(${ur})">${i <= ur ? '★' : '☆'}</span>`).join('');
         }
-
-        function hoverStars(n) {
-            document.querySelectorAll('.star').forEach((s, i) => { s.textContent = i < n ? '★' : '☆'; s.classList.toggle('active', i < n); });
-        }
-
+        function hoverStars(n) { document.querySelectorAll('.star').forEach((s, i) => { s.textContent = i < n ? '★' : '☆'; s.classList.toggle('active', i < n); }); }
         function rateComic(n) {
             if (!currentComic) return;
             userRatings[currentComic.id] = n;
@@ -3868,8 +3823,7 @@
             currentComic.rating = parseFloat(avg);
             document.getElementById('rating-avg').textContent = avg;
             document.getElementById('rating-info').textContent = 'You rated ' + n + '/5';
-            renderStars(n);
-            showToast('⭐ Rated ' + n + ' stars!');
+            renderStars(n); showToast('⭐ Rated ' + n + ' stars!');
         }
 
         // ── LIKES / SAVE / DOWNLOAD ───────────────────────────────────
@@ -3877,7 +3831,6 @@
             if (!currentComic || !currentUser) return;
             if (!confirm('Delete "' + currentComic.title + '"? This cannot be undone.')) return;
             try {
-                // Delete from Supabase if it has a UUID id
                 const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(currentComic.id);
                 if (isUUID) {
                     await sb.from('episodes').delete().eq('comic_id', currentComic.id);
@@ -3885,18 +3838,10 @@
                     const { error } = await sb.from('comics').delete().eq('id', currentComic.id);
                     if (error) { showToast('Error deleting: ' + error.message); return; }
                 }
-                // Remove from local array (works for demos and local comics too)
                 comics = comics.filter(c => c.id !== currentComic.id);
-                currentComic = null;
-                showToast('Comic deleted');
-                goBack();
-                renderHome();
-            } catch (e) {
-                showToast('Error deleting comic');
-                console.error(e);
-            }
+                currentComic = null; showToast('Comic deleted'); goBack(); renderHome();
+            } catch (e) { showToast('Error deleting comic'); }
         }
-
         function toggleLike() {
             if (!currentComic) return;
             if (!currentUser) { openAuth('signup'); showToast('Sign up to like comics!'); return; }
@@ -3905,16 +3850,13 @@
             document.getElementById('like-count').textContent = fmt(currentComic.likes);
             document.getElementById('like-btn').classList.toggle('liked', likedComics[currentComic.id]);
         }
-
         function toggleSave() {
             if (!currentComic) return;
-            let lib = getLib();
-            const idx = lib.indexOf(currentComic.id);
+            let lib = getLib(); const idx = lib.indexOf(currentComic.id);
             if (idx === -1) { lib.push(currentComic.id); document.getElementById('save-label').textContent = 'Saved'; document.getElementById('save-btn').classList.add('saved'); showToast('🔖 Saved to Library!'); }
             else { lib.splice(idx, 1); document.getElementById('save-label').textContent = 'Save'; document.getElementById('save-btn').classList.remove('saved'); showToast('Removed from Library'); }
             saveLib(lib); renderLibrary();
         }
-
         function downloadComic() {
             if (!currentComic) return;
             if (!currentUser) { openAuth('signup'); showToast('Sign up to download comics!'); return; }
@@ -3922,31 +3864,19 @@
             let html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${currentComic.title}</title><style>body{margin:0;background:#111;font-family:sans-serif;color:white}img{width:100%;display:block}.txt{padding:14px 18px;font-size:14px;background:#1a1a1a;border-top:1px solid #333}h1{font-size:20px;padding:18px;background:#0e0e0e;margin:0}p{font-size:12px;padding:0 18px 18px;color:#888;margin:0}</style></head><body><h1>${currentComic.title}</h1><p>by ${currentComic.author} · EP ${currentEp + 1}: ${ep.title}</p>`;
             if (ep.blocks) ep.blocks.forEach(b => { if (b.type === 'image' && b.image) html += `<img src="${b.image}"/>`; else if (b.type === 'dialogue' && b.text) html += `<div class="txt">${b.text}</div>`; });
             html += '</body></html>';
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
-            a.download = currentComic.title.replace(/\s+/g, '-') + '-EP' + (currentEp + 1) + '.html';
-            a.click();
+            const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([html], { type: 'text/html' })); a.download = currentComic.title.replace(/\s+/g, '-') + '-EP' + (currentEp + 1) + '.html'; a.click();
             showToast('⬇️ Downloading…');
         }
 
         // ── COMMENTS ──────────────────────────────────────────────────
         function renderComments() {
-            // Update comment input placeholder based on login state
             const inp = document.getElementById('comment-input');
             if (inp) inp.placeholder = currentUser ? 'Write a comment…' : 'Log in to write a comment…';
             const list = document.getElementById('comment-list');
-            // Use Supabase comments if available
-            if (currentComic._dbComments) {
-                renderDbComments(currentComic._dbComments);
-                return;
-            }
-            if (!currentComic.comments.length) { list.innerHTML = '<div style="color:var(--muted);font-size:12px;padding:8px 0">No comments yet. Be the first!</div>'; return; }
-            list.innerHTML = currentComic.comments.map(c => {
-                const [a, ...r] = c.split(': ');
-                return `<div class="comment"><div class="comment-author">${a}</div><div class="comment-text">${r.join(': ')}</div></div>`;
-            }).join('');
+            if (currentComic._dbComments) { renderDbComments(currentComic._dbComments); return; }
+            if (!currentComic.comments || !currentComic.comments.length) { list.innerHTML = '<div style="color:var(--muted);font-size:12px;padding:8px 0">No comments yet. Be the first!</div>'; return; }
+            list.innerHTML = currentComic.comments.map(c => { const [a, ...r] = c.split(': '); return `<div class="comment"><div class="comment-author">${a}</div><div class="comment-text">${r.join(': ')}</div></div>`; }).join('');
         }
-
         async function postComment() {
             const inp = document.getElementById('comment-input');
             if (!inp.value.trim() || !currentComic) return;
@@ -3954,29 +3884,16 @@
             const text = inp.value.trim();
             if (currentUser && !currentComic.isDemo) {
                 const ok = await postCommentToSupabase(currentComic.id, text);
-                if (ok) {
-                    inp.value = '';
-                    // Reload comments from Supabase
-                    const dbComments = await loadCommentsFromSupabase(currentComic.id);
-                    if (dbComments) {
-                        renderDbComments(dbComments);
-                        return;
-                    }
-                }
+                if (ok) { inp.value = ''; const dbComments = await loadCommentsFromSupabase(currentComic.id); if (dbComments) { renderDbComments(dbComments); return; } }
             }
-            // Fallback to local
             const author = currentUser ? (currentUser.username || 'You') : 'You';
             currentComic.comments.unshift(author + ': ' + text);
-            inp.value = '';
-            renderComments();
+            inp.value = ''; renderComments();
         }
-
         function renderDbComments(dbComments) {
             const list = document.getElementById('comment-list');
             if (!dbComments.length) { list.innerHTML = '<div style="color:var(--muted);font-size:12px;padding:8px 0">No comments yet. Be the first!</div>'; return; }
-            list.innerHTML = dbComments.map(c =>
-                `<div class="comment"><div class="comment-author">${c.username || 'User'}</div><div class="comment-text">${c.content}</div></div>`
-            ).join('');
+            list.innerHTML = dbComments.map(c => `<div class="comment"><div class="comment-author">${c.username || 'User'}</div><div class="comment-text">${c.content}</div></div>`).join('');
         }
 
         // ── TRENDING ──────────────────────────────────────────────────
@@ -3986,53 +3903,35 @@
             document.getElementById('trend-list').innerHTML = sorted.map((c, i) => {
                 const rating = (c.rating || (3.8 + (c.likes % 13) * 0.1)).toFixed(1);
                 const tb = i < 3 ? '<span class="trend-badge tb-hot">🔥 HOT</span>' : i < 5 ? '<span class="trend-badge tb-up">↑ RISING</span>' : '';
-                return `<div class="trend-item" onclick="openReader('${c.id}')">
-          <div class="trend-rank" style="color:${colorMap[i] || '#888'}">${i + 1}</div>
-          <div class="trend-cover" style="background:${getBg(c)}"><span class="trend-cover-text">${c.title}</span></div>
-          <div class="trend-info">
-            <div class="trend-title">${c.title}</div>
-            <div class="trend-meta"><span>${c.genre}</span><span>by ${c.author}</span><span>${c.episodes.length} ep${c.episodes.length > 1 ? 's' : ''}</span><span>⭐ ${rating}</span></div>
-          </div>
-          ${tb}
-          <div class="trend-likes">❤️ ${fmt(c.likes)}</div>
-        </div>`;
+                return `<div class="trend-item" onclick="openComicIntro('${c.id}')">
+                  <div class="trend-rank" style="color:${colorMap[i] || '#888'}">${i + 1}</div>
+                  <div class="trend-cover" style="background:${getBg(c)}"><span class="trend-cover-text">${c.title}</span></div>
+                  <div class="trend-info"><div class="trend-title">${c.title}</div><div class="trend-meta"><span>${c.genre}</span><span>by ${c.author}</span><span>${c.episodes.length} ep${c.episodes.length > 1 ? 's' : ''}</span><span>⭐ ${rating}</span></div></div>
+                  ${tb}<div class="trend-likes">❤️ ${fmt(c.likes)}</div>
+                </div>`;
             }).join('');
         }
 
         // ── LIBRARY ───────────────────────────────────────────────────
         function renderLibrary() {
-            const lib = getLib();
-            const saved = comics.filter(c => lib.includes(c.id));
-            const grid = document.getElementById('lib-grid');
-            if (!grid) return;
-            grid.innerHTML = saved.length ? saved.map(cardHTML).join('')
-                : `<div class="lib-empty"><div class="e-icon">📚</div><p>No saved comics yet.<br/>Hit 🔖 Save while reading to add comics here.</p><button class="btn-primary" onclick="goTo('browse')">Browse Comics</button></div>`;
+            const lib = getLib(), saved = comics.filter(c => lib.includes(c.id));
+            const grid = document.getElementById('lib-grid'); if (!grid) return;
+            grid.innerHTML = saved.length ? saved.map(cardHTML).join('') : `<div class="lib-empty"><div class="e-icon">📚</div><p>No saved comics yet.<br/>Hit 🔖 Save while reading to add comics here.</p><button class="btn-primary" onclick="goTo('browse')">Browse Comics</button></div>`;
         }
 
         // ── PROFILE ───────────────────────────────────────────────────
         function renderProfile() {
             const mine = comics.filter(c => c.id.startsWith('user-') || c.author === 'You');
-            const totalLikes = mine.reduce((s, c) => s + c.likes, 0);
             document.getElementById('p-comics').textContent = mine.length;
-            document.getElementById('p-likes').textContent = fmt(totalLikes);
+            document.getElementById('p-likes').textContent = fmt(mine.reduce((s, c) => s + c.likes, 0));
             document.getElementById('p-saved').textContent = getLib().length;
             const grid = document.getElementById('profile-grid');
-            grid.innerHTML = mine.length ? mine.map(cardHTML).join('')
-                : `<div style="color:var(--muted);font-size:13px;grid-column:1/-1;padding:20px 0">You have not published any comics yet. <span style="color:var(--gold);cursor:pointer;font-weight:700" onclick="goTo('create')">Create one →</span></div>`;
+            grid.innerHTML = mine.length ? mine.map(cardHTML).join('') : `<div style="color:var(--muted);font-size:13px;grid-column:1/-1;padding:20px 0">You have not published any comics yet. <span style="color:var(--gold);cursor:pointer;font-weight:700" onclick="goTo('create')">Create one →</span></div>`;
         }
-
-        function editProfile() {
-            const name = prompt('Enter your display name:');
-            if (name) { document.getElementById('profile-name').textContent = name; showToast('Profile updated!'); }
-        }
+        function editProfile() { const name = prompt('Enter your display name:'); if (name) { document.getElementById('profile-name').textContent = name; showToast('Profile updated!'); } }
 
         // ── CREATE / CANVAS ───────────────────────────────────────────
-        function checkPublish() {
-            const v = document.getElementById('c-title').value.trim();
-            document.getElementById('publish-btn').disabled = !v;
-            document.getElementById('publish-hint').style.display = v ? 'none' : 'inline';
-        }
-
+        function checkPublish() { const v = document.getElementById('c-title').value.trim(); document.getElementById('publish-btn').disabled = !v; document.getElementById('publish-hint').style.display = v ? 'none' : 'inline'; }
         function renderCanvas() {
             const count = blockList.filter(b => b.type === 'image' || b.type === 'draw').length;
             document.getElementById('panel-count').textContent = count + ' panel' + (count !== 1 ? 's' : '');
@@ -4040,61 +3939,52 @@
             document.getElementById('webtoon-strip').innerHTML = blockList.map((b, i) => {
                 if (b.type === 'draw') {
                     return `<div style="width:100%;background:#1a1208;border-bottom:1px solid var(--border);">
-            <div class="block-controls"><span class="block-label">🎨 Drawing Panel ${i + 1}</span>
-              <button class="block-btn" onclick="moveBlock(${b.id},-1)">↑</button>
-              <button class="block-btn" onclick="moveBlock(${b.id},1)">↓</button>
-              <button class="block-btn del" onclick="removeBlock(${b.id})">✕</button>
-            </div>
-            ${b.saved && b.image
-                            ? `<img src="${b.image}" style="width:100%;display:block;"/><button class="block-btn" style="margin:5px 8px;font-size:10px" onclick="redrawPanel(${b.id})">✏️ Redraw</button>`
+                      <div class="block-controls"><span class="block-label">🎨 Drawing Panel ${i + 1}</span>
+                        <button class="block-btn" onclick="moveBlock(${b.id},-1)">↑</button>
+                        <button class="block-btn" onclick="moveBlock(${b.id},1)">↓</button>
+                        <button class="block-btn del" onclick="removeBlock(${b.id})">✕</button>
+                      </div>
+                      ${b.saved && b.image ? `<img src="${b.image}" style="width:100%;display:block;"/><button class="block-btn" style="margin:5px 8px;font-size:10px" onclick="redrawPanel(${b.id})">✏️ Redraw</button>`
                             : `<div style="padding:8px 10px;background:#0d0a05;border-bottom:1px solid #222;display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
-                  <button class="block-btn" id="btool-brush-${b.id}" onclick="setBlockTool(${b.id},'brush')" style="border-color:var(--gold);color:var(--gold)">✏️ Brush</button>
-                  <button class="block-btn" id="btool-eraser-${b.id}" onclick="setBlockTool(${b.id},'eraser')">⬜ Eraser</button>
-                  <input type="color" value="#000000" onchange="setBlockColor(${b.id},this.value)" style="width:26px;height:26px;border:1.5px solid var(--border);border-radius:4px;cursor:pointer;padding:1px;background:none;">
-                  <input type="range" min="1" max="20" value="4" oninput="setBlockSize(${b.id},this.value)" style="width:70px;accent-color:var(--gold);">
-                  <button class="block-btn" onclick="clearBlockDraw(${b.id})">🗑️ Clear</button>
-                </div>
-                <canvas id="bcanvas-${b.id}" style="width:100%;cursor:crosshair;touch-action:none;display:block;"></canvas>
-                <button style="width:100%;padding:9px;background:var(--gold);color:#1a1208;border:none;font-family:'DM Sans',sans-serif;font-weight:800;font-size:13px;cursor:pointer;" onclick="saveBlockDraw(${b.id})">✅ Save Drawing as Panel</button>`
+                          <button class="block-btn" id="btool-brush-${b.id}" onclick="setBlockTool(${b.id},'brush')" style="border-color:var(--gold);color:var(--gold)">✏️ Brush</button>
+                          <button class="block-btn" id="btool-eraser-${b.id}" onclick="setBlockTool(${b.id},'eraser')">⬜ Eraser</button>
+                          <input type="color" value="#000000" onchange="setBlockColor(${b.id},this.value)" style="width:26px;height:26px;border:1.5px solid var(--border);border-radius:4px;cursor:pointer;padding:1px;background:none;">
+                          <input type="range" min="1" max="20" value="4" oninput="setBlockSize(${b.id},this.value)" style="width:70px;accent-color:var(--gold);">
+                          <button class="block-btn" onclick="clearBlockDraw(${b.id})">🗑️ Clear</button>
+                        </div>
+                        <canvas id="bcanvas-${b.id}" style="width:100%;cursor:crosshair;touch-action:none;display:block;"></canvas>
+                        <button style="width:100%;padding:9px;background:var(--gold);color:#1a1208;border:none;font-family:'DM Sans',sans-serif;font-weight:800;font-size:13px;cursor:pointer;" onclick="saveBlockDraw(${b.id})">✅ Save Drawing as Panel</button>`
                         }
-          </div>`;
+                    </div>`;
                 } else if (b.type === 'image') {
                     return `<div class="webtoon-image-block">
-            <div class="block-controls"><span class="block-label">🖼️ Image Block ${i + 1}</span>
-              <button class="block-btn" onclick="moveBlock(${b.id},-1)">↑</button>
-              <button class="block-btn" onclick="moveBlock(${b.id},1)">↓</button>
-              <button class="block-btn del" onclick="removeBlock(${b.id})">✕</button>
-            </div>
-            ${b.image
-                            ? `<img src="${b.image}" style="width:100%;display:block;" alt="panel"/>
-                 <button class="block-btn del" style="margin:5px 8px;font-size:10px" onclick="clearImg(${b.id})">✕ Clear</button>`
-                            : b.uploading
-                                ? `<div class="webtoon-placeholder" style="cursor:default;">
-                    <div class="ph-icon">⏳</div>
-                    <span class="ph-text">Uploading to cloud…</span>
-                  </div>`
+                      <div class="block-controls"><span class="block-label">🖼️ Image Block ${i + 1}</span>
+                        <button class="block-btn" onclick="moveBlock(${b.id},-1)">↑</button>
+                        <button class="block-btn" onclick="moveBlock(${b.id},1)">↓</button>
+                        <button class="block-btn del" onclick="removeBlock(${b.id})">✕</button>
+                      </div>
+                      ${b.image ? `<img src="${b.image}" style="width:100%;display:block;" alt="panel"/><button class="block-btn del" style="margin:5px 8px;font-size:10px" onclick="clearImg(${b.id})">✕ Clear</button>`
+                            : b.uploading ? `<div class="webtoon-placeholder" style="cursor:default;"><div class="ph-icon">⏳</div><span class="ph-text">Uploading to cloud…</span></div>`
                                 : `<div class="webtoon-placeholder" onclick="triggerImg(${b.id})">
-                    <div class="ph-icon">↑</div>
-                    <span class="ph-text">${currentUser ? 'Click to Upload Image' : 'Log in to upload images'}</span>
-                    <span class="ph-sub">JPG, PNG, WEBP — any height</span>
-                  </div>`
-                        }
-            <input class="file-input" id="file-${b.id}" type="file" accept="image/*" onchange="handleImg(event,${b.id})"/>
-          </div>`;
+                          <div class="ph-icon">↑</div>
+                          <span class="ph-text">${currentUser ? 'Click to Upload Image' : 'Log in to upload images'}</span>
+                          <span class="ph-sub">JPG, PNG, WEBP — any height</span>
+                        </div>`}
+                      <input class="file-input" id="file-${b.id}" type="file" accept="image/*" onchange="handleImg(event,${b.id})"/>
+                    </div>`;
                 } else {
                     return `<div class="dialogue-block">
-            <div style="flex:1;display:flex;gap:5px;align-items:center;">
-              <span style="font-size:10px;font-weight:700;color:var(--muted);">💬</span>
-              <button class="block-btn" onclick="moveBlock(${b.id},-1)">↑</button>
-              <button class="block-btn" onclick="moveBlock(${b.id},1)">↓</button>
-              <button class="block-btn del" onclick="removeBlock(${b.id})">✕</button>
-            </div>
-            <input placeholder="Character says something…" value="${b.text}" oninput="updText(${b.id},this.value)" style="flex:2;padding:7px 10px;border:1.5px solid #333;border-radius:6px;background:#0d0d0d;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;"/>
-          </div>`;
+                      <div style="flex:1;display:flex;gap:5px;align-items:center;">
+                        <span style="font-size:10px;font-weight:700;color:var(--muted);">💬</span>
+                        <button class="block-btn" onclick="moveBlock(${b.id},-1)">↑</button>
+                        <button class="block-btn" onclick="moveBlock(${b.id},1)">↓</button>
+                        <button class="block-btn del" onclick="removeBlock(${b.id})">✕</button>
+                      </div>
+                      <input placeholder="Character says something…" value="${b.text}" oninput="updText(${b.id},this.value)" style="flex:2;padding:7px 10px;border:1.5px solid #333;border-radius:6px;background:#0d0d0d;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;"/>
+                    </div>`;
                 }
             }).join('');
         }
-
         function addImageBlock() { blockList.push({ id: Date.now(), type: 'image', image: null }); renderCanvas(); }
         function addDialogueBlock() { blockList.push({ id: Date.now(), type: 'dialogue', text: '' }); renderCanvas(); }
         function addDrawBlock() { const id = Date.now(); blockList.push({ id, type: 'draw', image: null, saved: false }); renderCanvas(); setTimeout(() => initBlockDraw(id), 100); }
@@ -4102,60 +3992,28 @@
         function moveBlock(id, dir) { const i = blockList.findIndex(b => b.id === id), ni = i + dir; if (ni < 0 || ni >= blockList.length) return; const a = [...blockList];[a[i], a[ni]] = [a[ni], a[i]]; blockList = a; renderCanvas(); }
         function triggerImg(id) { const f = document.getElementById('file-' + id); if (f) f.click(); }
 
-        const CLOUDINARY_CLOUD = 'duy8v3edi';
-        const CLOUDINARY_PRESET = 'afrotyunz';
-
+        const CLOUDINARY_CLOUD = 'duy8v3edi', CLOUDINARY_PRESET = 'afrotyunz';
         async function handleImg(e, id) {
-            const file = e.target.files[0];
-            if (!file) return;
-            blockList = blockList.map(b => b.id === id ? { ...b, uploading: true } : b);
-            renderCanvas();
-            showToast('Uploading image…');
+            const file = e.target.files[0]; if (!file) return;
+            blockList = blockList.map(b => b.id === id ? { ...b, uploading: true } : b); renderCanvas(); showToast('Uploading image…');
             try {
-                const formData = new FormData();
-                formData.append('file', file);
-                formData.append('upload_preset', CLOUDINARY_PRESET);
-                formData.append('cloud_name', CLOUDINARY_CLOUD);
-                const res = await fetch(
-                    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,
-                    { method: 'POST', body: formData }
-                );
+                const formData = new FormData(); formData.append('file', file); formData.append('upload_preset', CLOUDINARY_PRESET); formData.append('cloud_name', CLOUDINARY_CLOUD);
+                const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, { method: 'POST', body: formData });
                 const data = await res.json();
-                if (data.secure_url) {
-                    blockList = blockList.map(b => b.id === id ? { ...b, image: data.secure_url, uploading: false } : b);
-                    renderCanvas();
-                    showToast('Image uploaded successfully!');
-                    return;
-                } else {
-                    showToast('Upload failed: ' + (data.error?.message || 'Unknown error'));
-                    console.error('Cloudinary error:', data);
-                }
-            } catch (err) {
-                showToast('Upload error: ' + err.message);
-                console.error('Upload exception:', err);
-            }
-            // Fallback to base64
-            const r = new FileReader();
-            r.onload = ev => {
-                blockList = blockList.map(b => b.id === id ? { ...b, image: ev.target.result, uploading: false } : b);
-                renderCanvas();
-            };
-            r.readAsDataURL(file);
+                if (data.secure_url) { blockList = blockList.map(b => b.id === id ? { ...b, image: data.secure_url, uploading: false } : b); renderCanvas(); showToast('Image uploaded successfully!'); return; }
+                else { showToast('Upload failed: ' + (data.error?.message || 'Unknown error')); }
+            } catch (err) { showToast('Upload error: ' + err.message); }
+            const r = new FileReader(); r.onload = ev => { blockList = blockList.map(b => b.id === id ? { ...b, image: ev.target.result, uploading: false } : b); renderCanvas(); }; r.readAsDataURL(file);
         }
-
         function clearImg(id) { blockList = blockList.map(b => b.id === id ? { ...b, image: null } : b); renderCanvas(); }
         function updText(id, v) { blockList = blockList.map(b => b.id === id ? { ...b, text: v } : b); }
         function redrawPanel(id) { blockList = blockList.map(b => b.id === id ? { ...b, saved: false, image: null } : b); renderCanvas(); setTimeout(() => initBlockDraw(id), 100); }
 
-        // Block-level drawing
         const blockDrawState = {};
         function initBlockDraw(id) {
-            const canvas = document.getElementById('bcanvas-' + id);
-            if (!canvas) return;
-            canvas.width = canvas.offsetWidth || 680;
-            canvas.height = 360;
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const canvas = document.getElementById('bcanvas-' + id); if (!canvas) return;
+            canvas.width = canvas.offsetWidth || 680; canvas.height = 360;
+            const ctx = canvas.getContext('2d'); ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
             blockDrawState[id] = { ctx, tool: 'brush', color: '#000000', size: 4, drawing: false, lastX: 0, lastY: 0, pts: [] };
             function pos(e) { const r = canvas.getBoundingClientRect(); const sx = canvas.width / r.width; const sy = canvas.height / r.height; const cx = e.touches ? e.touches[0].clientX : e.clientX; const cy = e.touches ? e.touches[0].clientY : e.clientY; return { x: (cx - r.left) * sx, y: (cy - r.top) * sy }; }
             function start(e) { e.preventDefault(); const s = blockDrawState[id]; s.drawing = true; s.pts = []; const p = pos(e); s.lastX = p.x; s.lastY = p.y; s.pts.push(p); }
@@ -4169,59 +4027,38 @@
         function setBlockSize(id, s) { if (blockDrawState[id]) blockDrawState[id].size = parseInt(s); }
         function clearBlockDraw(id) { const c = document.getElementById('bcanvas-' + id); if (!c) return; const ctx = c.getContext('2d'); ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, c.width, c.height); }
         async function saveBlockDraw(id) {
-            const c = document.getElementById('bcanvas-' + id);
-            if (!c) return;
+            const c = document.getElementById('bcanvas-' + id); if (!c) return;
             const dataUrl = c.toDataURL('image/png');
             if (currentUser) {
                 try {
-                    // Convert base64 to blob
-                    const res = await fetch(dataUrl);
-                    const blob = await res.blob();
+                    const res = await fetch(dataUrl); const blob = await res.blob();
                     const path = `panels/${currentUser.id}/drawing-${Date.now()}.png`;
                     const { data, error } = await sb.storage.from('comic panels').upload(path, blob, { upsert: true, contentType: 'image/png' });
-                    if (!error) {
-                        const { data: urlData } = sb.storage.from('comic panels').getPublicUrl(path);
-                        blockList = blockList.map(b => b.id === id ? { ...b, image: urlData.publicUrl, saved: true } : b);
-                        renderCanvas();
-                        showToast('Drawing saved to cloud!');
-                        return;
-                    }
-                } catch (e) { console.warn('Drawing upload failed, saving locally'); }
+                    if (!error) { const { data: urlData } = sb.storage.from('comic panels').getPublicUrl(path); blockList = blockList.map(b => b.id === id ? { ...b, image: urlData.publicUrl, saved: true } : b); renderCanvas(); showToast('Drawing saved to cloud!'); return; }
+                } catch (e) { console.warn('Drawing upload failed'); }
             }
-            // Fallback local
-            blockList = blockList.map(b => b.id === id ? { ...b, image: dataUrl, saved: true } : b);
-            renderCanvas();
-            showToast('Drawing saved!');
+            blockList = blockList.map(b => b.id === id ? { ...b, image: dataUrl, saved: true } : b); renderCanvas(); showToast('Drawing saved!');
         }
 
         async function publishComic() {
             if (!currentUser) { openAuth('signup'); showToast('Sign up to publish comics!'); return; }
-            const title = document.getElementById('c-title').value.trim();
-            if (!title) return;
+            const title = document.getElementById('c-title').value.trim(); if (!title) return;
             const genre = document.getElementById('c-genre').value;
             const epTitle = document.getElementById('c-ep-title').value || 'Episode 1';
-            const fi = blockList.find(b => b.type === 'image' && b.image);
             if (currentUser) {
-                // Publish to Supabase and use returned data (has real URLs)
                 const sbComic = await publishComicToSupabase(title, genre, document.getElementById('c-synopsis').value.trim(), epTitle, blockList);
                 if (sbComic) {
                     comics.unshift(sbComic);
-                    document.getElementById('c-title').value = '';
-                    document.getElementById('c-synopsis').value = '';
-                    document.getElementById('c-ep-title').value = '';
+                    document.getElementById('c-title').value = ''; document.getElementById('c-synopsis').value = ''; document.getElementById('c-ep-title').value = '';
                     blockList = [{ id: 1, type: 'image', image: null }, { id: 2, type: 'dialogue', text: '' }, { id: 3, type: 'image', image: null }];
                     renderCanvas(); checkPublish(); saveToStore();
                     const t = document.getElementById('pub-success'); t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3500);
-                    showToast('Comic published!');
-                    return;
+                    showToast('Comic published!'); return;
                 }
             }
-            // Not logged in — save locally with current blocks (base64, won't survive reload)
             const localBlocks = blockList.map(b => ({ ...b }));
-            comics.unshift({ id: 'user-' + Date.now(), title, genre, pi: 0, likes: 0, badge: 'new', author: 'You', coverImage: fi ? fi.image : null, episodes: [{ title: epTitle || 'Episode 1', blocks: localBlocks }], comments: [] });
-            document.getElementById('c-title').value = '';
-            document.getElementById('c-synopsis').value = '';
-            document.getElementById('c-ep-title').value = '';
+            comics.unshift({ id: 'user-' + Date.now(), title, genre, pi: 0, likes: 0, badge: 'new', author: 'You', episodes: [{ title: epTitle || 'Episode 1', blocks: localBlocks }], comments: [] });
+            document.getElementById('c-title').value = ''; document.getElementById('c-synopsis').value = ''; document.getElementById('c-ep-title').value = '';
             blockList = [{ id: 1, type: 'image', image: null }, { id: 2, type: 'dialogue', text: '' }, { id: 3, type: 'image', image: null }];
             renderCanvas(); checkPublish(); saveToStore();
             const t = document.getElementById('pub-success'); t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3500);
@@ -4230,12 +4067,10 @@
 
         // ── FULL DRAWING STUDIO ───────────────────────────────────────
         let dTool = 'pen', dColor = '#000000', dSize = 4, dOpacity = 1, dZoom = 1, dActiveLayer = 0, dLayers = [], dHistory = [], dRedoStack = [], dIsDrawing = false, dLastX = 0, dLastY = 0, dPts = [], dCanvasW = 800, dCanvasH = 1200, dShapeStart = null;
-
         function initDrawStudio() {
             if (!dLayers.length) { dLayers = [{ id: 0, name: 'Background', visible: true }, { id: 1, name: 'Lines', visible: true }, { id: 2, name: 'Colour', visible: true }]; dActiveLayer = 1; }
             setTimeout(() => { setupDCanvases(); renderDLayers(); const bg = document.getElementById('d-canvas-0'); if (bg) { const ctx = bg.getContext('2d'); ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, dCanvasW, dCanvasH); } }, 80);
         }
-
         function setupDCanvases() {
             const wrap = document.getElementById('d-canvas-wrap'); if (!wrap) return;
             wrap.style.width = dCanvasW + 'px'; wrap.style.height = dCanvasH + 'px';
@@ -4243,15 +4078,12 @@
             const ac = document.getElementById('d-active'); if (ac) { ac.width = dCanvasW; ac.height = dCanvasH; ac.style.width = dCanvasW + 'px'; ac.style.height = dCanvasH + 'px'; setupDEvents(ac); }
             dZoomFit();
         }
-
         function dZoomFit() { const vp = document.getElementById('d-viewport'); if (!vp) return; dZoom = Math.min((vp.clientWidth - 40) / dCanvasW, (vp.clientHeight - 40) / dCanvasH, 1); applyDZoom(); }
         function applyDZoom() { const w = document.getElementById('d-canvas-wrap'); if (w) w.style.transform = `scale(${dZoom})`; }
         function dZoomIn() { dZoom = Math.min(dZoom * 1.25, 4); applyDZoom(); }
         function dZoomOut() { dZoom = Math.max(dZoom * 0.8, 0.1); applyDZoom(); }
         function dResetZoom() { dZoom = 1; applyDZoom(); }
-
         function getALC() { const l = dLayers[dActiveLayer]; return l ? document.getElementById('d-canvas-' + dActiveLayer) : null; }
-
         function setupDEvents(canvas) {
             function gp(e) { const r = canvas.getBoundingClientRect(); const sx = dCanvasW / r.width; const sy = dCanvasH / r.height; const cx = e.touches ? e.touches[0].clientX : e.clientX; const cy = e.touches ? e.touches[0].clientY : e.clientY; return { x: (cx - r.left) * sx, y: (cy - r.top) * sy }; }
             function start(e) { e.preventDefault(); dIsDrawing = true; dPts = []; const p = gp(e); dLastX = p.x; dLastY = p.y; dPts.push(p); dShapeStart = p; if (dTool === 'fill') { dFill(p.x, p.y); dIsDrawing = false; return; } dSaveHistory(); }
@@ -4260,7 +4092,6 @@
             canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', move); canvas.addEventListener('mouseup', end); canvas.addEventListener('mouseleave', end);
             canvas.addEventListener('touchstart', start, { passive: false }); canvas.addEventListener('touchmove', move, { passive: false }); canvas.addEventListener('touchend', end);
         }
-
         function dFill(x, y) { const lc = getALC(); if (!lc) return; const ctx = lc.getContext('2d'); const id = ctx.getImageData(0, 0, dCanvasW, dCanvasH); const d = id.data; const ix = (Math.floor(y) * dCanvasW + Math.floor(x)) * 4; const tR = d[ix], tG = d[ix + 1], tB = d[ix + 2]; const fc = hexRgb(dColor); if (!fc) return; const stack = [[Math.floor(x), Math.floor(y)]]; const vis = new Set(); while (stack.length) { const [cx, cy] = stack.pop(); if (cx < 0 || cy < 0 || cx >= dCanvasW || cy >= dCanvasH) continue; const i = (cy * dCanvasW + cx) * 4; const k = cx + ',' + cy; if (vis.has(k)) continue; if (Math.abs(d[i] - tR) > 30 || Math.abs(d[i + 1] - tG) > 30 || Math.abs(d[i + 2] - tB) > 30) continue; vis.add(k); d[i] = fc.r; d[i + 1] = fc.g; d[i + 2] = fc.b; d[i + 3] = 255; stack.push([cx + 1, cy], [cx - 1, cy], [cx, cy + 1], [cx, cy - 1]); } ctx.putImageData(id, 0, 0); }
         function hexRgb(h) { return { r: parseInt(h.slice(1, 3), 16), g: parseInt(h.slice(3, 5), 16), b: parseInt(h.slice(5, 7), 16) }; }
         function dSaveHistory() { const lc = getALC(); if (!lc) return; dHistory.push({ layer: dActiveLayer, data: lc.toDataURL() }); if (dHistory.length > 30) dHistory.shift(); dRedoStack = []; }
@@ -4287,7 +4118,6 @@
         renderNotifs();
         renderHome();
         checkSession();
-        // Load all published comics from Supabase for everyone (logged in or not)
         loadAllComicsFromSupabase();
         renderCanvas();
         renderStars(0);
