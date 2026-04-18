@@ -3295,19 +3295,6 @@
             </div>
         </div>
     </div>
-    <!-- Bookmark note modal -->
-    <div class="bm-modal" id="bm-modal">
-        <div class="bm-sheet">
-            <div class="bm-title">🔖 Add Bookmark</div>
-            <p style="font-size:12px;color:var(--muted);margin-bottom:12px;" id="bm-position-label"></p>
-            <textarea class="form-textarea" id="bm-note" placeholder="Add a note (optional)…"
-                style="min-height:80px;margin-bottom:14px;"></textarea>
-            <div style="display:flex;gap:10px;">
-                <button class="btn-primary" onclick="saveBookmark()" style="flex:1;">Save Bookmark</button>
-                <button class="btn-outline" onclick="closeBmModal()">Cancel</button>
-            </div>
-        </div>
-    </div>
     <div class="bm-toast" id="bm-toast">🔖 Bookmark saved!</div>
 
     <!-- ══ READER — full-screen immersive ══ -->
@@ -3318,15 +3305,8 @@
             <div class="reader-float-title" id="reader-title"></div>
             <div class="reader-float-ep" id="reader-float-ep"></div>
         </div>
-        <!-- Mode controls: right side floating -->
-        <div class="reader-mode-bar" id="reader-mode-bar">
-            <button class="reader-mode-btn" id="mode-toggle-btn" onclick="toggleViewMode()"
-                title="Toggle Immersive Mode">🔲</button>
-            <button class="reader-mode-btn" id="bm-reader-btn" onclick="openBmModal()"
-                title="Bookmark this moment">🔖</button>
-        </div>
-        <!-- Full-width panel strip, tap to toggle UI -->
-        <div class="panel-strip" id="panel-strip" onclick="onStripTap()"></div>
+        <!-- Full-width panel strip -->
+        <div class="panel-strip" id="panel-strip"></div>
         <!-- Floating episode switcher at bottom -->
         <div class="ep-switcher" id="ep-switcher"></div>
         <!-- Bottom sheet: ratings, reactions, comments -->
@@ -3673,7 +3653,26 @@
         const SUPABASE_URL = 'https://fjeqjmwfsrmvrxfrexee.supabase.co';
         const ADMIN_EMAIL = 'adeseyojup@gmail.com';
         const SUPABASE_KEY = 'sb_publishable_zskPpgbpCB2kfSMET6f8ew_inRb83c6';
-        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // Safe Supabase init — falls back gracefully if CDN is blocked
+        let sb;
+        try {
+            if (typeof supabase === 'undefined') throw new Error('Supabase CDN not loaded');
+            sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        } catch (e) {
+            console.warn('[Afrotyunz] Supabase unavailable — running in offline/demo mode:', e.message);
+            const _noop = () => Promise.resolve({ data: null, error: { message: 'Offline' } });
+            const _q = () => { const o = { data: null, error: null }; const c = { select: () => c, insert: () => c, update: () => c, delete: () => c, eq: () => c, order: () => c, single: () => Promise.resolve(o), maybeSingle: () => Promise.resolve(o), then: (fn) => fn(o) }; return c; };
+            sb = {
+                auth: {
+                    getSession: () => Promise.resolve({ data: { session: null } }),
+                    signUp: _noop, signInWithPassword: _noop, signOut: _noop,
+                    onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => { } } } })
+                },
+                from: () => _q(),
+                storage: { from: () => ({ upload: _noop, getPublicUrl: () => ({ data: { publicUrl: '' } }) }) }
+            };
+        }
         let currentUser = null;
         let authMode = 'login';
 
@@ -3753,6 +3752,7 @@
                 } catch (e) { currentUser.username = currentUser.email.split('@')[0]; }
                 updateNavForUser();
                 await loadUserComicsFromSupabase();
+                await loadDemoEditsFromSupabase();
             }
         }
         async function loadUserComicsFromSupabase() { await loadAllComicsFromSupabase(); }
@@ -3895,7 +3895,7 @@
             const nb = document.getElementById('nav-' + page); if (nb) nb.classList.add('active');
             const mb = document.getElementById('mob-' + page); if (mb) mb.classList.add('active');
             document.getElementById('notif-drop').classList.remove('open');
-            window.scrollTo(0, 0);
+            requestAnimationFrame(() => { document.documentElement.scrollTop = 0; document.body.scrollTop = 0; });
             if (page === 'home') renderHome();
             else if (page === 'browse') { renderBrowse('All'); clearSearch(); }
             else if (page === 'trending') renderTrending();
@@ -3909,15 +3909,18 @@
             // Restore main nav
             const mainNav = document.querySelector('nav');
             if (mainNav) mainNav.style.display = '';
-            // Reset view mode
-            viewMode = 'standard';
             readerBarsVisible = true;
-            // Go back to intro
-            if (currentComic) {
-                showIntroPage(currentComic);
-            } else {
-                goBack();
+            // If offline comic — go back to library
+            if (currentComic && currentComic._fromLibrary) {
+                goTo('library');
+                return;
             }
+            // If came from intro page, go back to it
+            if (currentComic && !currentComic.id.startsWith('offline-')) {
+                showIntroPage(currentComic);
+                return;
+            }
+            goBack();
         }
 
         function filterGenre(pill, ctx) {
@@ -4191,7 +4194,7 @@
             document.getElementById('page-intro').classList.add('active');
             // Reset carousel to preview tab
             switchCarousel('preview', document.querySelector('.intro-ctab'));
-            window.scrollTo(0, 0);
+            requestAnimationFrame(() => { document.documentElement.scrollTop = 0; document.body.scrollTop = 0; });
         }
 
         function toggleIntroLike() {
@@ -4308,13 +4311,8 @@
             if (sheetTitle) sheetTitle.textContent = comic.title;
             const demoBadge = comic.isDemo ? ' <span class="demo-badge">DEMO</span>' : '';
             document.getElementById('reader-meta').innerHTML = `by ${comic.author} · ${comic.genre}` + demoBadge;
-            // Reset mode to standard on each open
-            viewMode = 'standard';
+            // Reset bars on each open
             readerBarsVisible = true;
-            const modeBtn = document.getElementById('mode-toggle-btn');
-            if (modeBtn) { modeBtn.textContent = '🔲'; modeBtn.classList.remove('active'); }
-            const titleEl = document.getElementById('reader-title');
-            if (titleEl) titleEl.style.display = 'block';
             applyReaderBarVisibility();
             // Record progress
             recordProgress(comic.id, currentEp);
@@ -4340,11 +4338,15 @@
             // Hide main nav in reader for clean full-screen
             const mainNav = document.querySelector('nav');
             if (mainNav) mainNav.style.display = 'none';
-            window.scrollTo(0, 0);
             // Now render — elements are in DOM
             renderEpTabs(); renderStrip(); renderComments();
-            // Apply bar state after render
-            setTimeout(() => applyReaderBarVisibility(), 30);
+            // Scroll to top without flash, then set up scroll behavior
+            requestAnimationFrame(() => {
+                document.documentElement.scrollTop = 0;
+                document.body.scrollTop = 0;
+                applyReaderBarVisibility();
+                setupReaderScrollBehavior();
+            });
         }
 
         // Keep openReader for backward compatibility
@@ -4352,18 +4354,34 @@
 
         // ── EDIT COMIC ─────────────────────────────────────────────
         let editingComic = null;
+        function normalizeDemoEpisodes(episodes) {
+            // Convert demo panel format {pi, dialogue, side} -> blocks format {type, image, text, side}
+            return episodes.map(ep => {
+                if (ep.blocks && ep.blocks.length) return ep; // already blocks
+                const blocks = (ep.panels || []).map(p => {
+                    const out = [];
+                    out.push({ type: 'image', image: p.image || null, side: p.side || 'left' });
+                    if (p.dialogue) out.push({ type: 'dialogue', text: p.dialogue, side: p.side || 'left' });
+                    return out;
+                }).flat();
+                return { ...ep, blocks, panels: undefined };
+            });
+        }
         function editComic() {
             if (!currentComic) return;
             const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
             if (!currentComic.isDemo && !isAdmin) return;
             document.getElementById('edit-btn').textContent = '✏️ Edit';
-            editingComic = currentComic;
-            document.getElementById('edit-title').value = currentComic.title;
-            document.getElementById('edit-synopsis').value = currentComic.synopsis || '';
-            document.getElementById('edit-author').value = currentComic.author;
-            document.getElementById('edit-genre').value = currentComic.genre;
+            // Deep-clone so edits don't mutate live data before Save is clicked
+            editingComic = JSON.parse(JSON.stringify(currentComic));
+            // Normalize demo panels -> blocks
+            if (editingComic.isDemo) editingComic.episodes = normalizeDemoEpisodes(editingComic.episodes);
+            document.getElementById('edit-title').value = editingComic.title;
+            document.getElementById('edit-synopsis').value = editingComic.synopsis || '';
+            document.getElementById('edit-author').value = editingComic.author;
+            document.getElementById('edit-genre').value = editingComic.genre;
             // Populate cover preview
-            const existingCover = currentComic.coverUrl || currentComic.cover_url;
+            const existingCover = editingComic.coverUrl || editingComic.cover_url;
             const prev = document.getElementById('edit-cover-preview');
             if (prev) prev.innerHTML = existingCover ? `<img src="${existingCover}" style="width:100%;height:100%;object-fit:cover;"/>` : '🖼️';
             renderEditEpisodes();
@@ -4447,11 +4465,75 @@
                 }
                 showToast('Comic updated — synced to all devices ✅');
             } else {
-                // Demo comic — persist edits in localStorage so they survive reload
+                // Demo comic — save to Supabase for cross-device sync, and localStorage as fallback
                 saveDemoEdit(editingComic);
-                showToast('Demo comic updated ✅');
+                if (currentUser) {
+                    try {
+                        // Upsert using demo id as a stable key
+                        const { data: existing } = await sb.from('comics')
+                            .select('id').eq('title', '__demo__' + editingComic.id).maybeSingle();
+                        const coverUrl = editingComic.coverUrl || editingComic.cover_url || null;
+                        if (existing) {
+                            await sb.from('comics').update({
+                                title: editingComic.title,
+                                synopsis: editingComic.synopsis,
+                                genre: editingComic.genre,
+                                author_name: editingComic.author,
+                                cover_url: coverUrl
+                            }).eq('id', existing.id);
+                            // Update episodes
+                            for (let i = 0; i < editingComic.episodes.length; i++) {
+                                const ep = editingComic.episodes[i];
+                                const blocks = ep.blocks || ep.panels || [];
+                                const { data: existingEp } = await sb.from('episodes')
+                                    .select('id').eq('comic_id', existing.id).eq('episode_number', i + 1).maybeSingle();
+                                if (existingEp) {
+                                    await sb.from('episodes').update({ title: ep.title, content: { blocks } }).eq('id', existingEp.id);
+                                } else {
+                                    await sb.from('episodes').insert({ comic_id: existing.id, title: ep.title, episode_number: i + 1, content: { blocks } });
+                                }
+                            }
+                        } else {
+                            const { data: newComic } = await sb.from('comics').insert({
+                                title: '__demo__' + editingComic.id,
+                                genre: editingComic.genre,
+                                synopsis: editingComic.synopsis,
+                                author_name: editingComic.author,
+                                cover_url: coverUrl,
+                                author_id: currentUser.id,
+                                is_demo: true,
+                                likes: editingComic.likes || 0,
+                                badge: editingComic.badge || ''
+                            }).select('id').single();
+                            if (newComic) {
+                                for (let i = 0; i < editingComic.episodes.length; i++) {
+                                    const ep = editingComic.episodes[i];
+                                    const blocks = ep.blocks || ep.panels || [];
+                                    await sb.from('episodes').insert({ comic_id: newComic.id, title: ep.title, episode_number: i + 1, content: { blocks } });
+                                }
+                            }
+                        }
+                        showToast('Demo updated — synced across all devices ✅');
+                    } catch (e) {
+                        console.warn('Demo sync failed, saved locally', e);
+                        showToast('Demo comic updated ✅');
+                    }
+                } else {
+                    showToast('Demo comic updated ✅');
+                }
             }
             closeEditModal();
+            // Apply saved data back to the live comic object
+            const liveComic = comics.find(c => c.id === editingComic.id);
+            if (liveComic) {
+                liveComic.title = editingComic.title;
+                liveComic.synopsis = editingComic.synopsis;
+                liveComic.author = editingComic.author;
+                liveComic.genre = editingComic.genre;
+                liveComic.coverUrl = editingComic.coverUrl || editingComic.cover_url || liveComic.coverUrl;
+                liveComic.episodes = editingComic.episodes;
+                currentComic = liveComic;
+            }
             showIntroPage(currentComic);
             renderHome();
         }
@@ -4477,11 +4559,35 @@
                 const edits = JSON.parse(localStorage.getItem(DEMO_EDITS_KEY) || '{}');
                 Object.entries(edits).forEach(([id, data]) => {
                     const comic = comics.find(c => c.id === id);
-                    if (comic) {
-                        Object.assign(comic, data);
-                    }
+                    if (comic) Object.assign(comic, data);
                 });
             } catch (e) { }
+        }
+        async function loadDemoEditsFromSupabase() {
+            if (!currentUser) return;
+            try {
+                // Load all demo edits saved by this user (title starts with __demo__)
+                const { data: demoComics } = await sb.from('comics')
+                    .select('*').eq('is_demo', true).eq('author_id', currentUser.id);
+                if (!demoComics || !demoComics.length) return;
+                for (const dc of demoComics) {
+                    const originalId = dc.title.replace('__demo__', '');
+                    const comic = comics.find(c => c.id === originalId);
+                    if (!comic) continue;
+                    // Apply edits from Supabase (more authoritative than localStorage)
+                    comic.title = dc.title.replace('__demo__', '') === comic.id ? comic.title : dc.title.replace('__demo__', '');
+                    if (dc.synopsis) comic.synopsis = dc.synopsis;
+                    if (dc.genre) comic.genre = dc.genre;
+                    if (dc.author_name) comic.author = dc.author_name;
+                    if (dc.cover_url) comic.coverUrl = dc.cover_url;
+                    // Load episodes
+                    const { data: eps } = await sb.from('episodes').select('*').eq('comic_id', dc.id).order('episode_number');
+                    if (eps && eps.length) {
+                        comic.episodes = eps.map(ep => ({ title: ep.title, blocks: ep.content?.blocks || [] }));
+                    }
+                }
+                renderHome();
+            } catch (e) { console.warn('Could not load demo edits from Supabase', e); }
         }
         function deleteDemoEdit(comicId) {
             try {
@@ -4492,56 +4598,35 @@
         }
 
         let readerBarsVisible = true;
-        let viewMode = 'standard'; // 'standard' | 'immersive'
-
-        function onStripTap() {
-            if (viewMode === 'standard') {
-                readerBarsVisible = !readerBarsVisible;
-                applyReaderBarVisibility();
-            } else {
-                // immersive: tap reveals bars temporarily
-                readerBarsVisible = true;
-                applyReaderBarVisibility();
-                clearTimeout(window._immersiveHideTimer);
-                window._immersiveHideTimer = setTimeout(() => {
-                    readerBarsVisible = false;
-                    applyReaderBarVisibility();
-                }, 3000);
-            }
-        }
+        let viewMode = 'standard';
+        let _scrollTimer = null;
+        let _lastScrollY = 0;
 
         function applyReaderBarVisibility() {
             const fb = document.getElementById('reader-floatbar');
             const es = document.getElementById('ep-switcher');
-            const mb = document.getElementById('reader-mode-bar');
-            const bmBtn = document.getElementById('bm-reader-btn');
             const hidden = !readerBarsVisible;
             if (fb) fb.classList.toggle('hidden', hidden);
             if (es) es.classList.toggle('hidden', hidden);
-            // Mode bar: always visible in standard, only on tap in immersive
-            if (mb) mb.style.opacity = (viewMode === 'immersive' && hidden) ? '0' : '1';
-            if (mb) mb.style.pointerEvents = (viewMode === 'immersive' && hidden) ? 'none' : 'auto';
-            // Bookmark button: hide in immersive when bars hidden
-            if (bmBtn) bmBtn.style.display = (viewMode === 'immersive' && hidden) ? 'none' : 'flex';
         }
 
-        function toggleViewMode() {
-            viewMode = viewMode === 'standard' ? 'immersive' : 'standard';
-            const btn = document.getElementById('mode-toggle-btn');
-            const titleEl = document.getElementById('reader-title');
-            if (viewMode === 'immersive') {
-                if (btn) { btn.textContent = '🔳'; btn.title = 'Exit Immersive Mode'; btn.classList.add('active'); }
-                if (titleEl) titleEl.style.display = 'none'; // hide title in immersive
-                readerBarsVisible = false;
-                applyReaderBarVisibility();
-                showToast('Immersive mode — tap screen to show controls');
-            } else {
-                if (btn) { btn.textContent = '🔲'; btn.title = 'Enter Immersive Mode'; btn.classList.remove('active'); }
-                if (titleEl) titleEl.style.display = 'block';
-                readerBarsVisible = true;
-                applyReaderBarVisibility();
-                showToast('Standard mode');
-            }
+        function setupReaderScrollBehavior() {
+            // Hide bars while scrolling, show again when scroll stops
+            const strip = document.getElementById('panel-strip');
+            if (!strip) return;
+            window.addEventListener('scroll', function onReaderScroll() {
+                if (document.getElementById('page-reader')?.classList.contains('active')) {
+                    if (readerBarsVisible) {
+                        readerBarsVisible = false;
+                        applyReaderBarVisibility();
+                    }
+                    clearTimeout(_scrollTimer);
+                    _scrollTimer = setTimeout(() => {
+                        readerBarsVisible = true;
+                        applyReaderBarVisibility();
+                    }, 1200);
+                }
+            }, { passive: true });
         }
 
         function renderEpTabs() {
@@ -4560,7 +4645,8 @@
         }
         function switchEp(i) {
             recordProgress(currentComic.id, i);
-            currentEp = i; renderEpTabs(); renderStrip(); window.scrollTo(0, 0);
+            currentEp = i; renderEpTabs(); renderStrip();
+            requestAnimationFrame(() => { document.documentElement.scrollTop = 0; document.body.scrollTop = 0; });
         }
         function renderStrip() {
             const ep = currentComic.episodes[currentEp];
@@ -4755,7 +4841,6 @@
             const offline = getOfflineLibrary();
             const item = offline.find(o => o.key === key);
             if (!item) { showToast('Episode not found'); return; }
-            // Build a temporary comic object and open reader
             const tempComic = {
                 id: 'offline-' + key,
                 title: item.comicTitle,
@@ -4764,11 +4849,17 @@
                 coverUrl: item.coverUrl,
                 isDemo: false,
                 likes: 0,
+                badge: '',
+                pi: 0,
                 episodes: [{ title: item.epTitle, blocks: item.blocks }],
                 comments: []
             };
-            // Push a temp entry if not already there
             if (!comics.find(c => c.id === tempComic.id)) comics.unshift(tempComic);
+            // Mark this as an offline comic so back button returns to library
+            tempComic._fromLibrary = true;
+            currentComic = tempComic;
+            // Push library to history so back goes there
+            pageHistory.push('library');
             openReaderAtEp(tempComic.id, 0);
         }
         function removeOfflineEp(key) {
@@ -5026,6 +5117,8 @@
         loadAllComicsFromSupabase();
         renderCanvas();
         renderStars(0);
+        // Set up reader scroll listener once at startup
+        setupReaderScrollBehavior();
         // Periodic sync every 90s so deletes/edits by admin/creators are reflected
         setInterval(async () => {
             const activePage = document.querySelector('.page.active')?.id?.replace('page-', '');
