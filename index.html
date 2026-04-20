@@ -3761,14 +3761,16 @@
                 const { data: sbComics } = await sb.from('comics').select('*').eq('is_demo', false).order('created_at', { ascending: false });
                 if (!sbComics || !sbComics.length) return;
                 for (const c of sbComics) {
-                    if (comics.find(x => x.id === c.id)) continue;
+                    const existingIdx = comics.findIndex(x => x.id === c.id);
                     const { data: eps } = await sb.from('episodes').select('*').eq('comic_id', c.id).order('episode_number');
                     const episodes = (eps || []).map(ep => ({ title: ep.title, blocks: ep.content?.blocks || [] }));
-                    comics.unshift({ id: c.id, title: c.title, genre: c.genre, synopsis: c.synopsis, pi: 0, likes: c.likes || 0, badge: c.badge || 'new', author: c.author_name, author_id: c.author_id, coverUrl: c.cover_url || null, isDemo: false, episodes, comments: [] });
+                    const comicObj = { id: c.id, title: c.title, genre: c.genre, synopsis: c.synopsis, pi: 0, likes: c.likes || 0, badge: c.badge || 'new', author: c.author_name, author_id: c.author_id, coverUrl: c.cover_url || null, isDemo: false, episodes, comments: [] };
+                    if (existingIdx !== -1) { comics[existingIdx] = { ...comics[existingIdx], ...comicObj }; } else { comics.unshift(comicObj); }
                 }
                 renderHome();
                 const activePage = document.querySelector('.page.active')?.id?.replace('page-', '');
                 if (activePage === 'browse') renderBrowse('All');
+                if (activePage === 'trending') renderTrending();
             } catch (e) { console.warn('Could not load comics from Supabase', e); }
         }
 
@@ -3839,14 +3841,14 @@
 
         // ── COMICS DATA ───────────────────────────────────────────────
         let comics = [
-            { id: 'anansi-web', title: "Anansi's Web", genre: 'Fantasy', pi: 4, likes: 18400, badge: 'hot', author: 'Kofi Mensah', isDemo: true, synopsis: "A spider deity weaves fate across modern Accra. When a young journalist discovers ancient patterns in her city, she realises the Trickster God has been telling their story all along.", episodes: [{ title: 'The First Thread', panels: [{ pi: 4, dialogue: "Accra never sleeps. Neither does Anansi.", side: 'left' }, { pi: 0, dialogue: "You think you found this story. I let you find it.", side: 'right' }, { pi: 6, dialogue: "Every city has a spider at its centre. Ours just happens to be a god.", side: 'left' }, { pi: 3, dialogue: "Follow the web, child. It leads everywhere.", side: 'right' }] }, { title: 'The Trickster Speaks', panels: [{ pi: 2, dialogue: "They forgot the old stories. I never let them.", side: 'left' }, { pi: 5, dialogue: "What do you want from me?", side: 'right' }, { pi: 4, dialogue: "Not from you. Through you.", side: 'left' }] }], comments: ["Abena: This is the most Ghanaian thing I have ever read", "Kweku: Anansi in modern Accra is GENIUS"] },
-            { id: 'iron-mask-benin', title: 'Iron Mask of Benin', genre: 'Action', pi: 0, likes: 24100, badge: 'hot', author: 'Emeka Okafor', isDemo: true, synopsis: "Prince Adeyemi was stripped of his throne and left for dead. Now masked in iron forged from his father's broken crown, he returns to reclaim what was taken.", episodes: [{ title: 'The Fallen Prince', panels: [{ pi: 0, dialogue: "They took everything. The throne. The name. The face.", side: 'left' }, { pi: 3, dialogue: "But they could not take what my father forged into me.", side: 'right' }, { pi: 1, dialogue: "The Iron Mask rises tonight.", side: 'left' }, { pi: 5, dialogue: "Who are you?! Show your face!", side: 'right' }, { pi: 0, dialogue: "This IS my face now.", side: 'left' }] }, { title: 'Blood and Bronze', panels: [{ pi: 2, dialogue: "The palace guards did not recognise their prince.", side: 'left' }, { pi: 4, dialogue: "Good. Let them fear the mask instead.", side: 'right' }] }], comments: ["Tunde: Better than any Marvel comic", "Ngozi: The Benin Kingdom lore is so rich here"] },
-            { id: 'daughter-of-nile', title: 'Daughter of the Nile', genre: 'Romance', pi: 1, likes: 43200, badge: 'new', author: 'Amira Hassan', isDemo: true, synopsis: "Cairo archaeologist Nadia discovers a love letter buried with a pharaoh — written in her own handwriting. Across three thousand years, two souls keep finding each other.", episodes: [{ title: 'Written in Sand', panels: [{ pi: 1, dialogue: "I have translated a thousand inscriptions. None were addressed to me.", side: 'left' }, { pi: 7, dialogue: "And yet here we are again, Nadia.", side: 'right' }, { pi: 4, dialogue: "How do you know my name?", side: 'left' }, { pi: 1, dialogue: "I have always known your name.", side: 'right' }] }, { title: 'The Second Life', panels: [{ pi: 6, dialogue: "The Nile remembers what we forget.", side: 'left' }, { pi: 3, dialogue: "Then let me remember with you.", side: 'right' }] }], comments: ["Fatima: I literally cried reading this", "Hassan: Ancient Egypt romance done RIGHT"] },
-            { id: 'juju-circuit', title: 'Juju Circuit', genre: 'Sci-Fi', pi: 6, likes: 29800, badge: 'up', author: 'Zara Obi', isDemo: true, synopsis: "Lagos 2087. Technology runs on juju energy harvested from ancestral spirits. But when the grid starts failing, sixteen-year-old Temi discovers her grandmother is the source.", episodes: [{ title: 'Power Grid', panels: [{ pi: 6, dialogue: "In 2087 Lagos runs on juju. Everyone knows this. No one asks why.", side: 'left' }, { pi: 2, dialogue: "Grid failure in sector 7. Source: unknown. Power level: critical.", side: 'right' }, { pi: 0, dialogue: "Grandma, what did you do?", side: 'left' }, { pi: 6, dialogue: "What I had to, child. Now go. Fix what I started.", side: 'right' }] }, { title: 'Ancestral Code', panels: [{ pi: 3, dialogue: "The old magic and the new tech were never separate.", side: 'left' }, { pi: 5, dialogue: "They were always the same thing.", side: 'right' }] }], comments: ["Dev: Afrofuturism at its finest", "Lola: TEMI IS MY SPIRIT ANIMAL"] },
-            { id: 'the-griots', title: 'The Griots', genre: 'Slice of Life', pi: 5, likes: 11200, badge: '', author: 'Moussa Diallo', isDemo: true, synopsis: "Four young friends in Dakar carry the ancient tradition of the griot. In a world of TikTok and trending sounds, they fight to keep their culture alive.", episodes: [{ title: 'Old Words New Beats', panels: [{ pi: 5, dialogue: "My grandfather memorised three hundred years of history. I can barely remember my Wi-Fi password.", side: 'left' }, { pi: 3, dialogue: "Then write it down, fool.", side: 'right' }, { pi: 5, dialogue: "Griots do not write. We remember.", side: 'left' }, { pi: 7, dialogue: "Then remember better.", side: 'right' }] }], comments: ["Binta: This is literally my family", "Oumar: The Dakar details are so accurate"] },
-            { id: 'nights-in-nairobi', title: 'Nights in Nairobi', genre: 'Horror', pi: 7, likes: 15600, badge: 'new', author: 'Wanjiru Kamau', isDemo: true, synopsis: "Something ancient has awakened beneath Nairobi. Detective Aisha Njoroge has seen three impossible deaths in one week. The only link — each victim had been dreaming the same dream.", episodes: [{ title: 'The First Dream', panels: [{ pi: 7, dialogue: "Three bodies. Three different causes of death. Three identical smiles.", side: 'left' }, { pi: 4, dialogue: "They were not smiling, Detective. They were showing their teeth.", side: 'right' }, { pi: 7, dialogue: "What is the difference?", side: 'left' }, { pi: 2, dialogue: "Ask the thing that put them there.", side: 'right' }] }], comments: ["Waweru: This scared me on the matatu home", "Aisha: The Nairobi setting makes it SO much scarier"] },
-            { id: 'mama-ngina-kitchen', title: "Mama Ngina's Kitchen", genre: 'Comedy', pi: 2, likes: 8900, badge: '', author: 'Njoki Mwangi', isDemo: true, synopsis: "Mama Ngina runs the most chaotic catering business in Mombasa. Her daughter wants to modernise it. Her son keeps eating the inventory. And her husband just volunteered them for the President's state dinner.", episodes: [{ title: 'The State Dinner Disaster', panels: [{ pi: 2, dialogue: "You volunteered us for WHAT?", side: 'left' }, { pi: 5, dialogue: "The President himself! Think of the prestige!", side: 'right' }, { pi: 2, dialogue: "Think of the MENU. We have three days.", side: 'left' }, { pi: 3, dialogue: "I already ate the practice ugali.", side: 'right' }, { pi: 2, dialogue: "BENSON.", side: 'left' }] }], comments: ["Wanjiku: I know this family personally", "Kamau: The ugali panel killed me dead"] },
-            { id: 'lagos-chronicles', title: 'The Lagos Chronicles', genre: 'Drama', pi: 3, likes: 31000, badge: 'hot', author: 'Chidi Adeyemi', isDemo: true, synopsis: "Three generations of a Lagos family navigate oil money, corruption, love and loss across fifty years of Nigerian history. From Fela's shrine to Silicon Lagoon.", episodes: [{ title: 'Streets of Lagos', panels: [{ pi: 3, dialogue: "This city never sleeps. And it never forgets.", side: 'left' }, { pi: 0, dialogue: "My grandfather built something here. My father spent it. Now it is my turn.", side: 'right' }, { pi: 5, dialogue: "Lagos gives everything and takes everything. That is the deal.", side: 'left' }] }, { title: 'Silicon Lagoon', panels: [{ pi: 2, dialogue: "They call it the future. We call it Tuesday.", side: 'left' }, { pi: 6, dialogue: "The city changed. We changed with it. Or we did not survive.", side: 'right' }] }], comments: ["Ada: This is MY story", "Emeka: Chidi always delivers"] },
+            { id: 'anansi-web', title: "Anansi's Web", genre: 'Fantasy', pi: 4, likes: 18400, badge: 'hot', author: 'Kofi Mensah', isDemo: false, synopsis: "A spider deity weaves fate across modern Accra. When a young journalist discovers ancient patterns in her city, she realises the Trickster God has been telling their story all along.", episodes: [{ title: 'The First Thread', panels: [{ pi: 4, dialogue: "Accra never sleeps. Neither does Anansi.", side: 'left' }, { pi: 0, dialogue: "You think you found this story. I let you find it.", side: 'right' }, { pi: 6, dialogue: "Every city has a spider at its centre. Ours just happens to be a god.", side: 'left' }, { pi: 3, dialogue: "Follow the web, child. It leads everywhere.", side: 'right' }] }, { title: 'The Trickster Speaks', panels: [{ pi: 2, dialogue: "They forgot the old stories. I never let them.", side: 'left' }, { pi: 5, dialogue: "What do you want from me?", side: 'right' }, { pi: 4, dialogue: "Not from you. Through you.", side: 'left' }] }], comments: ["Abena: This is the most Ghanaian thing I have ever read", "Kweku: Anansi in modern Accra is GENIUS"] },
+            { id: 'iron-mask-benin', title: 'Iron Mask of Benin', genre: 'Action', pi: 0, likes: 24100, badge: 'hot', author: 'Emeka Okafor', isDemo: false, synopsis: "Prince Adeyemi was stripped of his throne and left for dead. Now masked in iron forged from his father's broken crown, he returns to reclaim what was taken.", episodes: [{ title: 'The Fallen Prince', panels: [{ pi: 0, dialogue: "They took everything. The throne. The name. The face.", side: 'left' }, { pi: 3, dialogue: "But they could not take what my father forged into me.", side: 'right' }, { pi: 1, dialogue: "The Iron Mask rises tonight.", side: 'left' }, { pi: 5, dialogue: "Who are you?! Show your face!", side: 'right' }, { pi: 0, dialogue: "This IS my face now.", side: 'left' }] }, { title: 'Blood and Bronze', panels: [{ pi: 2, dialogue: "The palace guards did not recognise their prince.", side: 'left' }, { pi: 4, dialogue: "Good. Let them fear the mask instead.", side: 'right' }] }], comments: ["Tunde: Better than any Marvel comic", "Ngozi: The Benin Kingdom lore is so rich here"] },
+            { id: 'daughter-of-nile', title: 'Daughter of the Nile', genre: 'Romance', pi: 1, likes: 43200, badge: 'new', author: 'Amira Hassan', isDemo: false, synopsis: "Cairo archaeologist Nadia discovers a love letter buried with a pharaoh — written in her own handwriting. Across three thousand years, two souls keep finding each other.", episodes: [{ title: 'Written in Sand', panels: [{ pi: 1, dialogue: "I have translated a thousand inscriptions. None were addressed to me.", side: 'left' }, { pi: 7, dialogue: "And yet here we are again, Nadia.", side: 'right' }, { pi: 4, dialogue: "How do you know my name?", side: 'left' }, { pi: 1, dialogue: "I have always known your name.", side: 'right' }] }, { title: 'The Second Life', panels: [{ pi: 6, dialogue: "The Nile remembers what we forget.", side: 'left' }, { pi: 3, dialogue: "Then let me remember with you.", side: 'right' }] }], comments: ["Fatima: I literally cried reading this", "Hassan: Ancient Egypt romance done RIGHT"] },
+            { id: 'juju-circuit', title: 'Juju Circuit', genre: 'Sci-Fi', pi: 6, likes: 29800, badge: 'up', author: 'Zara Obi', isDemo: false, synopsis: "Lagos 2087. Technology runs on juju energy harvested from ancestral spirits. But when the grid starts failing, sixteen-year-old Temi discovers her grandmother is the source.", episodes: [{ title: 'Power Grid', panels: [{ pi: 6, dialogue: "In 2087 Lagos runs on juju. Everyone knows this. No one asks why.", side: 'left' }, { pi: 2, dialogue: "Grid failure in sector 7. Source: unknown. Power level: critical.", side: 'right' }, { pi: 0, dialogue: "Grandma, what did you do?", side: 'left' }, { pi: 6, dialogue: "What I had to, child. Now go. Fix what I started.", side: 'right' }] }, { title: 'Ancestral Code', panels: [{ pi: 3, dialogue: "The old magic and the new tech were never separate.", side: 'left' }, { pi: 5, dialogue: "They were always the same thing.", side: 'right' }] }], comments: ["Dev: Afrofuturism at its finest", "Lola: TEMI IS MY SPIRIT ANIMAL"] },
+            { id: 'the-griots', title: 'The Griots', genre: 'Slice of Life', pi: 5, likes: 11200, badge: '', author: 'Moussa Diallo', isDemo: false, synopsis: "Four young friends in Dakar carry the ancient tradition of the griot. In a world of TikTok and trending sounds, they fight to keep their culture alive.", episodes: [{ title: 'Old Words New Beats', panels: [{ pi: 5, dialogue: "My grandfather memorised three hundred years of history. I can barely remember my Wi-Fi password.", side: 'left' }, { pi: 3, dialogue: "Then write it down, fool.", side: 'right' }, { pi: 5, dialogue: "Griots do not write. We remember.", side: 'left' }, { pi: 7, dialogue: "Then remember better.", side: 'right' }] }], comments: ["Binta: This is literally my family", "Oumar: The Dakar details are so accurate"] },
+            { id: 'nights-in-nairobi', title: 'Nights in Nairobi', genre: 'Horror', pi: 7, likes: 15600, badge: 'new', author: 'Wanjiru Kamau', isDemo: false, synopsis: "Something ancient has awakened beneath Nairobi. Detective Aisha Njoroge has seen three impossible deaths in one week. The only link — each victim had been dreaming the same dream.", episodes: [{ title: 'The First Dream', panels: [{ pi: 7, dialogue: "Three bodies. Three different causes of death. Three identical smiles.", side: 'left' }, { pi: 4, dialogue: "They were not smiling, Detective. They were showing their teeth.", side: 'right' }, { pi: 7, dialogue: "What is the difference?", side: 'left' }, { pi: 2, dialogue: "Ask the thing that put them there.", side: 'right' }] }], comments: ["Waweru: This scared me on the matatu home", "Aisha: The Nairobi setting makes it SO much scarier"] },
+            { id: 'mama-ngina-kitchen', title: "Mama Ngina's Kitchen", genre: 'Comedy', pi: 2, likes: 8900, badge: '', author: 'Njoki Mwangi', isDemo: false, synopsis: "Mama Ngina runs the most chaotic catering business in Mombasa. Her daughter wants to modernise it. Her son keeps eating the inventory. And her husband just volunteered them for the President's state dinner.", episodes: [{ title: 'The State Dinner Disaster', panels: [{ pi: 2, dialogue: "You volunteered us for WHAT?", side: 'left' }, { pi: 5, dialogue: "The President himself! Think of the prestige!", side: 'right' }, { pi: 2, dialogue: "Think of the MENU. We have three days.", side: 'left' }, { pi: 3, dialogue: "I already ate the practice ugali.", side: 'right' }, { pi: 2, dialogue: "BENSON.", side: 'left' }] }], comments: ["Wanjiku: I know this family personally", "Kamau: The ugali panel killed me dead"] },
+            { id: 'lagos-chronicles', title: 'The Lagos Chronicles', genre: 'Drama', pi: 3, likes: 31000, badge: 'hot', author: 'Chidi Adeyemi', isDemo: false, synopsis: "Three generations of a Lagos family navigate oil money, corruption, love and loss across fifty years of Nigerian history. From Fela's shrine to Silicon Lagoon.", episodes: [{ title: 'Streets of Lagos', panels: [{ pi: 3, dialogue: "This city never sleeps. And it never forgets.", side: 'left' }, { pi: 0, dialogue: "My grandfather built something here. My father spent it. Now it is my turn.", side: 'right' }, { pi: 5, dialogue: "Lagos gives everything and takes everything. That is the deal.", side: 'left' }] }, { title: 'Silicon Lagoon', panels: [{ pi: 2, dialogue: "They call it the future. We call it Tuesday.", side: 'left' }, { pi: 6, dialogue: "The city changed. We changed with it. Or we did not survive.", side: 'right' }] }], comments: ["Ada: This is MY story", "Emeka: Chidi always delivers"] },
         ];
 
         let currentComic = null, currentEp = 0, likedComics = {}, userRatings = {}, previousPage = 'home';
@@ -4092,8 +4094,7 @@
                 : `<div class="intro-cover-icon-big">${comic.title}</div>`;
             document.getElementById('intro-genre-pill').textContent = comic.genre;
             document.getElementById('intro-comic-title').textContent = comic.title;
-            const demoBadge = comic.isDemo ? '<span style="font-size:10px;background:rgba(232,160,69,0.2);border:1px solid rgba(232,160,69,0.4);color:var(--gold);padding:2px 8px;border-radius:10px;font-weight:700;">DEMO</span>' : '';
-            document.getElementById('intro-author-line').innerHTML = `<span>by ${comic.author}</span><span class="intro-author-dot"></span><span>${epCount} ep${epCount !== 1 ? 's' : ''}</span>${demoBadge ? '<span class="intro-author-dot"></span>' + demoBadge : ''}`;
+            document.getElementById('intro-author-line').innerHTML = `<span>by ${comic.author}</span><span class="intro-author-dot"></span><span>${epCount} ep${epCount !== 1 ? 's' : ''}</span>`;
 
             // Creator strip
             const creatorInitial = (comic.author || 'A')[0].toUpperCase();
@@ -4309,16 +4310,16 @@
             // Sheet title shows comic name; float title shows episode (set in renderEpTabs)
             const sheetTitle = document.getElementById('reader-sheet-title');
             if (sheetTitle) sheetTitle.textContent = comic.title;
-            const demoBadge = comic.isDemo ? ' <span class="demo-badge">DEMO</span>' : '';
-            document.getElementById('reader-meta').innerHTML = `by ${comic.author} · ${comic.genre}` + demoBadge;
+            document.getElementById('reader-meta').innerHTML = `by ${comic.author} · ${comic.genre}`;
             // Reset bars on each open
             readerBarsVisible = true;
             applyReaderBarVisibility();
             // Record progress
             recordProgress(comic.id, currentEp);
 
-            const showEdit = comic.isDemo || (currentUser && currentUser.email === ADMIN_EMAIL);
-            document.getElementById('edit-btn').style.display = showEdit ? 'flex' : 'none';
+            const isAdminUser = currentUser && currentUser.email === ADMIN_EMAIL;
+            const isComicOwner = currentUser && (comic.author_id === currentUser.id || comic.author === (currentUser.username || currentUser.email?.split('@')[0]));
+            document.getElementById('edit-btn').style.display = (isAdminUser || isComicOwner) ? 'flex' : 'none';
             document.getElementById('like-count').textContent = fmt(comic.likes);
             document.getElementById('like-btn').classList.toggle('liked', !!likedComics[id]);
             const ur = userRatings[id] || 0;
@@ -4369,13 +4370,15 @@
         }
         function editComic() {
             if (!currentComic) return;
-            const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
-            if (!currentComic.isDemo && !isAdmin) return;
+            if (!currentUser) { openAuth('login'); return; }
+            const isAdmin = currentUser.email === ADMIN_EMAIL;
+            const isOwner = currentComic.author_id === currentUser.id || currentComic.author === (currentUser.username || currentUser.email?.split('@')[0]);
+            if (!isAdmin && !isOwner) { showToast('You can only edit your own comics'); return; }
             document.getElementById('edit-btn').textContent = '✏️ Edit';
             // Deep-clone so edits don't mutate live data before Save is clicked
             editingComic = JSON.parse(JSON.stringify(currentComic));
-            // Normalize demo panels -> blocks
-            if (editingComic.isDemo) editingComic.episodes = normalizeDemoEpisodes(editingComic.episodes);
+            // Normalize panels -> blocks for any comic that uses old panel format
+            editingComic.episodes = normalizeDemoEpisodes(editingComic.episodes);
             document.getElementById('edit-title').value = editingComic.title;
             document.getElementById('edit-synopsis').value = editingComic.synopsis || '';
             document.getElementById('edit-author').value = editingComic.author;
@@ -4465,7 +4468,7 @@
                 }
                 showToast('Comic updated — synced to all devices ✅');
             } else {
-                // Demo comic — save to Supabase for cross-device sync, and localStorage as fallback
+                // Hardcoded comic (non-UUID id like 'anansi-web') — save to Supabase + localStorage
                 saveDemoEdit(editingComic);
                 if (currentUser) {
                     try {
@@ -4543,13 +4546,20 @@
         function saveDemoEdit(comic) {
             try {
                 const edits = JSON.parse(localStorage.getItem(DEMO_EDITS_KEY) || '{}');
+                // Store episodes without base64 images (keep cloud URLs only)
+                const safeEpisodes = (comic.episodes || []).map(ep => ({
+                    ...ep,
+                    blocks: (ep.blocks || []).map(b =>
+                        b.type === 'image' ? { ...b, image: (b.image && b.image.startsWith('http')) ? b.image : null } : b
+                    )
+                }));
                 edits[comic.id] = {
                     title: comic.title,
                     synopsis: comic.synopsis,
                     author: comic.author,
                     genre: comic.genre,
-                    coverUrl: comic.coverUrl || null,
-                    episodes: comic.episodes
+                    coverUrl: comic.coverUrl || comic.cover_url || null,
+                    episodes: safeEpisodes
                 };
                 localStorage.setItem(DEMO_EDITS_KEY, JSON.stringify(edits));
             } catch (e) { }
@@ -4574,12 +4584,19 @@
                     const originalId = dc.title.replace('__demo__', '');
                     const comic = comics.find(c => c.id === originalId);
                     if (!comic) continue;
-                    // Apply edits from Supabase (more authoritative than localStorage)
-                    comic.title = dc.title.replace('__demo__', '') === comic.id ? comic.title : dc.title.replace('__demo__', '');
+                    // Apply edits from Supabase — title stored as __demo__ID, display title in synopsis field
                     if (dc.synopsis) comic.synopsis = dc.synopsis;
                     if (dc.genre) comic.genre = dc.genre;
                     if (dc.author_name) comic.author = dc.author_name;
-                    if (dc.cover_url) comic.coverUrl = dc.cover_url;
+                    if (dc.cover_url) { comic.coverUrl = dc.cover_url; comic.cover_url = dc.cover_url; }
+                    // Restore edited title if stored in a custom field
+                    try {
+                        const localEdits = JSON.parse(localStorage.getItem('afrotyunz_demo_edits') || '{}');
+                        if (localEdits[originalId]) {
+                            if (localEdits[originalId].title) comic.title = localEdits[originalId].title;
+                            if (localEdits[originalId].coverUrl) { comic.coverUrl = localEdits[originalId].coverUrl; comic.cover_url = localEdits[originalId].coverUrl; }
+                        }
+                    } catch (e) { }
                     // Load episodes
                     const { data: eps } = await sb.from('episodes').select('*').eq('comic_id', dc.id).order('episode_number');
                     if (eps && eps.length) {
@@ -4652,10 +4669,18 @@
             const ep = currentComic.episodes[currentEp];
             const heights = [300, 340, 280, 360, 310];
             if (ep.blocks) {
-                document.getElementById('panel-strip').innerHTML = ep.blocks.map(b => {
+                document.getElementById('panel-strip').innerHTML = ep.blocks.map((b, i) => {
                     if (b.type === 'image' && b.image) return `<img src="${b.image}" style="width:100%;display:block;" alt="panel"/>`;
-                    if (b.type === 'image') return `<div style="width:100%;min-height:180px;background:#1a1208;display:flex;align-items:center;justify-content:center;color:#3d2e1a;font-size:12px;font-weight:700;">No image</div>`;
-                    if (b.type === 'dialogue' && b.text) return `<div style="background:#111;padding:14px 20px;font-size:14px;font-weight:700;color:var(--text);border-top:1px solid #222;border-bottom:1px solid #222;">${b.text}</div>`;
+                    if (b.type === 'image') {
+                        // Colored placeholder panel for hardcoded comics without uploaded image
+                        const bg = PALETTES[(currentComic.pi || 0) % PALETTES.length];
+                        const dialogue = b.dialogue || b.text || '';
+                        return `<div style="width:100%;min-height:${heights[i % heights.length]}px;background:${bg};display:flex;align-items:center;justify-content:center;position:relative;">
+                            <span style="font-size:11px;color:rgba(255,255,255,0.2);font-weight:700;text-transform:uppercase;letter-spacing:1px;">Panel ${i + 1}</span>
+                            ${dialogue ? `<div style="position:absolute;top:14px;${b.side === 'right' ? 'right:12px' : 'left:12px'};background:white;color:#111;border:2px solid #111;border-radius:14px;padding:7px 12px;font-weight:700;font-size:12px;max-width:55%;line-height:1.4;box-shadow:2px 2px 0 #111;">${dialogue}</div>` : ''}
+                        </div>`;
+                    }
+                    if (b.type === 'dialogue' && (b.text || b.dialogue)) return `<div style="background:#111;padding:14px 20px;font-size:14px;font-weight:700;color:var(--text);border-top:1px solid #222;border-bottom:1px solid #222;">${b.text || b.dialogue}</div>`;
                     return '';
                 }).join('');
             } else {
@@ -5041,13 +5066,16 @@
             if (currentUser) {
                 const sbComic = await publishComicToSupabase(title, genre, document.getElementById('c-synopsis').value.trim(), epTitle, blockList);
                 if (sbComic) {
-                    comics.unshift(sbComic);
+                    // Add immediately to local list for instant display
+                    const dupeIdx = comics.findIndex(c => c.id === sbComic.id);
+                    if (dupeIdx === -1) comics.unshift(sbComic);
                     document.getElementById('c-title').value = ''; document.getElementById('c-synopsis').value = ''; document.getElementById('c-ep-title').value = '';
                     blockList = [{ id: 1, type: 'image', image: null }, { id: 2, type: 'dialogue', text: '' }, { id: 3, type: 'image', image: null }];
                     clearCover();
                     renderCanvas(); checkPublish(); saveToStore();
+                    renderHome();
                     const t = document.getElementById('pub-success'); t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3500);
-                    showToast('Comic published!'); return;
+                    showToast('Comic published! 🎉'); return;
                 }
             }
             const localBlocks = blockList.map(b => ({ ...b }));
