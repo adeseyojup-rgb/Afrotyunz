@@ -4003,9 +4003,14 @@
             let comic = comics.find(c => c.id === id);
             if (!comic) return;
 
-            // For Supabase comics, pre-load episodes if needed
+            // Normalize hardcoded comics that still use panels format
             const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
-            if (!comic.isDemo && isUUID && (!comic.episodes || !comic.episodes.length)) {
+            if (!isUUID && comic.episodes && comic.episodes.some(ep => ep.panels && !ep.blocks)) {
+                comic.episodes = normalizeDemoEpisodes(comic.episodes);
+            }
+
+            // For Supabase comics, pre-load episodes if needed
+            if (!isUUID && (!comic.episodes || !comic.episodes.length)) {
                 try {
                     const { data: eps } = await sb.from('episodes').select('*').eq('comic_id', id).order('episode_number');
                     if (eps && eps.length) comic.episodes = eps.map(ep => ({ title: ep.title, blocks: ep.content?.blocks || [] }));
@@ -4356,15 +4361,20 @@
         // ── EDIT COMIC ─────────────────────────────────────────────
         let editingComic = null;
         function normalizeDemoEpisodes(episodes) {
-            // Convert demo panel format {pi, dialogue, side} -> blocks format {type, image, text, side}
+            // Convert demo panel format {pi, dialogue, side} -> unified block format
+            // Keep image + dialogue together in ONE block so indices stay stable
             return episodes.map(ep => {
-                if (ep.blocks && ep.blocks.length) return ep; // already blocks
-                const blocks = (ep.panels || []).map(p => {
-                    const out = [];
-                    out.push({ type: 'image', image: p.image || null, side: p.side || 'left' });
-                    if (p.dialogue) out.push({ type: 'dialogue', text: p.dialogue, side: p.side || 'left' });
-                    return out;
-                }).flat();
+                if (ep.blocks && ep.blocks.length) {
+                    // Already blocks — ensure each has type set
+                    return { ...ep, blocks: ep.blocks.map(b => ({ type: 'image', ...b })) };
+                }
+                const blocks = (ep.panels || []).map(p => ({
+                    type: 'image',
+                    image: p.image || null,
+                    dialogue: p.dialogue || '',
+                    side: p.side || 'left',
+                    pi: p.pi   // keep palette index for colored panel rendering
+                }));
                 return { ...ep, blocks, panels: undefined };
             });
         }
@@ -4401,12 +4411,17 @@
                     const imgSrc = p.image || null;
                     const dialogue = p.dialogue || p.text || '';
                     const side = p.side || 'left';
-                    return `<div class="panel-edit-row">
-                      <span style="font-size:10px;color:var(--muted);font-weight:700;min-width:16px;margin-top:4px">${pi + 1}</span>
-                      ${isImg || p.type === 'image' ? (imgSrc ? `<img class="panel-edit-img" src="${imgSrc}" alt="panel"/><button class="side-toggle" onclick="editPanelImage(${ei},${pi})" style="color:var(--gold);border-color:var(--gold);margin-top:4px">🖼️ Change</button>` : `<div class="panel-edit-img-placeholder" onclick="editPanelImage(${ei},${pi})">🖼️<br/>Upload</div>`) : ''}
-                      <input value="${dialogue}" placeholder="Dialogue…" onchange="updatePanelDialogue(${ei},${pi},this.value)" style="margin-top:4px"/>
-                      ${isImg || p.type === 'image' ? `<button class="side-toggle ${side === 'left' ? 'active' : ''}" onclick="togglePanelSide(${ei},${pi},'left')" style="margin-top:4px">L</button><button class="side-toggle ${side === 'right' ? 'active' : ''}" onclick="togglePanelSide(${ei},${pi},'right')" style="margin-top:4px">R</button>` : ''}
-                      <button class="side-toggle" onclick="removePanelFromEdit(${ei},${pi})" style="color:var(--red);border-color:var(--red);margin-top:4px">✕</button>
+                    const isPureDialogue = p.type === 'dialogue' && !p.image;
+                    return `<div class="panel-edit-row" style="border:1px solid var(--border);border-radius:8px;padding:8px;margin-bottom:6px;background:var(--bg3);">
+                      <span style="font-size:10px;color:var(--muted);font-weight:700;min-width:20px;align-self:flex-start;padding-top:4px;">${pi + 1}</span>
+                      ${!isPureDialogue ? (imgSrc
+                            ? `<div style="position:relative;flex-shrink:0;"><img class="panel-edit-img" src="${imgSrc}" alt="panel"/><button class="side-toggle" onclick="editPanelImage(${ei},${pi})" style="position:absolute;bottom:2px;right:2px;font-size:9px;color:var(--gold);border-color:var(--gold);background:rgba(0,0,0,0.7)">🖼️ Change</button></div>`
+                            : `<div class="panel-edit-img-placeholder" onclick="editPanelImage(${ei},${pi})" style="flex-shrink:0;">🖼️<br/><span style="font-size:9px;">Upload Image</span></div>`) : ''}
+                      <div style="flex:1;display:flex;flex-direction:column;gap:5px;min-width:0;">
+                        <input value="${dialogue}" placeholder="${isPureDialogue ? 'Dialogue text…' : 'Caption / dialogue…'}" onchange="updatePanelDialogue(${ei},${pi},this.value)" style="padding:6px 8px;border:1.5px solid var(--border);border-radius:6px;background:var(--bg2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:11px;outline:none;width:100%;"/>
+                        ${!isPureDialogue ? `<div style="display:flex;gap:4px;"><button class="side-toggle ${side === 'left' ? 'active' : ''}" onclick="togglePanelSide(${ei},${pi},'left')">L</button><button class="side-toggle ${side === 'right' ? 'active' : ''}" onclick="togglePanelSide(${ei},${pi},'right')">R</button><span style="font-size:9px;color:var(--muted);align-self:center;">${imgSrc ? '✅ Image set' : '⬜ No image'}</span></div>` : ''}
+                      </div>
+                      <button class="side-toggle" onclick="removePanelFromEdit(${ei},${pi})" style="color:var(--red);border-color:var(--red);align-self:flex-start;flex-shrink:0;">✕</button>
                       <input type="file" accept="image/*" id="edit-img-${ei}-${pi}" class="file-input" onchange="handleEditPanelImage(event,${ei},${pi})"/>
                     </div>`;
                 }).join('');
@@ -4429,13 +4444,26 @@
                 const formData = new FormData(); formData.append('file', file); formData.append('upload_preset', CLOUDINARY_PRESET);
                 const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, { method: 'POST', body: formData });
                 const data = await res.json();
-                if (data.secure_url) { const items = editingComic.episodes[ei].blocks || editingComic.episodes[ei].panels; items[pi].image = data.secure_url; renderEditEpisodes(); showToast('Image updated!'); }
+                if (data.secure_url) {
+                    const items = editingComic.episodes[ei].blocks || editingComic.episodes[ei].panels;
+                    items[pi].image = data.secure_url;
+                    items[pi].type = 'image'; // ensure type is set
+                    renderEditEpisodes();
+                    showToast('Image uploaded! Save to apply. ✅');
+                }
                 else { showToast('Upload failed'); }
             } catch (e) { showToast('Upload error'); }
         }
         function addDialogueToEdit(ei) { if (!editingComic) return; const ep = editingComic.episodes[ei]; if (ep.blocks) ep.blocks.push({ type: 'dialogue', text: '' }); else ep.panels.push({ dialogue: '', side: 'left' }); renderEditEpisodes(); }
         function updateEpTitle(ei, val) { if (editingComic) editingComic.episodes[ei].title = val; }
-        function updatePanelDialogue(ei, pi, val) { if (!editingComic) return; const ep = editingComic.episodes[ei]; const items = ep.blocks || ep.panels; if (items[pi].type === 'dialogue') items[pi].text = val; else items[pi].dialogue = val; }
+        function updatePanelDialogue(ei, pi, val) {
+            if (!editingComic) return;
+            const ep = editingComic.episodes[ei];
+            const items = ep.blocks || ep.panels;
+            // Unified block: store in both fields for compatibility
+            if (items[pi].type === 'dialogue') { items[pi].text = val; items[pi].dialogue = val; }
+            else { items[pi].dialogue = val; items[pi].text = val; }
+        }
         function togglePanelSide(ei, pi, side) { if (!editingComic) return; const ep = editingComic.episodes[ei]; const items = ep.blocks || ep.panels; items[pi].side = side; renderEditEpisodes(); }
         function removePanelFromEdit(ei, pi) { if (!editingComic) return; const ep = editingComic.episodes[ei]; const items = ep.blocks || ep.panels; if (items.length <= 1) return; items.splice(pi, 1); renderEditEpisodes(); }
         function removeEpisode(ei) { if (!editingComic || editingComic.episodes.length <= 1) { showToast('Need at least 1 episode'); return; } editingComic.episodes.splice(ei, 1); renderEditEpisodes(); }
@@ -4484,10 +4512,12 @@
                                 author_name: editingComic.author,
                                 cover_url: coverUrl
                             }).eq('id', existing.id);
-                            // Update episodes
+                            // Update episodes — ensure blocks have image URLs
                             for (let i = 0; i < editingComic.episodes.length; i++) {
                                 const ep = editingComic.episodes[i];
-                                const blocks = ep.blocks || ep.panels || [];
+                                const blocks = (ep.blocks || ep.panels || []).map(b =>
+                                    b.type === 'image' ? { type: 'image', image: b.image || null, dialogue: b.dialogue || b.text || '', side: b.side || 'left', pi: b.pi } : b
+                                );
                                 const { data: existingEp } = await sb.from('episodes')
                                     .select('id').eq('comic_id', existing.id).eq('episode_number', i + 1).maybeSingle();
                                 if (existingEp) {
@@ -4546,12 +4576,16 @@
         function saveDemoEdit(comic) {
             try {
                 const edits = JSON.parse(localStorage.getItem(DEMO_EDITS_KEY) || '{}');
-                // Store episodes without base64 images (keep cloud URLs only)
+                // Keep cloud image URLs, strip base64 only
                 const safeEpisodes = (comic.episodes || []).map(ep => ({
                     ...ep,
-                    blocks: (ep.blocks || []).map(b =>
-                        b.type === 'image' ? { ...b, image: (b.image && b.image.startsWith('http')) ? b.image : null } : b
-                    )
+                    blocks: (ep.blocks || []).map(b => {
+                        if (b.type === 'image') {
+                            return { ...b, image: (b.image && b.image.startsWith('http')) ? b.image : null };
+                        }
+                        return b;
+                    }),
+                    panels: undefined  // remove panels so only blocks are used
                 }));
                 edits[comic.id] = {
                     title: comic.title,
@@ -4569,7 +4603,20 @@
                 const edits = JSON.parse(localStorage.getItem(DEMO_EDITS_KEY) || '{}');
                 Object.entries(edits).forEach(([id, data]) => {
                     const comic = comics.find(c => c.id === id);
-                    if (comic) Object.assign(comic, data);
+                    if (!comic) return;
+                    if (data.title) comic.title = data.title;
+                    if (data.synopsis) comic.synopsis = data.synopsis;
+                    if (data.author) comic.author = data.author;
+                    if (data.genre) comic.genre = data.genre;
+                    if (data.coverUrl) { comic.coverUrl = data.coverUrl; comic.cover_url = data.coverUrl; }
+                    if (data.episodes && data.episodes.length) {
+                        // Ensure episodes use blocks format
+                        comic.episodes = data.episodes.map(ep => ({
+                            ...ep,
+                            blocks: ep.blocks || [],
+                            panels: undefined
+                        }));
+                    }
                 });
             } catch (e) { }
         }
@@ -4670,10 +4717,17 @@
             const heights = [300, 340, 280, 360, 310];
             if (ep.blocks) {
                 document.getElementById('panel-strip').innerHTML = ep.blocks.map((b, i) => {
-                    if (b.type === 'image' && b.image) return `<img src="${b.image}" style="width:100%;display:block;" alt="panel"/>`;
+                    if (b.type === 'image' && b.image) {
+                        // Real uploaded image — show it, with optional dialogue overlay
+                        const dialogue = b.dialogue || b.text || '';
+                        return `<div style="width:100%;position:relative;">
+                            <img src="${b.image}" style="width:100%;display:block;" alt="panel"/>
+                            ${dialogue ? `<div style="position:absolute;top:14px;${b.side === 'right' ? 'right:12px' : 'left:12px'};background:white;color:#111;border:2px solid #111;border-radius:14px;padding:7px 12px;font-weight:700;font-size:12px;max-width:55%;line-height:1.4;box-shadow:2px 2px 0 #111;">${dialogue}</div>` : ''}
+                        </div>`;
+                    }
                     if (b.type === 'image') {
-                        // Colored placeholder panel for hardcoded comics without uploaded image
-                        const bg = PALETTES[(currentComic.pi || 0) % PALETTES.length];
+                        // No image yet — show colored palette panel with dialogue
+                        const bg = PALETTES[(b.pi !== undefined ? b.pi : (currentComic.pi || 0)) % PALETTES.length];
                         const dialogue = b.dialogue || b.text || '';
                         return `<div style="width:100%;min-height:${heights[i % heights.length]}px;background:${bg};display:flex;align-items:center;justify-content:center;position:relative;">
                             <span style="font-size:11px;color:rgba(255,255,255,0.2);font-weight:700;text-transform:uppercase;letter-spacing:1px;">Panel ${i + 1}</span>
