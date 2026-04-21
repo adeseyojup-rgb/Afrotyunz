@@ -3731,7 +3731,7 @@
             finally { btn.disabled = false; btn.textContent = authMode === 'login' ? 'Log In' : 'Create Account'; }
         }
         function showAuthError(msg) { const el = document.getElementById('auth-error'); el.textContent = msg; el.style.display = 'block'; }
-        function onAuthSuccess() { closeAuth(); updateNavForUser(); showToast('Welcome to Afrotyunz! 🎉'); renderHome(); }
+        function onAuthSuccess() { closeAuth(); updateNavForUser(); showToast('Welcome to Afrotyunz! 🎉'); syncFromSupabase(); }
         async function signOut() { await sb.auth.signOut(); currentUser = null; updateNavForUser(); showToast('Signed out successfully'); renderHome(); }
         function updateNavForUser() {
             const loggedIn = document.getElementById('nav-logged-in');
@@ -3756,22 +3756,93 @@
             }
         }
         async function loadUserComicsFromSupabase() { await loadAllComicsFromSupabase(); }
+        let _syncInProgress = false;
+
         async function loadAllComicsFromSupabase() {
+            await syncFromSupabase();
+        }
+
+        async function syncFromSupabase() {
+            if (_syncInProgress) return;
+            _syncInProgress = true;
             try {
-                const { data: sbComics } = await sb.from('comics').select('*').eq('is_demo', false).order('created_at', { ascending: false });
-                if (!sbComics || !sbComics.length) return;
-                for (const c of sbComics) {
-                    const existingIdx = comics.findIndex(x => x.id === c.id);
-                    const { data: eps } = await sb.from('episodes').select('*').eq('comic_id', c.id).order('episode_number');
-                    const episodes = (eps || []).map(ep => ({ title: ep.title, blocks: ep.content?.blocks || [] }));
-                    const comicObj = { id: c.id, title: c.title, genre: c.genre, synopsis: c.synopsis, pi: 0, likes: c.likes || 0, badge: c.badge || 'new', author: c.author_name, author_id: c.author_id, coverUrl: c.cover_url || null, isDemo: false, episodes, comments: [] };
-                    if (existingIdx !== -1) { comics[existingIdx] = { ...comics[existingIdx], ...comicObj }; } else { comics.unshift(comicObj); }
+                // 1. Fetch all real user-created comics
+                const { data: sbComics } = await sb.from('comics')
+                    .select('*').eq('is_demo', false)
+                    .order('created_at', { ascending: false });
+
+                // 2. Fetch edited hardcoded comics (__demo__ prefix)
+                const { data: demoEdits } = await sb.from('comics')
+                    .select('*').eq('is_demo', true)
+                    .order('created_at', { ascending: false });
+
+                const allSbComics = [...(sbComics || []), ...(demoEdits || [])];
+                if (!allSbComics.length) { _syncInProgress = false; return; }
+
+                // Track which Supabase IDs we see, so we can remove deleted ones
+                const seenSbIds = new Set();
+
+                for (const c of allSbComics) {
+                    const { data: eps } = await sb.from('episodes')
+                        .select('*').eq('comic_id', c.id).order('episode_number');
+                    const episodes = (eps || []).map(ep => ({
+                        title: ep.title,
+                        blocks: (ep.content?.blocks || []).map(b => ({
+                            type: 'image', ...b
+                        }))
+                    }));
+
+                    if (c.is_demo) {
+                        // This is an edited hardcoded comic — apply to the original
+                        const originalId = c.title.replace('__demo__', '');
+                        const comic = comics.find(x => x.id === originalId);
+                        if (comic) {
+                            if (c.synopsis) comic.synopsis = c.synopsis;
+                            if (c.genre) comic.genre = c.genre;
+                            if (c.author_name) comic.author = c.author_name;
+                            if (c.cover_url) { comic.coverUrl = c.cover_url; comic.cover_url = c.cover_url; }
+                            if (episodes.length) comic.episodes = episodes;
+                            // Also apply title from localStorage if saved there
+                            try {
+                                const le = JSON.parse(localStorage.getItem(DEMO_EDITS_KEY) || '{}');
+                                if (le[originalId]?.title) comic.title = le[originalId].title;
+                            } catch (e) { }
+                        }
+                    } else {
+                        seenSbIds.add(c.id);
+                        const comicObj = {
+                            id: c.id, title: c.title, genre: c.genre,
+                            synopsis: c.synopsis, pi: 0, likes: c.likes || 0,
+                            badge: c.badge || 'new', author: c.author_name,
+                            author_id: c.author_id, coverUrl: c.cover_url || null,
+                            isDemo: false, episodes, comments: []
+                        };
+                        const existingIdx = comics.findIndex(x => x.id === c.id);
+                        if (existingIdx !== -1) {
+                            comics[existingIdx] = { ...comics[existingIdx], ...comicObj };
+                        } else {
+                            comics.unshift(comicObj);
+                        }
+                    }
                 }
+
+                // Remove any Supabase comics that were deleted remotely
+                // (only remove UUID-based ones, never remove hardcoded ones)
+                comics = comics.filter(c => {
+                    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(c.id);
+                    if (isUUID && !c.id.startsWith('user-') && !seenSbIds.has(c.id)) return false;
+                    return true;
+                });
+
                 renderHome();
                 const activePage = document.querySelector('.page.active')?.id?.replace('page-', '');
                 if (activePage === 'browse') renderBrowse('All');
                 if (activePage === 'trending') renderTrending();
-            } catch (e) { console.warn('Could not load comics from Supabase', e); }
+            } catch (e) {
+                console.warn('Sync error', e);
+            } finally {
+                _syncInProgress = false;
+            }
         }
 
         // ── SUPABASE COMICS ───────────────────────────────────────────
@@ -4556,7 +4627,7 @@
                 }
             }
             closeEditModal();
-            // Apply saved data back to the live comic object
+            // Apply saved data back to the live comic object immediately
             const liveComic = comics.find(c => c.id === editingComic.id);
             if (liveComic) {
                 liveComic.title = editingComic.title;
@@ -4564,11 +4635,14 @@
                 liveComic.author = editingComic.author;
                 liveComic.genre = editingComic.genre;
                 liveComic.coverUrl = editingComic.coverUrl || editingComic.cover_url || liveComic.coverUrl;
+                liveComic.cover_url = liveComic.coverUrl;
                 liveComic.episodes = editingComic.episodes;
                 currentComic = liveComic;
             }
             showIntroPage(currentComic);
             renderHome();
+            // Background sync so other devices get the update
+            setTimeout(() => syncFromSupabase(), 800);
         }
 
         // Persist demo comic edits in localStorage
@@ -4621,37 +4695,8 @@
             } catch (e) { }
         }
         async function loadDemoEditsFromSupabase() {
-            if (!currentUser) return;
-            try {
-                // Load all demo edits saved by this user (title starts with __demo__)
-                const { data: demoComics } = await sb.from('comics')
-                    .select('*').eq('is_demo', true).eq('author_id', currentUser.id);
-                if (!demoComics || !demoComics.length) return;
-                for (const dc of demoComics) {
-                    const originalId = dc.title.replace('__demo__', '');
-                    const comic = comics.find(c => c.id === originalId);
-                    if (!comic) continue;
-                    // Apply edits from Supabase — title stored as __demo__ID, display title in synopsis field
-                    if (dc.synopsis) comic.synopsis = dc.synopsis;
-                    if (dc.genre) comic.genre = dc.genre;
-                    if (dc.author_name) comic.author = dc.author_name;
-                    if (dc.cover_url) { comic.coverUrl = dc.cover_url; comic.cover_url = dc.cover_url; }
-                    // Restore edited title if stored in a custom field
-                    try {
-                        const localEdits = JSON.parse(localStorage.getItem('afrotyunz_demo_edits') || '{}');
-                        if (localEdits[originalId]) {
-                            if (localEdits[originalId].title) comic.title = localEdits[originalId].title;
-                            if (localEdits[originalId].coverUrl) { comic.coverUrl = localEdits[originalId].coverUrl; comic.cover_url = localEdits[originalId].coverUrl; }
-                        }
-                    } catch (e) { }
-                    // Load episodes
-                    const { data: eps } = await sb.from('episodes').select('*').eq('comic_id', dc.id).order('episode_number');
-                    if (eps && eps.length) {
-                        comic.episodes = eps.map(ep => ({ title: ep.title, blocks: ep.content?.blocks || [] }));
-                    }
-                }
-                renderHome();
-            } catch (e) { console.warn('Could not load demo edits from Supabase', e); }
+            // syncFromSupabase already handles demo edits — just trigger a full sync
+            await syncFromSupabase();
         }
         function deleteDemoEdit(comicId) {
             try {
@@ -5127,9 +5172,12 @@
                     blockList = [{ id: 1, type: 'image', image: null }, { id: 2, type: 'dialogue', text: '' }, { id: 3, type: 'image', image: null }];
                     clearCover();
                     renderCanvas(); checkPublish(); saveToStore();
-                    renderHome();
+                    renderHome(); // instant local display
                     const t = document.getElementById('pub-success'); t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3500);
-                    showToast('Comic published! 🎉'); return;
+                    showToast('Comic published! 🎉');
+                    // Background sync to confirm and deduplicate
+                    setTimeout(() => syncFromSupabase(), 1500);
+                    return;
                 }
             }
             const localBlocks = blockList.map(b => ({ ...b }));
@@ -5196,18 +5244,17 @@
         renderNotifs();
         renderHome();
         checkSession();
-        loadAllComicsFromSupabase();
+        // Load public comics for all users (logged in or not)
+        syncFromSupabase();
         renderCanvas();
         renderStars(0);
         // Set up reader scroll listener once at startup
         setupReaderScrollBehavior();
-        // Periodic sync every 90s so deletes/edits by admin/creators are reflected
+        // Periodic sync every 90s — merge updates without wiping the array
         setInterval(async () => {
             const activePage = document.querySelector('.page.active')?.id?.replace('page-', '');
-            if (activePage === 'reader' || activePage === 'intro') return; // don't refresh mid-read
-            // Remove all non-demo supabase comics from local array
-            comics = comics.filter(c => c.isDemo || c.id.startsWith('user-'));
-            await loadAllComicsFromSupabase();
+            if (activePage === 'reader' || activePage === 'intro') return;
+            await syncFromSupabase();
         }, 90000);
     </script>
 </body>
