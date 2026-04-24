@@ -3801,7 +3801,18 @@
                             if (c.genre) comic.genre = c.genre;
                             if (c.author_name) comic.author = c.author_name;
                             if (c.cover_url) { comic.coverUrl = c.cover_url; comic.cover_url = c.cover_url; }
-                            if (episodes.length) comic.episodes = episodes;
+                            // Only apply Supabase episodes if they have real image data
+                            // If not, localStorage will provide better data via loadDemoEdits()
+                            if (episodes.length) {
+                                const sbHasImages = episodes.some(ep =>
+                                    (ep.blocks || []).some(b => b.type === 'image' && b.image)
+                                );
+                                const localHasImages = (comic.episodes || []).some(ep =>
+                                    (ep.blocks || []).some(b => b.type === 'image' && b.image)
+                                );
+                                // Use Supabase episodes only if they have images OR local has none
+                                if (sbHasImages || !localHasImages) comic.episodes = episodes;
+                            }
                             // Read display title from badge field (stored as §§TITLE§§DisplayName)
                             if (c.badge && c.badge.startsWith('§§TITLE§§')) {
                                 comic.title = c.badge.replace('§§TITLE§§', '');
@@ -3833,6 +3844,10 @@
                     return true;
                 });
 
+                // Re-apply localStorage demo edits AFTER Supabase sync
+                // localStorage is the ground truth — it was written with full image URLs at save time
+                // Supabase may have incomplete episode data so localStorage wins on conflict
+                loadDemoEdits();
                 renderHome();
                 const activePage = document.querySelector('.page.active')?.id?.replace('page-', '');
                 if (activePage === 'browse') renderBrowse('All');
@@ -5244,11 +5259,12 @@
         // ── INIT ──────────────────────────────────────────────────────
         loadFromStore();
         applyDeletedDemos();   // Remove locally deleted demos before first render
-        loadDemoEdits();       // Apply any saved demo edits
+        loadDemoEdits();       // Apply localStorage edits for first render (pre-sync)
         renderNotifs();
         renderHome();
         checkSession();
-        // Load public comics for all users (logged in or not)
+        // Full sync — loadDemoEdits() is also called inside syncFromSupabase
+        // so localStorage edits are re-applied after Supabase data comes in
         syncFromSupabase();
         renderCanvas();
         renderStars(0);
