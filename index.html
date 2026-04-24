@@ -3757,27 +3757,27 @@
         }
         async function loadUserComicsFromSupabase() { await loadAllComicsFromSupabase(); }
         let _syncInProgress = false;
+        let _syncQueued = false;
 
         async function loadAllComicsFromSupabase() {
             await syncFromSupabase();
         }
 
-        async function syncFromSupabase() {
-            if (_syncInProgress) return;
+        async function syncFromSupabase(force = false) {
+            // If a sync is running and this isn't forced, queue one for after it finishes
+            if (_syncInProgress && !force) { _syncQueued = true; return; }
             _syncInProgress = true;
+            _syncQueued = false;
             try {
-                // 1. Fetch all real user-created comics
-                const { data: sbComics } = await sb.from('comics')
-                    .select('*').eq('is_demo', false)
-                    .order('created_at', { ascending: false });
-
-                // 2. Fetch edited hardcoded comics (__demo__ prefix)
-                const { data: demoEdits } = await sb.from('comics')
-                    .select('*').eq('is_demo', true)
-                    .order('created_at', { ascending: false });
-
-                const allSbComics = [...(sbComics || []), ...(demoEdits || [])];
-                if (!allSbComics.length) { _syncInProgress = false; return; }
+                // Fetch user-created comics AND demo edits in parallel
+                const [sbResult, demoResult] = await Promise.all([
+                    sb.from('comics').select('*').eq('is_demo', false).order('created_at', { ascending: false }),
+                    sb.from('comics').select('*').eq('is_demo', true).order('created_at', { ascending: false })
+                ]);
+                const sbComics = sbResult.data || [];
+                const demoEdits = demoResult.data || [];
+                const allSbComics = [...sbComics, ...demoEdits];
+                // Don't early-return if only one list is empty — still process the other
 
                 // Track which Supabase IDs we see, so we can remove deleted ones
                 const seenSbIds = new Set();
@@ -3802,11 +3802,10 @@
                             if (c.author_name) comic.author = c.author_name;
                             if (c.cover_url) { comic.coverUrl = c.cover_url; comic.cover_url = c.cover_url; }
                             if (episodes.length) comic.episodes = episodes;
-                            // Also apply title from localStorage if saved there
-                            try {
-                                const le = JSON.parse(localStorage.getItem(DEMO_EDITS_KEY) || '{}');
-                                if (le[originalId]?.title) comic.title = le[originalId].title;
-                            } catch (e) { }
+                            // Read display title from badge field (stored as §§TITLE§§DisplayName)
+                            if (c.badge && c.badge.startsWith('§§TITLE§§')) {
+                                comic.title = c.badge.replace('§§TITLE§§', '');
+                            }
                         }
                     } else {
                         seenSbIds.add(c.id);
@@ -3842,6 +3841,8 @@
                 console.warn('Sync error', e);
             } finally {
                 _syncInProgress = false;
+                // If a sync was queued while we were running, execute it now
+                if (_syncQueued) { _syncQueued = false; setTimeout(() => syncFromSupabase(), 100); }
             }
         }
 
@@ -4576,12 +4577,15 @@
                             .select('id').eq('title', '__demo__' + editingComic.id).maybeSingle();
                         const coverUrl = editingComic.coverUrl || editingComic.cover_url || null;
                         if (existing) {
+                            // IMPORTANT: Never update 'title' for demo records —
+                            // it is the lookup key (__demo__anansi-web etc.)
+                            // Store display title in synopsis prefix using §§ separator
                             await sb.from('comics').update({
-                                title: editingComic.title,
                                 synopsis: editingComic.synopsis,
                                 genre: editingComic.genre,
                                 author_name: editingComic.author,
-                                cover_url: coverUrl
+                                cover_url: coverUrl,
+                                badge: '§§TITLE§§' + editingComic.title  // store display title in badge field
                             }).eq('id', existing.id);
                             // Update episodes — ensure blocks have image URLs
                             for (let i = 0; i < editingComic.episodes.length; i++) {
@@ -4599,7 +4603,7 @@
                             }
                         } else {
                             const { data: newComic } = await sb.from('comics').insert({
-                                title: '__demo__' + editingComic.id,
+                                title: '__demo__' + editingComic.id,   // stable lookup key
                                 genre: editingComic.genre,
                                 synopsis: editingComic.synopsis,
                                 author_name: editingComic.author,
@@ -4607,7 +4611,7 @@
                                 author_id: currentUser.id,
                                 is_demo: true,
                                 likes: editingComic.likes || 0,
-                                badge: editingComic.badge || ''
+                                badge: '§§TITLE§§' + editingComic.title  // store display title here
                             }).select('id').single();
                             if (newComic) {
                                 for (let i = 0; i < editingComic.episodes.length; i++) {
@@ -4641,8 +4645,8 @@
             }
             showIntroPage(currentComic);
             renderHome();
-            // Background sync so other devices get the update
-            setTimeout(() => syncFromSupabase(), 800);
+            // Force sync immediately — updates this device AND queues for others
+            syncFromSupabase(true);
         }
 
         // Persist demo comic edits in localStorage
@@ -4650,16 +4654,15 @@
         function saveDemoEdit(comic) {
             try {
                 const edits = JSON.parse(localStorage.getItem(DEMO_EDITS_KEY) || '{}');
-                // Keep cloud image URLs, strip base64 only
                 const safeEpisodes = (comic.episodes || []).map(ep => ({
-                    ...ep,
+                    title: ep.title,
                     blocks: (ep.blocks || []).map(b => {
                         if (b.type === 'image') {
-                            return { ...b, image: (b.image && b.image.startsWith('http')) ? b.image : null };
+                            // Keep cloud URLs, drop base64 blobs (too large for localStorage)
+                            return { type: 'image', image: (b.image && b.image.startsWith('http')) ? b.image : null, dialogue: b.dialogue || b.text || '', side: b.side || 'left', pi: b.pi };
                         }
                         return b;
-                    }),
-                    panels: undefined  // remove panels so only blocks are used
+                    })
                 }));
                 edits[comic.id] = {
                     title: comic.title,
@@ -4667,7 +4670,8 @@
                     author: comic.author,
                     genre: comic.genre,
                     coverUrl: comic.coverUrl || comic.cover_url || null,
-                    episodes: safeEpisodes
+                    episodes: safeEpisodes,
+                    savedAt: Date.now()
                 };
                 localStorage.setItem(DEMO_EDITS_KEY, JSON.stringify(edits));
             } catch (e) { }
@@ -5175,8 +5179,8 @@
                     renderHome(); // instant local display
                     const t = document.getElementById('pub-success'); t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3500);
                     showToast('Comic published! 🎉');
-                    // Background sync to confirm and deduplicate
-                    setTimeout(() => syncFromSupabase(), 1500);
+                    // Sync immediately to confirm and deduplicate
+                    syncFromSupabase(true);
                     return;
                 }
             }
