@@ -4588,6 +4588,11 @@
             // currentComic must point to the UPDATED array entry, not the old snapshot
             currentComic = idx !== -1 ? comics[idx] : editingComic;
 
+            // ── Step 2b: Save to localStorage NOW — before any awaits or syncs run ──
+            // This is the ground truth. Must happen before Supabase calls that could race.
+            const isUUIDCheck = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(editingComic.id);
+            if (!isUUIDCheck) saveDemoEdit(editingComic);
+
             // ── Step 3: Close modal and render with fresh data immediately ──
             closeEditModal();
             showIntroPage(currentComic);
@@ -4615,8 +4620,7 @@
                     showToast('Saved and synced to all devices ✅');
                 } catch (e) { showToast('Saved locally, sync failed'); }
             } else {
-                // Hardcoded comic — save to localStorage first (instant), then Supabase
-                saveDemoEdit(editingComic);
+                // Hardcoded comic — localStorage already saved in Step 2b above
                 showToast('Saved ✅');
                 if (currentUser) {
                     try {
