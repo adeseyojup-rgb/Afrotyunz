@@ -3731,7 +3731,13 @@
             finally { btn.disabled = false; btn.textContent = authMode === 'login' ? 'Log In' : 'Create Account'; }
         }
         function showAuthError(msg) { const el = document.getElementById('auth-error'); el.textContent = msg; el.style.display = 'block'; }
-        function onAuthSuccess() { closeAuth(); updateNavForUser(); showToast('Welcome to Afrotyunz! 🎉'); syncFromSupabase(); }
+        function onAuthSuccess() {
+            closeAuth();
+            updateNavForUser();
+            showToast('Welcome to Afrotyunz! 🎉');
+            // Sync once after login — picks up user comics + demo edits in one pass
+            syncFromSupabase(true);
+        }
         async function signOut() { await sb.auth.signOut(); currentUser = null; updateNavForUser(); showToast('Signed out successfully'); renderHome(); }
         function updateNavForUser() {
             const loggedIn = document.getElementById('nav-logged-in');
@@ -3751,8 +3757,8 @@
                     else { const u = currentUser.email.split('@')[0]; await sb.from('profiles').upsert({ id: currentUser.id, username: u }, { onConflict: 'id' }); currentUser.username = u; }
                 } catch (e) { currentUser.username = currentUser.email.split('@')[0]; }
                 updateNavForUser();
-                await loadUserComicsFromSupabase();
-                await loadDemoEditsFromSupabase();
+                // Don't trigger a separate sync here — init already calls syncFromSupabase()
+                // which handles both user comics and demo edits in one pass
             }
         }
         async function loadUserComicsFromSupabase() { await loadAllComicsFromSupabase(); }
@@ -3847,6 +3853,9 @@
                 // Re-apply localStorage demo edits AFTER Supabase sync
                 // localStorage is the ground truth — it was written with full image URLs at save time
                 // Supabase may have incomplete episode data so localStorage wins on conflict
+                loadDemoEdits();
+                // Re-apply localStorage LAST — it is ground truth for demo edits
+                // Supabase episodes may have incomplete image data; localStorage always has full URLs
                 loadDemoEdits();
                 renderHome();
                 const activePage = document.querySelector('.page.active')?.id?.replace('page-', '');
@@ -4703,7 +4712,6 @@
                     if (data.genre) comic.genre = data.genre;
                     if (data.coverUrl) { comic.coverUrl = data.coverUrl; comic.cover_url = data.coverUrl; }
                     if (data.episodes && data.episodes.length) {
-                        // Ensure episodes use blocks format
                         comic.episodes = data.episodes.map(ep => ({
                             ...ep,
                             blocks: ep.blocks || [],
@@ -4714,8 +4722,9 @@
             } catch (e) { }
         }
         async function loadDemoEditsFromSupabase() {
-            // syncFromSupabase already handles demo edits — just trigger a full sync
-            await syncFromSupabase();
+            // localStorage is the ground truth for demo edits on this device
+            // syncFromSupabase handles cross-device sync separately
+            loadDemoEdits();
         }
         function deleteDemoEdit(comicId) {
             try {
