@@ -3803,7 +3803,7 @@
                         const originalId = c.title.replace('__demo__', '');
                         const comic = comics.find(x => x.id === originalId);
                         if (comic) {
-                            if (c.synopsis) comic.synopsis = c.synopsis;
+                            if (Object.prototype.hasOwnProperty.call(c, 'synopsis')) comic.synopsis = c.synopsis || comic.synopsis;
                             if (c.genre) comic.genre = c.genre;
                             if (c.author_name) comic.author = c.author_name;
                             if (c.cover_url) { comic.coverUrl = c.cover_url; comic.cover_url = c.cover_url; }
@@ -4710,10 +4710,11 @@
                 Object.entries(edits).forEach(([id, data]) => {
                     const comic = comics.find(c => c.id === id);
                     if (!comic) return;
-                    if (data.title) comic.title = data.title;
-                    if (data.synopsis) comic.synopsis = data.synopsis;
-                    if (data.author) comic.author = data.author;
-                    if (data.genre) comic.genre = data.genre;
+                    // Use hasOwnProperty so empty strings and falsy values are still applied
+                    if (Object.prototype.hasOwnProperty.call(data, 'title') && data.title) comic.title = data.title;
+                    if (Object.prototype.hasOwnProperty.call(data, 'synopsis')) comic.synopsis = data.synopsis;
+                    if (Object.prototype.hasOwnProperty.call(data, 'author') && data.author) comic.author = data.author;
+                    if (Object.prototype.hasOwnProperty.call(data, 'genre') && data.genre) comic.genre = data.genre;
                     if (data.coverUrl) { comic.coverUrl = data.coverUrl; comic.cover_url = data.coverUrl; }
                     if (data.episodes && data.episodes.length) {
                         comic.episodes = data.episodes.map(ep => ({
