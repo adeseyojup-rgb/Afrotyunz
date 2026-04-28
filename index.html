@@ -3171,7 +3171,7 @@
             <button class="genre-pill" onclick="filterGenre(this,'home')">Drama</button>
         </div>
         <div class="featured-banner" onclick="openComicIntro('lagos-chronicles')">
-            <div class="featured-bg"></div>
+            <div class="featured-bg" id="featured-bg-el"></div>
             <div class="featured-content">
                 <div class="featured-label">✦ Editor's Pick</div>
                 <div class="featured-title">THE LAGOS CHRONICLES</div>
@@ -3775,15 +3775,11 @@
             _syncInProgress = true;
             _syncQueued = false;
             try {
-                // Fetch user-created comics AND demo edits in parallel
-                const [sbResult, demoResult] = await Promise.all([
-                    sb.from('comics').select('*').eq('is_demo', false).order('created_at', { ascending: false }),
-                    sb.from('comics').select('*').eq('is_demo', true).order('created_at', { ascending: false })
-                ]);
+                // Fetch only real user-created comics from Supabase
+                // Demo comic edits are handled purely via localStorage — no Supabase needed
+                const sbResult = await sb.from('comics').select('*').eq('is_demo', false).order('created_at', { ascending: false });
                 const sbComics = sbResult.data || [];
-                const demoEdits = demoResult.data || [];
-                const allSbComics = [...sbComics, ...demoEdits];
-                // Don't early-return if only one list is empty — still process the other
+                const allSbComics = sbComics;
 
                 // Track which Supabase IDs we see, so we can remove deleted ones
                 const seenSbIds = new Set();
@@ -3799,31 +3795,7 @@
                     }));
 
                     if (c.is_demo) {
-                        // This is an edited hardcoded comic — apply to the original
-                        const originalId = c.title.replace('__demo__', '');
-                        const comic = comics.find(x => x.id === originalId);
-                        if (comic) {
-                            if (Object.prototype.hasOwnProperty.call(c, 'synopsis')) comic.synopsis = c.synopsis || comic.synopsis;
-                            if (c.genre) comic.genre = c.genre;
-                            if (c.author_name) comic.author = c.author_name;
-                            if (c.cover_url) { comic.coverUrl = c.cover_url; comic.cover_url = c.cover_url; }
-                            // Only apply Supabase episodes if they have real image data
-                            // If not, localStorage will provide better data via loadDemoEdits()
-                            if (episodes.length) {
-                                const sbHasImages = episodes.some(ep =>
-                                    (ep.blocks || []).some(b => b.type === 'image' && b.image)
-                                );
-                                const localHasImages = (comic.episodes || []).some(ep =>
-                                    (ep.blocks || []).some(b => b.type === 'image' && b.image)
-                                );
-                                // Use Supabase episodes only if they have images OR local has none
-                                if (sbHasImages || !localHasImages) comic.episodes = episodes;
-                            }
-                            // Read display title from badge field (stored as §§TITLE§§DisplayName)
-                            if (c.badge && c.badge.startsWith('§§TITLE§§')) {
-                                comic.title = c.badge.replace('§§TITLE§§', '');
-                            }
-                        }
+                        continue; // Skip — demo edits handled by localStorage only
                     } else {
                         seenSbIds.add(c.id);
                         const comicObj = {
@@ -3835,7 +3807,22 @@
                         };
                         const existingIdx = comics.findIndex(x => x.id === c.id);
                         if (existingIdx !== -1) {
-                            comics[existingIdx] = { ...comics[existingIdx], ...comicObj };
+                            // Merge Supabase data but preserve in-memory episodes if they
+                            // have more image data than what Supabase returned
+                            const memEps = comics[existingIdx].episodes || [];
+                            const memHasImages = memEps.some(ep =>
+                                (ep.blocks || []).some(b => b.image && b.image.startsWith('http'))
+                            );
+                            const sbHasImages = (comicObj.episodes || []).some(ep =>
+                                (ep.blocks || []).some(b => b.image && b.image.startsWith('http'))
+                            );
+                            const useMemEpisodes = memHasImages && !sbHasImages;
+                            comics[existingIdx] = {
+                                ...comics[existingIdx],
+                                ...comicObj,
+                                // Keep in-memory episodes if they have images Supabase doesn't
+                                episodes: useMemEpisodes ? memEps : comicObj.episodes
+                            };
                         } else {
                             comics.unshift(comicObj);
                         }
@@ -4079,6 +4066,16 @@
             const newest = comics.filter(c => c.badge === 'new').slice(0, 5);
             document.getElementById('trending-row').innerHTML = trending.map(cardHTML).join('');
             document.getElementById('new-row').innerHTML = newest.map(cardHTML).join('');
+            // Update featured banner cover if lagos-chronicles has an uploaded cover
+            const featuredComic = comics.find(c => c.id === 'lagos-chronicles');
+            if (featuredComic) {
+                const fb = document.getElementById('featured-bg-el');
+                if (fb && (featuredComic.coverUrl || featuredComic.cover_url)) {
+                    fb.style.backgroundImage = `url('${featuredComic.coverUrl || featuredComic.cover_url}')`;
+                    fb.style.backgroundSize = 'cover';
+                    fb.style.backgroundPosition = 'center';
+                }
+            }
             const rc = ['gold', 'gold', 'silver', 'bronze', 'normal', 'normal'];
             document.getElementById('ranking-list').innerHTML = trending.map((c, i) => `
               <div class="rank-item" onclick="openComicIntro('${c.id}')">
@@ -4598,10 +4595,12 @@
             showIntroPage(currentComic);
             renderHome();
 
-            // ── Step 4: Persist to Supabase in background (don't block UI) ──
+            // ── Step 4: Persist to Supabase in background ──
             const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(editingComic.id);
             if (isUUID) {
-                // Real Supabase comic
+                // Write to Supabase — DO NOT trigger syncFromSupabase after this.
+                // The in-memory array is already updated (Step 2). Sync would race
+                // with this write and potentially fetch stale data back.
                 try {
                     await sb.from('comics').update({
                         title: editingComic.title,
@@ -4613,67 +4612,23 @@
                     for (let i = 0; i < editingComic.episodes.length; i++) {
                         const ep = editingComic.episodes[i];
                         const blocks = ep.blocks || ep.panels || [];
-                        const { data: existingEp } = await sb.from('episodes').select('id').eq('comic_id', editingComic.id).eq('episode_number', i + 1).maybeSingle();
-                        if (existingEp) { await sb.from('episodes').update({ title: ep.title, content: { blocks } }).eq('id', existingEp.id); }
-                        else { await sb.from('episodes').insert({ comic_id: editingComic.id, title: ep.title, episode_number: i + 1, content: { blocks } }); }
-                    }
-                    showToast('Saved and synced to all devices ✅');
-                } catch (e) { showToast('Saved locally, sync failed'); }
-            } else {
-                // Hardcoded comic — localStorage already saved in Step 2b above
-                showToast('Saved ✅');
-                if (currentUser) {
-                    try {
-                        const coverUrl = editingComic.coverUrl || editingComic.cover_url || null;
-                        const { data: existing } = await sb.from('comics')
-                            .select('id').eq('title', '__demo__' + editingComic.id).maybeSingle();
-                        if (existing) {
-                            await sb.from('comics').update({
-                                synopsis: editingComic.synopsis,
-                                genre: editingComic.genre,
-                                author_name: editingComic.author,
-                                cover_url: coverUrl,
-                                badge: '§§TITLE§§' + editingComic.title
-                            }).eq('id', existing.id);
-                            for (let i = 0; i < editingComic.episodes.length; i++) {
-                                const ep = editingComic.episodes[i];
-                                const blocks = (ep.blocks || ep.panels || []).map(b =>
-                                    b.type === 'image'
-                                        ? { type: 'image', image: b.image || null, dialogue: b.dialogue || b.text || '', side: b.side || 'left', pi: b.pi }
-                                        : b
-                                );
-                                const { data: existingEp } = await sb.from('episodes')
-                                    .select('id').eq('comic_id', existing.id).eq('episode_number', i + 1).maybeSingle();
-                                if (existingEp) { await sb.from('episodes').update({ title: ep.title, content: { blocks } }).eq('id', existingEp.id); }
-                                else { await sb.from('episodes').insert({ comic_id: existing.id, title: ep.title, episode_number: i + 1, content: { blocks } }); }
-                            }
+                        const { data: existingEp } = await sb.from('episodes')
+                            .select('id').eq('comic_id', editingComic.id).eq('episode_number', i + 1).maybeSingle();
+                        if (existingEp) {
+                            await sb.from('episodes').update({ title: ep.title, content: { blocks } }).eq('id', existingEp.id);
                         } else {
-                            const { data: newComic } = await sb.from('comics').insert({
-                                title: '__demo__' + editingComic.id,
-                                genre: editingComic.genre,
-                                synopsis: editingComic.synopsis,
-                                author_name: editingComic.author,
-                                cover_url: coverUrl,
-                                author_id: currentUser.id,
-                                is_demo: true,
-                                likes: editingComic.likes || 0,
-                                badge: '§§TITLE§§' + editingComic.title
-                            }).select('id').single();
-                            if (newComic) {
-                                for (let i = 0; i < editingComic.episodes.length; i++) {
-                                    const ep = editingComic.episodes[i];
-                                    const blocks = (ep.blocks || ep.panels || []).map(b =>
-                                        b.type === 'image'
-                                            ? { type: 'image', image: b.image || null, dialogue: b.dialogue || b.text || '', side: b.side || 'left', pi: b.pi }
-                                            : b
-                                    );
-                                    await sb.from('episodes').insert({ comic_id: newComic.id, title: ep.title, episode_number: i + 1, content: { blocks } });
-                                }
-                            }
+                            await sb.from('episodes').insert({ comic_id: editingComic.id, title: ep.title, episode_number: i + 1, content: { blocks } });
                         }
-                        showToast('Synced to all devices ✅');
-                    } catch (e) { console.warn('Demo Supabase sync failed, localStorage saved', e); }
+                    }
+                    showToast('Saved ✅');
+                    // Only NOW sync — Supabase write is complete, no race possible
+                    await syncFromSupabase(true);
+                } catch (e) {
+                    showToast('Saved locally — will sync when reconnected');
                 }
+            } else {
+                // Hardcoded comic — saved to localStorage in Step 2b above. Done.
+                showToast('Saved ✅');
             }
         }
 
