@@ -4602,13 +4602,24 @@
                 // The in-memory array is already updated (Step 2). Sync would race
                 // with this write and potentially fetch stale data back.
                 try {
-                    await sb.from('comics').update({
+                    const { data: updatedRows, error: updateErr } = await sb.from('comics').update({
                         title: editingComic.title,
                         synopsis: editingComic.synopsis,
                         genre: editingComic.genre,
                         author_name: editingComic.author,
                         cover_url: editingComic.coverUrl || editingComic.cover_url || null
-                    }).eq('id', editingComic.id);
+                    }).eq('id', editingComic.id).select('id, synopsis');
+                    if (updateErr) {
+                        showToast('⚠️ Update failed: ' + updateErr.message);
+                        console.error('[saveComic] update error:', updateErr);
+                        return;
+                    }
+                    if (!updatedRows || updatedRows.length === 0) {
+                        showToast('⚠️ Update blocked — permission denied or not owner');
+                        console.error('[saveComic] 0 rows updated — RLS or ownership issue');
+                        return;
+                    }
+                    console.log('[saveComic] Updated row synopsis:', updatedRows[0]?.synopsis);
                     for (let i = 0; i < editingComic.episodes.length; i++) {
                         const ep = editingComic.episodes[i];
                         const blocks = ep.blocks || ep.panels || [];
@@ -4624,7 +4635,8 @@
                     // Only NOW sync — Supabase write is complete, no race possible
                     await syncFromSupabase(true);
                 } catch (e) {
-                    showToast('Saved locally — will sync when reconnected');
+                    showToast('⚠️ Save error: ' + e.message);
+                    console.error('[saveComic]', e);
                 }
             } else {
                 // Hardcoded comic — saved to localStorage in Step 2b above. Done.
@@ -4641,13 +4653,12 @@
                     title: ep.title,
                     blocks: (ep.blocks || []).map(b => {
                         if (b.type === 'image') {
-                            // Keep cloud URLs, drop base64 blobs (too large for localStorage)
                             return { type: 'image', image: (b.image && b.image.startsWith('http')) ? b.image : null, dialogue: b.dialogue || b.text || '', side: b.side || 'left', pi: b.pi };
                         }
                         return b;
                     })
                 }));
-                edits[comic.id] = {
+                const entry = {
                     title: comic.title,
                     synopsis: comic.synopsis,
                     author: comic.author,
@@ -4656,8 +4667,18 @@
                     episodes: safeEpisodes,
                     savedAt: Date.now()
                 };
-                localStorage.setItem(DEMO_EDITS_KEY, JSON.stringify(edits));
-            } catch (e) { }
+                edits[comic.id] = entry;
+                const serialized = JSON.stringify(edits);
+                localStorage.setItem(DEMO_EDITS_KEY, serialized);
+                // Verify it was actually written
+                const verify = JSON.parse(localStorage.getItem(DEMO_EDITS_KEY) || '{}');
+                if (!verify[comic.id]) {
+                    showToast('⚠️ Save failed — storage full?');
+                }
+            } catch (e) {
+                showToast('⚠️ Save error: ' + e.message);
+                console.error('[saveDemoEdit]', e);
+            }
         }
         function loadDemoEdits() {
             try {
